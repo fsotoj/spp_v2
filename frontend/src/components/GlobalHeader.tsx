@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Map, BarChart3, Landmark, Quote, ChevronDown, Sparkles } from 'lucide-react';
+import { Map, BarChart3, Landmark, Quote, ChevronDown } from 'lucide-react';
 
 /**
  * GlobalHeader: The "Navigation Spine" of the Research Portal.
