@@ -24,15 +24,35 @@ app = FastAPI(
 )
 
 # CORS Configuration
-# Since we use X-API-Key (header) and NOT cookies/session, we can set allow_credentials=False
-# and use a wildcard to stop CORS blocks once and for all.
+# We specify origins explicitly to be more robust than '*' for some browsers.
+origins = [
+    "http://localhost:5173",
+    "https://sppv2-puce.vercel.app",
+    "https://sppv2.vercel.app",
+    "https://sppv2-eeghvcm71-fsotojs-projects.vercel.app",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.middleware("http")
+async def dbg_middleware(request, call_next):
+    """Logs incoming requests for CORS debugging."""
+    origin = request.headers.get("origin")
+    method = request.method
+    path = request.url.path
+    logger.info(f"REQ: {method} {path} | Origin: {origin}")
+    response = await call_next(request)
+    return response
+
+@app.get("/api/v1/version")
+def get_version():
+    return {"version": "0.2.1-cors-debug", "status": "active"}
 
 # ── Include Routers ────────────────────────────────────────────────────────
 app.include_router(system.router, tags=["System"])
