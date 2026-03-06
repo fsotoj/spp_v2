@@ -5,12 +5,13 @@ FastAPI application entry point.
 """
 
 import logging
+import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.api.routers import data, metadata, system
-from backend.core.config import get_settings
+from api.routers import data, metadata, system
+from core.config import get_settings
 
 logger = logging.getLogger(__name__)
 

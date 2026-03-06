@@ -19,8 +19,8 @@ from typing import Any
 import openpyxl
 from sqlmodel import Session, select
 
-from backend.core.config import get_settings
-from backend.db.models import (
+from core.config import get_settings
+from db.models import (
     Country,
     Observation,
     PartyColorExe,
@@ -30,7 +30,7 @@ from backend.db.models import (
     ValidationLog,
     VariableDictionary,
 )
-from backend.db.session import create_db_and_tables, engine
+from db.session import create_db_and_tables, engine
 
 logger = logging.getLogger(__name__)
 

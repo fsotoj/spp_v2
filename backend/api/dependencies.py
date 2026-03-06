@@ -11,8 +11,8 @@ from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader
 from sqlmodel import Session
 
-from backend.core.config import get_settings
-from backend.db.session import engine
+from core.config import get_settings
+from db.session import engine
 
 # API Key security scheme
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=True)

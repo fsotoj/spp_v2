@@ -1,8 +1,8 @@
 import sys
 import logging
 from sqlmodel import Session, select
-from backend.db.session import engine
-from backend.db.models import Observation, VariableDictionary, Country, State
+from db.session import engine
+from db.models import Observation, VariableDictionary, Country, State
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("validate_db")

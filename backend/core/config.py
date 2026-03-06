@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     debug: bool = False
 
     # ── Database ─────────────────────────────────────────────────────
-    # For local dev    → sqlite:///./data/db/spp_dev.db
+    # For local dev    → sqlite:///./data/db/spp_dev.db (from project root)
     # For Railway      → sqlite:////app/data/db/spp_dev.db (Volume mount)
     database_url: str = "sqlite:///./data/db/spp_dev.db"
 
@@ -45,9 +45,22 @@ class Settings(BaseSettings):
     def db_path(self) -> Path:
         """Helper to get the actual file path from the database_url."""
         if self.database_url.startswith("sqlite:///"):
-            # Handle local (relative) and absolute paths
             path_str = self.database_url.replace("sqlite:///", "")
-            return Path(path_str).resolve()
+            path = Path(path_str)
+            if path.is_absolute():
+                return path
+            
+            # If relative, check if it exists from the current CWD
+            # If not, try to find it relative to the project root (one level up if in backend/)
+            if path.exists():
+                return path.resolve()
+            
+            # Fallback for when running from within the backend/ folder
+            alt_path = Path("..") / path
+            if alt_path.exists():
+                return alt_path.resolve()
+
+            return path.resolve()
         return Path("./data/db/spp_dev.db").resolve()
 
     # ── API ──────────────────────────────────────────────────────────
@@ -58,6 +71,14 @@ class Settings(BaseSettings):
     @property
     def is_sqlite(self) -> bool:
         return self.database_url.startswith("sqlite")
+
+
+    @property
+    def sqlalchemy_url(self) -> str:
+        """Helper to get the SQLAlchemy connection string."""
+        if self.is_sqlite:
+            return f"sqlite:///{self.db_path}"
+        return self.database_url
 
 
 @lru_cache

@@ -20,7 +20,7 @@ from collections.abc import Generator
 
 from sqlmodel import Session, SQLModel, create_engine
 
-from backend.core.config import get_settings
+from core.config import get_settings
 
 _settings = get_settings()
 
@@ -31,7 +31,7 @@ if _settings.is_sqlite:
     _connect_args["check_same_thread"] = False
 
 engine = create_engine(
-    _settings.database_url,
+    _settings.sqlalchemy_url,
     echo=_settings.debug,
     connect_args=_connect_args,
 )

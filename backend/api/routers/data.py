@@ -11,8 +11,8 @@ from typing import Any
 from fastapi import APIRouter, HTTPException, Query
 from sqlmodel import select
 
-from backend.api.dependencies import DbSession, SecureRoute
-from backend.db.models import Observation, PartyObservation, VariableDictionary
+from api.dependencies import DbSession, SecureRoute
+from db.models import Observation, PartyObservation, VariableDictionary
 
 router = APIRouter()
 

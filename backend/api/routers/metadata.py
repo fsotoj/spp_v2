@@ -9,8 +9,8 @@ from typing import Any
 from fastapi import APIRouter
 from sqlmodel import select
 
-from backend.api.dependencies import DbSession, SecureRoute
-from backend.db.models import Country, PartyColorExe, PartyColorLeg, State, VariableDictionary
+from api.dependencies import DbSession, SecureRoute
+from db.models import Country, PartyColorExe, PartyColorLeg, State, VariableDictionary
 
 router = APIRouter()
 
