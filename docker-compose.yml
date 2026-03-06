@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────────────────────
+# docker-compose.yml  –  SPP V2  (Phase 1)
+#
+# Services:
+#   db   → PostgreSQL 16 (prod-like, or swap for SQLite in .env)
+#   api  → FastAPI app (Phase 2 – build context ready)
+# ─────────────────────────────────────────────────────────────
+
+services:
+  # ── PostgreSQL ──────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: spp_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-spp}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-spp_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-spp}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-spp}"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # ── FastAPI (stub – uncomment when Phase 2 begins) ─────────
+  # api:
+  #   build: .
+  #   container_name: spp_api
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${API_PORT:-8000}:8000"
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
+  #   environment:
+  #     DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-spp}:${POSTGRES_PASSWORD:-spp_secret}@db:5432/${POSTGRES_DB:-spp}
+  #   volumes:
+  #     - ./data_lab:/app/data_lab
+
+volumes:
+  pgdata:
