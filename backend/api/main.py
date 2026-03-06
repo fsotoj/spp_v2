@@ -23,26 +23,13 @@ app = FastAPI(
     version="0.2.0",
 )
 
-# Get the environment (default to 'development' if not set)
-ENV = os.getenv("RAILWAY_ENVIRONMENT_NAME", "development")
-
-# If we are in a production-like environment, we can be more specific
-# If not, we allow everything for easier testing
-if ENV == "production":
-    origins = [
-        "http://localhost:5173", # Local dev
-        "https://sppv2-puce.vercel.app", # User production URL
-        "https://sppv2.vercel.app", # Standard alias
-        "https://sppv2-eeghvcm71-fsotojs-projects.vercel.app", # Vercel staging URL
-    ]
-    # You can also add your HostGator domain here later
-else:
-    origins = ["*"]
-
+# CORS Configuration
+# Since we use X-API-Key (header) and NOT cookies/session, we can set allow_credentials=False
+# and use a wildcard to stop CORS blocks once and for all.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True, # Set to True if you plan to use cookies/auth later
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
