@@ -31,7 +31,9 @@ ENV = os.getenv("RAILWAY_ENVIRONMENT_NAME", "development")
 if ENV == "production":
     origins = [
         "http://localhost:5173", # Local dev
-        "https://sppv2-eeghvcm71-fsotojs-projects.vercel.app", # Your Vercel staging URL
+        "https://sppv2-puce.vercel.app", # User production URL
+        "https://sppv2.vercel.app", # Standard alias
+        "https://sppv2-eeghvcm71-fsotojs-projects.vercel.app", # Vercel staging URL
     ]
     # You can also add your HostGator domain here later
 else:
