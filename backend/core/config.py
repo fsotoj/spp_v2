@@ -34,9 +34,8 @@ class Settings(BaseSettings):
     debug: bool = False
 
     # ── Database ─────────────────────────────────────────────────────
-    # For local dev    → sqlite:///./data/db/spp_dev.db (from project root)
-    # For Railway      → sqlite:////app/data/db/spp_dev.db (Volume mount)
-    database_url: str = "sqlite:///./data/db/spp_dev.db"
+    # Path is now relative to the backend/ root (where uvicorn runs)
+    database_url: str = "sqlite:///data/db/spp_dev.db"
 
     # ── Data paths ───────────────────────────────────────────────────
     data_dir: Path = Path("data/raw")
@@ -46,22 +45,9 @@ class Settings(BaseSettings):
         """Helper to get the actual file path from the database_url."""
         if self.database_url.startswith("sqlite:///"):
             path_str = self.database_url.replace("sqlite:///", "")
-            path = Path(path_str)
-            if path.is_absolute():
-                return path
-            
-            # If relative, check if it exists from the current CWD
-            # If not, try to find it relative to the project root (one level up if in backend/)
-            if path.exists():
-                return path.resolve()
-            
-            # Fallback for when running from within the backend/ folder
-            alt_path = Path("..") / path
-            if alt_path.exists():
-                return alt_path.resolve()
-
-            return path.resolve()
-        return Path("./data/db/spp_dev.db").resolve()
+            return Path(path_str).resolve()
+        
+        return Path("data/db/spp_dev.db").resolve()
 
     # ── API ──────────────────────────────────────────────────────────
     api_host: str = "0.0.0.0"
