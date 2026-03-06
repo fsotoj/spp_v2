@@ -22,11 +22,24 @@ app = FastAPI(
     version="0.2.0",
 )
 
-# CORS configuration — allow frontend to query the API
+# Get the environment (default to 'development' if not set)
+ENV = os.getenv("RAILWAY_ENVIRONMENT_NAME", "development")
+
+# If we are in a production-like environment, we can be more specific
+# If not, we allow everything for easier testing
+if ENV == "production":
+    origins = [
+        "http://localhost:5173", # Local dev
+        "https://sppv2-eeghvcm71-fsotojs-projects.vercel.app", # Your Vercel staging URL
+    ]
+    # You can also add your HostGator domain here later
+else:
+    origins = ["*"]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, restrict this to the shiny app domain
-    allow_credentials=False,
+    allow_origins=origins,
+    allow_credentials=True, # Set to True if you plan to use cookies/auth later
     allow_methods=["*"],
     allow_headers=["*"],
 )
