@@ -23,7 +23,7 @@ export function HeroSection() {
                 <div className="w-full text-left z-10 relative pointer-events-none flex-1 flex flex-col justify-center">
                     <p className="text-xl sm:text-2xl md:text-3xl lg:text-[34px] leading-[1.25] lg:leading-[1.2] max-w-3xl animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200 text-white drop-shadow-lg font-medium tracking-tight">
                         Systematic, transparent, and publicly accessible data on
-                        <strong className="font-extrabold text-white">subnational political institutions and electoral outcomes</strong>
+                        <strong className="font-extrabold text-white"> subnational political institutions and electoral outcomes </strong>
                         across Latin American countries.
                     </p>
                 </div>

@@ -1,5 +1,6 @@
 import { HeroSection } from '../components/Landing/HeroSection';
 import { WhySPPSection } from '../components/Landing/WhySPPSection';
+import { SolutionSection } from '../components/Landing/SolutionSection';
 import { TeamSection } from '../components/Landing/TeamSection';
 
 export function LandingPage() {
@@ -7,6 +8,7 @@ export function LandingPage() {
         <div className="min-h-screen bg-spp-bgLight text-spp-textDark font-sans selection:bg-brand-100 selection:text-brand-900 animate-in fade-in duration-500">
             <HeroSection />
             <WhySPPSection />
+            <SolutionSection />
             <TeamSection />
 
             {/* ── Footer ────────────────────────────────────────────────── */}
