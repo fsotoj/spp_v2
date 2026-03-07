@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Map, BarChart3, Landmark, Quote, ChevronDown, Menu, X } from 'lucide-react';
+import { Map, BarChart3, Landmark, ChevronDown, Menu, X } from 'lucide-react';
 
 /**
  * GlobalHeader: The "Navigation Spine" of the Research Portal.
@@ -10,7 +10,11 @@ export function GlobalHeader() {
     const location = useLocation();
     const [isExploreOpen, setIsExploreOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+
+    // Determine if we should use the transparent header logic (only on home page)
+    const isHomePage = location.pathname === '/';
 
     // Determine active tool text
     const activeToolLabel = location.pathname.includes('/explore') ? "Mapping Tool" : null;
@@ -32,83 +36,121 @@ export function GlobalHeader() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    // Intersection Observer for scroll morph effect on Home Page
+    useEffect(() => {
+        if (!isHomePage) {
+            setIsScrolled(true); // Always solid if not on home page
+            return;
+        }
+
+        const heroEl = document.getElementById('hero-section');
+        if (!heroEl) {
+            setIsScrolled(true); // Fallback
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                // If the hero is intersecting, we are at the top (transparent)
+                // If it's NOT intersecting, we scrolled past it (solid)
+                setIsScrolled(!entry.isIntersecting);
+            },
+            {
+                root: null,
+                threshold: 0,
+                // Trigger right as the very bottom of the hero leaves the viewport
+                rootMargin: "-80px 0px 0px 0px"
+            }
+        );
+
+        observer.observe(heroEl);
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [isHomePage]);
+
+    const headerVariantClass = isScrolled ? 'header--scrolled' : 'header--top';
+
     return (
         <>
-            <header className="fixed top-0 left-0 w-full h-20 bg-white/80 backdrop-blur-md border-b border-slate-100 z-[100] flex items-center justify-between px-4 md:px-12 transition-all">
+            <header className={`fixed top-0 left-0 w-full h-20 z-[100] flex items-center justify-between px-4 md:px-12 transition-all duration-300 ${headerVariantClass}`}>
                 {/* Left: Branding */}
                 <div className="flex items-center gap-4">
                     <Link to="/" className="flex items-center group transition-transform hover:scale-105 active:scale-95">
-                        <img src="/SPP.svg" className="h-10 md:h-12" alt="SPP Logo" />
+                        <img src={isScrolled ? "/SPP.svg" : "/SPP_blanco.svg"} className="h-10 md:h-12 header-logo transition-all duration-300" alt="SPP Logo" />
                     </Link>
                 </div>
 
-                {/* Center: Advanced Tool Switcher — hidden on mobile so hamburger handles all nav */}
-                <div className="relative hidden md:block" ref={dropdownRef}>
-                    <button
-                        onMouseEnter={() => setIsExploreOpen(true)}
-                        onClick={() => setIsExploreOpen(!isExploreOpen)}
-                        className={`flex items-center gap-3 px-5 py-2.5 rounded-xl border transition-all duration-300 font-bold text-sm ${activeToolLabel
-                            ? 'bg-brand-50 border-brand-200 text-brand-600 shadow-sm'
-                            : 'bg-white border-slate-200 text-slate-700 hover:border-brand-200 hover:bg-slate-50 shadow-sm'
-                            }`}
-                    >
-                        <span>{activeToolLabel ? `Explore: ${activeToolLabel}` : "Explore Tools"}</span>
-                        <ChevronDown size={14} className={`transition-transform duration-300 ${isExploreOpen ? 'rotate-180' : ''}`} />
-                    </button>
-
-                    {/* Dropdown Menu */}
-                    {isExploreOpen && (
-                        <nav
-                            onMouseLeave={() => setIsExploreOpen(false)}
-                            className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 z-[110] animate-in fade-in slide-in-from-top-2 duration-200"
-                        >
-                            <ToolLink
-                                to="/explore"
-                                icon={<Map size={18} />}
-                                label="Mapping Tool"
-                                description="Interactive subnational visualization"
-                                active={location.pathname === '/explore'}
-                                onClick={() => setIsExploreOpen(false)}
-                            />
-                            <ToolLink
-                                to="#"
-                                icon={<BarChart3 size={18} />}
-                                label="Graph Tool"
-                                description="Electoral trends & analytics"
-                                disabled
-                            />
-                            <ToolLink
-                                to="#"
-                                icon={<Landmark size={18} />}
-                                label="Chamber Tool"
-                                description="Legislative composition details"
-                                disabled
-                            />
-                        </nav>
-                    )}
-                </div>
-
-                {/* Right: Desktop Nav */}
-                <nav className="hidden md:flex items-center gap-1 md:gap-4">
+                {/* Center / Right: Nav Link Items */}
+                <nav className="hidden md:flex items-center gap-1 md:gap-4 ml-auto">
                     <PortalNav path="/" label="Home" active={location.pathname === '/'} />
+                    
+                    {/* Advanced Tool Switcher */}
+                    <div className="relative mt-0.5" ref={dropdownRef}>
+                        <button
+                            onMouseEnter={() => setIsExploreOpen(true)}
+                            onClick={() => setIsExploreOpen(!isExploreOpen)}
+                            className={`header-link flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-300 text-sm font-bold border ${activeToolLabel
+                                ? 'text-brand-500 border-brand-200 bg-brand-50 shadow-sm'
+                                : isHomePage && !isScrolled
+                                    ? 'text-white border-white/25 hover:bg-white/10'
+                                    : 'text-slate-600 border-slate-200 hover:text-slate-900 hover:bg-slate-50 shadow-sm'
+                                }`}
+                        >
+                            {activeToolLabel === "Mapping Tool" && <Map size={16} />}
+                            <span>Explore</span>
+                            <ChevronDown size={14} className={`transition-transform duration-300 ${isExploreOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {isExploreOpen && (
+                            <nav
+                                onMouseLeave={() => setIsExploreOpen(false)}
+                                className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 z-[110] animate-in fade-in slide-in-from-top-2 duration-200"
+                            >
+                                <ToolLink
+                                    to="/explore"
+                                    icon={<Map size={18} />}
+                                    label="Mapping Tool"
+                                    description="Interactive subnational visualization"
+                                    active={location.pathname === '/explore'}
+                                    onClick={() => setIsExploreOpen(false)}
+                                />
+                                <ToolLink
+                                    to="#"
+                                    icon={<BarChart3 size={18} />}
+                                    label="Graph Tool"
+                                    description="Electoral trends & analytics"
+                                    disabled
+                                />
+                                <ToolLink
+                                    to="#"
+                                    icon={<Landmark size={18} />}
+                                    label="Chamber Tool"
+                                    description="Legislative composition details"
+                                    disabled
+                                />
+                            </nav>
+                        )}
+                    </div>
+
                     <PortalNav path="/methodology" label="Methods" active={location.pathname === '/methodology'} />
                     <PortalNav path="/data" label="Data" active={location.pathname === '/data'} />
                     <PortalNav path="/about" label="About" active={location.pathname === '/about'} />
 
-                    <div className="h-6 w-px bg-slate-200 mx-2" />
+                    <div className="h-6 w-px bg-slate-200 mx-2 transition-colors duration-300" />
 
-                    <button
-                        className="flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-brand-400 transition-all shadow-md active:scale-95"
-                        onClick={() => alert('Citation: Giraudy et al. (2025). Subnational Politics Project.')}
-                    >
-                        <Quote size={14} />
-                        <span>How to Cite</span>
-                    </button>
+                    <img
+                        src="/EscuelaCienciasSocialesyGobierno_Horizontal_Blanco.webp"
+                        alt="Escuela de Ciencias Sociales y Gobierno — Tecnológico de Monterrey"
+                        className="header-university-logo h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-all duration-300"
+                    />
                 </nav>
 
                 {/* Right: Mobile Hamburger */}
                 <button
-                    className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+                    className="header-link md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-all duration-300"
                     onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     aria-label="Toggle navigation menu"
                 >
@@ -126,14 +168,12 @@ export function GlobalHeader() {
                         <MobileNavLink path="/data" label="Data" active={location.pathname === '/data'} onClick={() => setIsMobileMenuOpen(false)} />
                         <MobileNavLink path="/about" label="About" active={location.pathname === '/about'} onClick={() => setIsMobileMenuOpen(false)} />
 
-                        <div className="mt-2 pt-2 border-t border-slate-100">
-                            <button
-                                className="w-full flex items-center gap-2 px-4 py-3 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-brand-400 transition-all"
-                                onClick={() => { alert('Citation: Giraudy et al. (2025). Subnational Politics Project.'); setIsMobileMenuOpen(false); }}
-                            >
-                                <Quote size={16} />
-                                <span>How to Cite</span>
-                            </button>
+                        <div className="mt-2 pt-2 border-t border-slate-100 flex justify-center pb-2">
+                            <img
+                                src="/EscuelaCienciasSocialesyGobierno_Horizontal_Negro.webp"
+                                alt="Escuela de Ciencias Sociales y Gobierno — Tecnológico de Monterrey"
+                                className="h-7 w-auto object-contain opacity-70"
+                            />
                         </div>
                     </nav>
                 </div>
@@ -146,7 +186,7 @@ function PortalNav({ path, label, active }: { path: string; label: string; activ
     return (
         <Link
             to={path}
-            className={`text-sm font-bold px-3 py-2 rounded-lg transition-all ${active
+            className={`header-link text-sm font-bold px-3 py-2 rounded-lg transition-all duration-300 ${active
                 ? 'text-brand-400'
                 : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
                 }`}

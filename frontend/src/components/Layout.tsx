@@ -48,13 +48,12 @@ export function Layout({ children }: LayoutProps) {
 
     return (
         <SidebarContext.Provider value={{ isMobile, isSidebarOpen }}>
-            <div className="flex h-screen bg-[#f8fafc] overflow-hidden pt-20 transition-all duration-500 font-sans text-slate-800 relative">
+            <div className="flex h-screen bg-spp-bgMuted overflow-hidden pt-20 transition-all font-sans text-spp-textDark relative animate-in fade-in duration-500">
 
                 {/* ── Mobile backdrop ──────────────────────────────────────── */}
                 {isMobile && isSidebarOpen && (
                     <div
                         className="fixed inset-0 bg-black/40 z-30"
-                        style={{ top: 0 }}
                         onClick={() => setIsSidebarOpen(false)}
                     />
                 )}
@@ -65,18 +64,18 @@ export function Layout({ children }: LayoutProps) {
                     <aside
                         className={`
                         fixed left-0 bottom-0 top-20 z-40
-                        bg-white border-r border-slate-200 flex flex-col shadow-2xl
+                        bg-spp-bgLight border-r border-slate-200 flex flex-col shadow-2xl
                         transition-all duration-300 ease-in-out
                         ${isSidebarOpen ? 'w-[min(320px,85vw)]' : 'w-0 overflow-hidden'}
                     `}
                     >
-                        <div className="h-14 shrink-0 flex items-center px-6 border-b border-slate-100 font-bold text-xs text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        <div className="h-14 shrink-0 flex items-center px-6 border-b border-slate-100 font-bold text-xs text-spp-gray uppercase tracking-widest whitespace-nowrap">
                             <Filter size={14} className="mr-2" />
                             Explorer Controls
                         </div>
                         <div id="sidebar-content" className="flex-1 overflow-y-auto overflow-x-hidden" />
-                        <div className="p-4 border-t border-slate-100 bg-slate-50/50 shrink-0">
-                            <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
+                        <div className="p-4 border-t border-slate-100 bg-spp-bgMuted shrink-0">
+                            <div className="flex items-center gap-2 text-[10px] text-spp-gray font-bold uppercase">
                                 <div className="w-2 h-2 rounded-full bg-brand-400 animate-pulse" />
                                 Live Data Engine
                             </div>
@@ -85,15 +84,15 @@ export function Layout({ children }: LayoutProps) {
                 ) : (
                     /* Desktop: inline sidebar */
                     <aside
-                        className={`bg-white border-r border-slate-200 flex flex-col shadow-sm z-20 transition-all duration-300 ease-in-out relative ${isSidebarOpen ? 'w-80' : 'w-0 overflow-hidden'}`}
+                        className={`bg-spp-bgLight border-r border-slate-200 flex flex-col shadow-sm z-20 transition-all duration-300 ease-in-out relative ${isSidebarOpen ? 'w-80' : 'w-0 overflow-hidden'}`}
                     >
-                        <div className="h-14 flex items-center px-6 border-b border-slate-100 font-bold text-xs text-slate-400 uppercase tracking-widest whitespace-nowrap">
+                        <div className="h-14 flex items-center px-6 border-b border-slate-100 font-bold text-xs text-spp-gray uppercase tracking-widest whitespace-nowrap">
                             <Filter size={14} className="mr-2" />
                             Explorer Controls
                         </div>
                         <div id="sidebar-content" className="flex-1 overflow-y-auto overflow-x-hidden" />
-                        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
-                            <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold uppercase">
+                        <div className="p-4 border-t border-slate-100 bg-spp-bgMuted">
+                            <div className="flex items-center gap-2 text-[10px] text-spp-gray font-bold uppercase">
                                 <div className="w-2 h-2 rounded-full bg-brand-400 animate-pulse" />
                                 Live Data Engine
                             </div>
@@ -107,7 +106,7 @@ export function Layout({ children }: LayoutProps) {
                     {/* Desktop toggle button: top-left chevron */}
                     <button
                         onClick={toggleSidebar}
-                        className={`absolute top-4 z-40 p-2 bg-white border border-slate-200 shadow-md rounded-lg text-slate-500 hover:text-brand-400 transition-all hidden md:flex ${isSidebarOpen ? 'left-4' : 'left-4'}`}
+                        className={`absolute top-4 z-40 p-2 bg-spp-bgLight border border-slate-200 shadow-md rounded-lg text-spp-gray hover:text-brand-400 transition-all hidden md:flex ${isSidebarOpen ? 'left-4' : 'left-4'}`}
                     >
                         {isSidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
                     </button>
@@ -115,7 +114,7 @@ export function Layout({ children }: LayoutProps) {
                     {/* Mobile FAB: bottom-left, thumb-reachable */}
                     <button
                         onClick={toggleSidebar}
-                        className="md:hidden fixed bottom-6 left-4 z-50 flex items-center gap-2 px-4 py-3 bg-slate-900 text-white text-xs font-bold rounded-xl shadow-2xl hover:bg-brand-500 active:scale-95 transition-all"
+                        className="md:hidden fixed bottom-6 left-4 z-50 flex items-center gap-2 px-4 py-3 bg-spp-textDark text-spp-textLight text-xs font-bold rounded-xl shadow-2xl hover:bg-brand-500 active:scale-95 transition-all"
                         aria-label="Toggle explorer controls"
                     >
                         <SlidersHorizontal size={16} />
