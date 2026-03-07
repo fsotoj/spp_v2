@@ -15,14 +15,7 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) return 'vendor-react';
-            if (id.includes('leaflet')) return 'vendor-leaflet';
-            if (id.includes('lucide') || id.includes('chroma') || id.includes('tanstack')) return 'vendor-ui';
-            return 'vendor';
-          }
-        }
+        // Default chunking preferred for React 19 stability
       }
     },
     chunkSizeWarningLimit: 1000, // Increase slightly for the specialized map code
