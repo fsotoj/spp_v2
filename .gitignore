@@ -40,3 +40,6 @@ data/raw/*.parquet
 # ─── OS artifacts ────────────────────────────────────────────
 Thumbs.db
 .DS_Store
+
+# ─── Internal Documentation ──────────────────────────────────
+analysis/
