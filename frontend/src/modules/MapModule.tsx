@@ -4,13 +4,14 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import {
     Play, Pause, ChevronRight, ChevronDown, Camera,
-    Settings, Landmark, BarChart3, ChevronUp, ChevronDown as ChevronDownIcon
+    Settings, Landmark, BarChart3, ChevronUp, ChevronDown as ChevronDownIcon,
+    Info
 } from 'lucide-react';
 import { useStatesGeo, useVariables, usePartyColors, useObservations, useCountries } from '../api/hooks';
 import type { CountryGeo, StateGeo } from '../api/hooks';
 import { toPng } from 'html-to-image';
 import chroma from 'chroma-js';
-import { SidebarPortal } from '../components/Layout';
+import { SidebarPortal, useSidebar } from '../components/Layout';
 
 /**
  * @module MapModule
@@ -128,11 +129,12 @@ export function MapModule() {
         }
 
         return (
-            <div className="absolute top-4 right-4 z-[1000] max-w-[400px] bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-white/50 text-[11px] text-slate-700 leading-relaxed pointer-events-none transition-all duration-500 border-l-4 border-l-brand-500 scale-100 opacity-100 translate-x-0">
-                You are seeing <strong>{activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable}</strong>
-                {chamberText}; from the Subnational <strong>{activeVarMeta.dataset}</strong> Database.
-                {activeVarMeta.add_indices && <span className="block mt-1 italic text-slate-500">{activeVarMeta.add_indices}</span>}
-            </div>
+            <VariableDescriptionOverlay
+                label={activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable}
+                dataset={activeVarMeta.dataset || ''}
+                chamberText={chamberText}
+                addIndices={activeVarMeta.add_indices}
+            />
         );
     }, [activeVarMeta, variable]);
 
@@ -404,6 +406,48 @@ export function MapModule() {
                     />
                 )}
             </MapContainer>
+        </div>
+    );
+}
+
+/**
+ * VariableDescriptionOverlay
+ * - Desktop (md+): full-width panel, pointer-events-none, always visible.
+ * - Mobile (<md):  compact static pill. Hidden entirely when sidebar is open.
+ */
+function VariableDescriptionOverlay({
+    label, dataset, chamberText, addIndices
+}: {
+    label: string;
+    dataset: string;
+    chamberText: string;
+    addIndices?: string | null;
+}) {
+    const { isMobile, isSidebarOpen } = useSidebar();
+
+    // Hide completely on mobile when sidebar drawer is open to prevent overlap
+    const isHidden = isMobile && isSidebarOpen;
+
+    return (
+        <div className={`transition-all duration-300 ${isHidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+            {/* Desktop: full panel, pointer-events-none */}
+            <div className="hidden md:block absolute top-4 right-4 z-[1000] max-w-[400px] bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-white/50 text-[11px] text-slate-700 leading-relaxed pointer-events-none border-l-4 border-l-brand-500">
+                You are seeing <strong>{label}</strong>
+                {chamberText}; from the Subnational <strong>{dataset}</strong> Database.
+                {addIndices && <span className="block mt-1 italic text-slate-500">{addIndices}</span>}
+            </div>
+
+            {/* Mobile: compact pill matching desktop description content */}
+            <div className="md:hidden absolute top-3 left-2 right-2 z-[1000] pointer-events-none">
+                <div className="flex items-start gap-2 bg-white/90 backdrop-blur-md rounded-xl shadow-lg border border-white/50 border-l-4 border-l-brand-500 px-3 py-2 text-left">
+                    <Info size={14} className="text-brand-500 shrink-0 mt-0.5" />
+                    <span className="text-[11px] text-slate-700 leading-snug flex-1">
+                        You are seeing <strong className="text-slate-800">{label}</strong>
+                        {chamberText}; from the Subnational <strong className="text-slate-800">{dataset}</strong> Database.
+                        {addIndices && <span className="block mt-0.5 italic text-slate-500">{addIndices}</span>}
+                    </span>
+                </div>
+            </div>
         </div>
     );
 }
@@ -932,6 +976,9 @@ function MapGeoJSONLayer({ features, obsData, year, variable, vType, palette, pr
         }
     }, [features, obsData, variable, breaks, hiddenIndices, hiddenNA]);
 
+    const { isMobile, isSidebarOpen } = useSidebar();
+    const isOverlaysHidden = isMobile && isSidebarOpen;
+
     return (
         <>
             {features.map((f) => {
@@ -1067,48 +1114,48 @@ function MapGeoJSONLayer({ features, obsData, year, variable, vType, palette, pr
                 );
             })}
 
-            {/* Dynamic Legend */}
-            <div className="absolute bottom-6 right-6 z-[1000] bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-white/50 p-5 min-w-[200px] max-w-sm max-h-[60vh] overflow-y-auto transition-all duration-500 origin-bottom-right">
-                <div className="flex flex-col gap-3">
-                    <div className="border-l-4 border-brand-500 pl-3 py-1 transition-all">
-                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Variable</h4>
-                        <div className="text-sm font-bold text-slate-800 leading-tight">{prettyName || variable}</div>
+            {/* Dynamic Legend — sits above the FAB on mobile (bottom-20), normal on md+ (bottom-6) */}
+            <div className={`absolute bottom-20 md:bottom-6 right-2 md:right-6 z-[1000] bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-white/50 p-2 md:p-4 min-w-[150px] md:min-w-[180px] max-w-[min(200px,calc(100vw-1rem))] md:max-w-sm max-h-[35vh] md:max-h-[60vh] overflow-y-auto transition-all duration-300 origin-bottom-right ${isOverlaysHidden ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
+                <div className="flex flex-col gap-1.5 md:gap-2">
+                    <div className="border-l-4 border-brand-500 pl-2 md:pl-3 py-0.5 md:py-1 transition-all">
+                        <h4 className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5 md:mb-1">Variable</h4>
+                        <div className="text-[11px] md:text-sm font-bold text-slate-800 leading-tight">{prettyName || variable}</div>
                     </div>
 
-                    <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+                    <div className="flex flex-col gap-0.5 md:gap-1 pt-1.5 md:pt-2 border-t border-slate-100">
                         {/* NA entry first (mimic R) */}
                         <div
-                            className={`flex items-center gap-3 cursor-pointer hover:bg-slate-50 p-1 rounded transition-all ${hiddenNA ? 'opacity-40 grayscale' : ''}`}
+                            className={`flex items-center gap-2 cursor-pointer hover:bg-slate-50 px-1 py-0.5 rounded transition-all ${hiddenNA ? 'opacity-40 grayscale' : ''}`}
                             onClick={() => setHiddenNA(!hiddenNA)}
                         >
-                            <i className="w-5 h-3 rounded-sm border border-slate-300" style={{ background: '#999999' }} />
-                            <span className={`text-[11px] font-medium text-slate-600 uppercase ${hiddenNA ? 'line-through' : ''}`}>Not Available</span>
+                            <i className="w-4 h-2 md:w-5 md:h-3 rounded-sm border border-slate-300" style={{ background: '#999999' }} />
+                            <span className={`text-[10px] md:text-[11px] font-medium text-slate-600 uppercase ${hiddenNA ? 'line-through' : ''}`}>Not Available</span>
                         </div>
 
                         {isNumeric && colorScale && labels.length > 0 ? (
                             labels.map((lab, i) => (
                                 <div
                                     key={i}
-                                    className={`flex items-center gap-3 cursor-pointer hover:bg-slate-50 p-1 rounded legend-item-transition ${hiddenIndices.includes(i) ? 'opacity-40 grayscale' : ''}`}
+                                    className={`flex items-center gap-2 cursor-pointer hover:bg-slate-50 px-1 py-0.5 rounded legend-item-transition ${hiddenIndices.includes(i) ? 'opacity-40 grayscale' : ''}`}
                                     onClick={() => toggleIndex(i)}
                                 >
-                                    <i className="w-5 h-3 rounded-sm border border-slate-300 transition-colors duration-500" style={{ background: isSpecial ? colorScale(breaks[i]).hex() : colorScale((breaks[i] + (breaks[i + 1] || breaks[i])) / 2).hex() }} />
-                                    <span className={`text-[11px] font-bold text-slate-700 legend-item-transition ${hiddenIndices.includes(i) ? 'line-through italic text-slate-400' : ''}`}>{lab}</span>
+                                    <i className="w-4 h-2 md:w-5 md:h-3 rounded-sm border border-slate-300 transition-colors duration-500" style={{ background: isSpecial ? colorScale(breaks[i]).hex() : colorScale((breaks[i] + (breaks[i + 1] || breaks[i])) / 2).hex() }} />
+                                    <span className={`text-[10px] md:text-[11px] font-bold text-slate-700 legend-item-transition ${hiddenIndices.includes(i) ? 'line-through italic text-slate-400' : ''}`}>{lab}</span>
                                 </div>
                             ))
                         ) : !isNumeric && uniqueCategoricals.length > 0 ? (
                             uniqueCategoricals.map((val: any, i: number) => (
                                 <div
                                     key={val}
-                                    className={`flex items-center gap-3 cursor-pointer hover:bg-slate-50 p-1 rounded transition-all ${hiddenIndices.includes(i) ? 'opacity-40 grayscale' : ''}`}
+                                    className={`flex items-center gap-2 cursor-pointer hover:bg-slate-50 px-1 py-0.5 rounded transition-all ${hiddenIndices.includes(i) ? 'opacity-40 grayscale' : ''}`}
                                     onClick={() => toggleIndex(i)}
                                 >
-                                    <i className="w-5 h-5 rounded-full border border-slate-300 shadow-sm shrink-0" style={{ background: getColor(val) }} />
-                                    <span className={`text-[11px] font-bold text-slate-700 truncate ${hiddenIndices.includes(i) ? 'line-through italic text-slate-400' : ''}`} title={val}>{formatDisplayValue(val)}</span>
+                                    <i className="w-4 h-4 rounded-full border border-slate-300 shadow-sm shrink-0" style={{ background: getColor(val) }} />
+                                    <span className={`text-[10px] md:text-[11px] font-bold text-slate-700 truncate ${hiddenIndices.includes(i) ? 'line-through italic text-slate-400' : ''}`} title={val}>{formatDisplayValue(val)}</span>
                                 </div>
                             ))
                         ) : (
-                            <div className="text-xs text-slate-400 italic py-2">No active data points</div>
+                            <div className="text-[10px] text-slate-400 italic py-1">No active data points</div>
                         )}
                     </div>
                 </div>
