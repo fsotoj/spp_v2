@@ -60,26 +60,36 @@ const PEOPLE = [
 
 export function TeamSection() {
     return (
-        <section className="py-24 px-6 md:px-12 bg-spp-bgLight border-t border-slate-100 relative overflow-hidden">
-            <img
-                src="/background.svg"
-                aria-hidden="true"
-                className="pointer-events-none select-none absolute top-0 right-0 h-full w-auto rotate-90 opacity-[0.3] mix-blend-multiply"
-                onLoad={() => console.log('Successfully loaded background.svg in Team section')}
-                onError={(e) => console.error('Failed to load background.svg in Team section', e)}
+        <section className="py-24 px-6 md:px-12 bg-slate-900 border-t border-slate-800 relative overflow-hidden">
+            {/* Background SVG as cover */}
+            <img 
+                src="/background.svg" 
+                alt="" 
+                className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none z-0" 
             />
-            <div className="max-w-7xl mx-auto relative z-10">
-                <h2 className="text-2xl sm:text-3xl font-black text-slate-900 text-center mb-3 tracking-tight">Team</h2>
-                <p className="text-center text-slate-500 text-sm font-medium mb-14 max-w-lg mx-auto">
-                    A multinational research team spanning the United States, Chile, Germany, and Argentina.
-                </p>
-
-                {/* Flip-card grid — responsive: 2 cols on mobile, 3 on md, 6 on xl */}
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6 justify-items-center">
-                    {PEOPLE.map(person => (
-                        <PersonCard key={person.name} person={person} />
-                    ))}
+            
+            {/* Background embellishment mirroring Solution Section */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 z-0 pointer-events-none" />
+            
+            <div className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row gap-16">
+                
+                {/* Left Side: Header Narrative */}
+                <div className="w-full lg:w-1/3 flex flex-col justify-center gap-6">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">Team</h2>
+                    <p className="text-base sm:text-lg text-slate-100 font-medium leading-relaxed drop-shadow-sm">
+                        A collaborative network of Latin American scholars and researchers living abroad, bridging global academic standards with deep-rooted regional expertise.
+                    </p>
                 </div>
+
+                {/* Right Side: The People Grid */}
+                <div className="w-full lg:w-2/3">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
+                        {PEOPLE.map(person => (
+                            <PersonCard key={person.name} person={person} />
+                        ))}
+                    </div>
+                </div>
+
             </div>
         </section>
     );

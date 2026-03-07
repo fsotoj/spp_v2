@@ -58,8 +58,7 @@ body {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  background: #fff;
-  box-shadow: 15px 15px 27px #e1e1e3, -15px -15px 27px #ffffff;
+  background: var(--color-brand-50);
   transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
@@ -105,7 +104,7 @@ body {
 }
 
 .spp-person-info {
-  background-color: #FAFAFC;
+  background-color: var(--color-brand-0);
   height: 9em;
   width: 100%;
   position: absolute;
@@ -327,6 +326,7 @@ body {
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
   border-bottom-width: 1px;
-  border-color: #f1f5f9; /* slate-100 */
+  border-color: #f1f5f9;
+  /* slate-100 */
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
