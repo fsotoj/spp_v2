@@ -24,35 +24,17 @@ app = FastAPI(
 )
 
 # CORS Configuration
-# We specify origins explicitly to be more robust than '*' for some browsers.
-origins = [
-    "http://localhost:5173",
-    "https://sppv2-puce.vercel.app",
-    "https://sppv2.vercel.app",
-    "https://sppv2-eeghvcm71-fsotojs-projects.vercel.app",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"],
+    allow_headers=["Content-Type", "X-API-Key", "Authorization", "Accept"],
 )
-
-@app.middleware("http")
-async def dbg_middleware(request, call_next):
-    """Logs incoming requests for CORS debugging."""
-    origin = request.headers.get("origin")
-    method = request.method
-    path = request.url.path
-    logger.info(f"REQ: {method} {path} | Origin: {origin}")
-    response = await call_next(request)
-    return response
 
 @app.get("/api/v1/version")
 def get_version():
-    return {"version": "0.2.1-cors-debug", "status": "active"}
+    return {"version": "0.2.1-prod-fix", "status": "active"}
 
 # ── Include Routers ────────────────────────────────────────────────────────
 app.include_router(system.router, tags=["System"])
