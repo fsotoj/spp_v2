@@ -12,6 +12,14 @@ export interface VariableDict {
     palette: string | null;
     description_for_ui: string | null;
     add_indices: string | null;
+    pretty_name_es: string | null;
+    dataset_es: string | null;
+    description_for_ui_es: string | null;
+    add_indices_es: string | null;
+    pretty_name_de: string | null;
+    dataset_de: string | null;
+    description_for_ui_de: string | null;
+    add_indices_de: string | null;
 }
 
 export interface StateGeo {

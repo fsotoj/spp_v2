@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Download, ArrowRight, Telescope } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export function HeroSection() {
+    const { t } = useTranslation();
+
     return (
         <section
             id="hero-section"
@@ -22,9 +25,9 @@ export function HeroSection() {
                 {/* Top Section: Hero Text (Wider, Full Width) */}
                 <div className="w-full text-left z-10 relative pointer-events-none flex-1 flex flex-col justify-center">
                     <p className="text-xl sm:text-2xl md:text-3xl lg:text-[34px] leading-[1.25] lg:leading-[1.2] max-w-3xl animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200 text-white drop-shadow-lg font-medium tracking-tight">
-                        Systematic, transparent, and publicly accessible data on
-                        <strong className="font-extrabold text-white"> subnational political institutions and electoral outcomes </strong>
-                        across Latin American countries.
+                        {t('hero.tagline')}
+                        <strong className="font-extrabold text-white"> {t('hero.taglineStrong')} </strong>
+                        {t('hero.taglineSuffix')}
                     </p>
                 </div>
 
@@ -40,7 +43,7 @@ export function HeroSection() {
                                 className="group relative flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 shadow-lg bg-brand-400 text-[#111111] hover:bg-brand-300 w-full sm:w-auto"
                             >
                                 <Telescope size={22} className="text-slate-900 group-hover:rotate-12 transition-transform" />
-                                Start Exploring
+                                {t('hero.startExploring')}
                                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
 
@@ -51,15 +54,15 @@ export function HeroSection() {
                                 className="flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-bold transition-all hover:scale-[1.02] active:scale-95 bg-white text-brand-700 hover:bg-slate-50 shadow-lg w-full sm:w-auto"
                             >
                                 <Download size={20} />
-                                Download Data
+                                {t('hero.downloadData')}
                             </a>
                         </div>
 
                         {/* Harvard Dataverse badge */}
                         <div className="hidden sm:flex items-center justify-center lg:justify-start gap-2 pt-2 animate-in fade-in duration-700 delay-500">
-                            <span className="text-[11px] font-bold text-white/70 uppercase tracking-widest drop-shadow-sm">Hosted on</span>
-                            <span className="text-[11px] font-black text-slate-900 bg-white/90 px-2 py-0.5 rounded-md tracking-tight">Harvard Dataverse</span>
-                            <span className="text-[11px] font-bold text-white/70 uppercase tracking-widest drop-shadow-sm">· Free &amp; Open Access</span>
+                            <span className="text-[11px] font-bold text-white/70 uppercase tracking-widest drop-shadow-sm">{t('hero.hostedOn')}</span>
+                            <span className="text-[11px] font-black text-slate-900 bg-white/90 px-2 py-0.5 rounded-md tracking-tight">{t('hero.harvardDataverse')}</span>
+                            <span className="text-[11px] font-bold text-white/70 uppercase tracking-widest drop-shadow-sm">· {t('hero.freeOpen')}</span>
                         </div>
                     </div>
 
@@ -67,11 +70,11 @@ export function HeroSection() {
                     <div className="flex-1 w-full max-w-2xl lg:max-w-xl animate-in fade-in zoom-in duration-1000 flex flex-col justify-end self-end">
                         {/* Stats */}
                         <div className="flex items-center justify-center gap-0 border border-white/20 rounded-2xl bg-white/10 backdrop-blur-md shadow-lg overflow-hidden text-white w-full">
-                            <StatPill value="~87" label="Subnational Units" />
+                            <StatPill value="~87" label={t('hero.subnationalUnits')} />
                             <div className="w-px self-stretch bg-white/20" />
-                            <StatPill value="3" label="Federal Countries" />
+                            <StatPill value="3" label={t('hero.federalCountries')} />
                             <div className="w-px self-stretch bg-white/20" />
-                            <StatPill value="40+" label="Years of Data" />
+                            <StatPill value="40+" label={t('hero.yearsOfData')} />
                         </div>
                     </div>
                 </div>

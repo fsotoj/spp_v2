@@ -1,10 +1,11 @@
 import { Globe, Linkedin } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // ── People data (ported from about_spp_module.R) ──────────────────────────────
 const PEOPLE = [
     {
         name: "Agustina Giraudy",
-        role: "Principal Investigator",
+        roleKey: "team.principalInvestigator" as const,
         linkedin: "https://www.linkedin.com/in/agustina-giraudy-72a3b81a9/",
         site: "https://agustinagiraudy.com/",
         org: "American University · Tecnológico de Monterrey",
@@ -13,7 +14,7 @@ const PEOPLE = [
     },
     {
         name: "Francisco Urdinez",
-        role: "Collaborator",
+        roleKey: "team.collaborator" as const,
         linkedin: "https://www.linkedin.com/in/francisco-urdinez-a8061813/",
         site: "https://www.furdinez.com/",
         org: "Universidad Católica de Chile",
@@ -22,7 +23,7 @@ const PEOPLE = [
     },
     {
         name: "Guadalupe González",
-        role: "Collaborator",
+        roleKey: "team.collaborator" as const,
         linkedin: "https://www.linkedin.com/in/guadag12/",
         site: "https://guadagonzalez.com/",
         org: "University of Maryland",
@@ -31,7 +32,7 @@ const PEOPLE = [
     },
     {
         name: "Felipe Soto Jorquera",
-        role: "Collaborator",
+        roleKey: "team.collaborator" as const,
         linkedin: "https://www.linkedin.com/in/felipesotojorquera/",
         site: null,
         org: "Hertie School, Berlin",
@@ -40,7 +41,7 @@ const PEOPLE = [
     },
     {
         name: "Sergio Huertas Hernández",
-        role: "Research Assistant",
+        roleKey: "team.researchAssistant" as const,
         linkedin: "https://www.linkedin.com/in/sergio-huertas-hern%C3%A1ndez/",
         site: "https://serhuertas.github.io/",
         org: "Universidad Católica de Chile",
@@ -49,7 +50,7 @@ const PEOPLE = [
     },
     {
         name: "Magdalena Nieto",
-        role: "Research Assistant",
+        roleKey: "team.researchAssistant" as const,
         linkedin: "https://www.linkedin.com/in/magdalenanieto/",
         site: null,
         org: "Universidad de Buenos Aires",
@@ -59,25 +60,27 @@ const PEOPLE = [
 ];
 
 export function TeamSection() {
+    const { t } = useTranslation();
+
     return (
         <section className="py-24 px-6 md:px-12 bg-slate-900 border-t border-slate-800 relative overflow-hidden">
             {/* Background SVG as cover */}
-            <img 
-                src="/background.svg" 
-                alt="" 
-                className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none z-0" 
+            <img
+                src="/background.svg"
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none z-0"
             />
-            
+
             {/* Background embellishment mirroring Solution Section */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 z-0 pointer-events-none" />
-            
+
             <div className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row gap-16">
-                
+
                 {/* Left Side: Header Narrative */}
                 <div className="w-full lg:w-1/3 flex flex-col justify-center gap-6">
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">Team</h2>
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">{t('team.title')}</h2>
                     <p className="text-base sm:text-lg text-slate-100 font-medium leading-relaxed drop-shadow-sm">
-                        A collaborative network of Latin American scholars and researchers living abroad, bridging global academic standards with deep-rooted regional expertise.
+                        {t('team.body')}
                     </p>
                 </div>
 
@@ -85,7 +88,7 @@ export function TeamSection() {
                 <div className="w-full lg:w-2/3">
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
                         {PEOPLE.map(person => (
-                            <PersonCard key={person.name} person={person} />
+                            <PersonCard key={person.name} person={person} role={t(person.roleKey)} />
                         ))}
                     </div>
                 </div>
@@ -96,11 +99,12 @@ export function TeamSection() {
 }
 
 /** Flip-card person card — mirrors the R `spp-property-card` component exactly */
-function PersonCard({ person }: {
+function PersonCard({ person, role }: {
     person: {
-        name: string; role: string; linkedin: string;
+        name: string; roleKey: string; linkedin: string;
         site: string | null; org: string; img: string; color: string;
-    }
+    };
+    role: string;
 }) {
     return (
         <div className="spp-person-card">
@@ -137,7 +141,7 @@ function PersonCard({ person }: {
             {/* Info panel */}
             <div className="spp-person-info">
                 <span className="spp-role-badge" style={{ backgroundColor: person.color }}>
-                    {person.role}
+                    {role}
                 </span>
                 <p className="spp-person-name">{person.name}</p>
                 <p className="spp-person-org">{person.org}</p>

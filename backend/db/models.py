@@ -81,6 +81,14 @@ class VariableDictionary(SQLModel, table=True):
     scope: Optional[str] = Field(default=None)
     description_for_ui: Optional[str] = None
     add_indices: Optional[str] = None
+    pretty_name_es: Optional[str] = None
+    dataset_es: Optional[str] = None
+    description_for_ui_es: Optional[str] = None
+    add_indices_es: Optional[str] = None
+    pretty_name_de: Optional[str] = None
+    dataset_de: Optional[str] = None
+    description_for_ui_de: Optional[str] = None
+    add_indices_de: Optional[str] = None
 
 
 class PartyColorExe(SQLModel, table=True):

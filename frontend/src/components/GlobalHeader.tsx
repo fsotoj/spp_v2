@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Map, BarChart3, Landmark, ChevronDown, Menu, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 /**
  * GlobalHeader: The "Navigation Spine" of the Research Portal.
  * Persists across all pages and provides the primary structural axis.
  */
 export function GlobalHeader() {
+    const { t, i18n } = useTranslation();
     const location = useLocation();
     const [isExploreOpen, setIsExploreOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,7 +19,7 @@ export function GlobalHeader() {
     const isHomePage = location.pathname === '/';
 
     // Determine active tool text
-    const activeToolLabel = location.pathname.includes('/explore') ? "Mapping Tool" : null;
+    const activeToolLabel = location.pathname.includes('/explore') ? t('nav.mappingTool') : null;
 
     // Close all menus on route change
     useEffect(() => {
@@ -72,6 +74,13 @@ export function GlobalHeader() {
 
     const headerVariantClass = isScrolled ? 'header--scrolled' : 'header--top';
 
+    const LANGS = ['en', 'es', 'de'] as const;
+    const toggleLanguage = () => {
+        const current = i18n.language.slice(0, 2) as typeof LANGS[number];
+        const idx = LANGS.indexOf(current);
+        i18n.changeLanguage(LANGS[(idx + 1) % LANGS.length]);
+    };
+
     return (
         <>
             <header className={`fixed top-0 left-0 w-full h-20 z-[100] flex items-center justify-between px-4 md:px-12 transition-all duration-300 ${headerVariantClass}`}>
@@ -84,8 +93,8 @@ export function GlobalHeader() {
 
                 {/* Center / Right: Nav Link Items */}
                 <nav className="hidden md:flex items-center gap-1 md:gap-4 ml-auto">
-                    <PortalNav path="/" label="Home" active={location.pathname === '/'} />
-                    
+                    <PortalNav path="/" label={t('nav.home')} active={location.pathname === '/'} />
+
                     {/* Advanced Tool Switcher */}
                     <div className="relative mt-0.5" ref={dropdownRef}>
                         <button
@@ -98,8 +107,8 @@ export function GlobalHeader() {
                                     : 'text-slate-600 border-slate-200 hover:text-slate-900 hover:bg-slate-50 shadow-sm'
                                 }`}
                         >
-                            {activeToolLabel === "Mapping Tool" && <Map size={16} />}
-                            <span>Explore</span>
+                            {activeToolLabel === t('nav.mappingTool') && <Map size={16} />}
+                            <span>{t('nav.explore')}</span>
                             <ChevronDown size={14} className={`transition-transform duration-300 ${isExploreOpen ? 'rotate-180' : ''}`} />
                         </button>
 
@@ -112,32 +121,44 @@ export function GlobalHeader() {
                                 <ToolLink
                                     to="/explore"
                                     icon={<Map size={18} />}
-                                    label="Mapping Tool"
-                                    description="Interactive subnational visualization"
+                                    label={t('nav.mappingTool')}
+                                    description={t('nav.mappingToolDesc')}
                                     active={location.pathname === '/explore'}
                                     onClick={() => setIsExploreOpen(false)}
                                 />
                                 <ToolLink
                                     to="#"
                                     icon={<BarChart3 size={18} />}
-                                    label="Graph Tool"
-                                    description="Electoral trends & analytics"
+                                    label={t('nav.graphTool')}
+                                    description={t('nav.graphToolDesc')}
                                     disabled
+                                    soonLabel={t('nav.soon')}
                                 />
                                 <ToolLink
                                     to="#"
                                     icon={<Landmark size={18} />}
-                                    label="Chamber Tool"
-                                    description="Legislative composition details"
+                                    label={t('nav.chamberTool')}
+                                    description={t('nav.chamberToolDesc')}
                                     disabled
+                                    soonLabel={t('nav.soon')}
                                 />
                             </nav>
                         )}
                     </div>
 
-                    <PortalNav path="/methodology" label="Methods" active={location.pathname === '/methodology'} />
-                    <PortalNav path="/data" label="Data" active={location.pathname === '/data'} />
-                    <PortalNav path="/about" label="About" active={location.pathname === '/about'} />
+                    <PortalNav path="/methodology" label={t('nav.methods')} active={location.pathname === '/methodology'} />
+                    <PortalNav path="/data" label={t('nav.data')} active={location.pathname === '/data'} />
+                    <PortalNav path="/about" label={t('nav.about')} active={location.pathname === '/about'} />
+
+                    <div className="h-6 w-px bg-slate-200 mx-2 transition-colors duration-300" />
+
+                    {/* Language Switcher */}
+                    <LanguageSwitcher
+                        currentLang={i18n.language}
+                        isScrolled={isScrolled}
+                        isHomePage={isHomePage}
+                        onToggle={toggleLanguage}
+                    />
 
                     <div className="h-6 w-px bg-slate-200 mx-2 transition-colors duration-300" />
 
@@ -162,13 +183,19 @@ export function GlobalHeader() {
             {isMobileMenuOpen && (
                 <div className="md:hidden fixed top-20 left-0 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xl z-[99] animate-in fade-in slide-in-from-top-2 duration-200">
                     <nav className="flex flex-col p-4 gap-1">
-                        <MobileNavLink path="/" label="Home" active={location.pathname === '/'} onClick={() => setIsMobileMenuOpen(false)} />
-                        <MobileNavLink path="/explore" label="🗺 Mapping Tool" active={location.pathname === '/explore'} onClick={() => setIsMobileMenuOpen(false)} />
-                        <MobileNavLink path="/methodology" label="Methods" active={location.pathname === '/methodology'} onClick={() => setIsMobileMenuOpen(false)} />
-                        <MobileNavLink path="/data" label="Data" active={location.pathname === '/data'} onClick={() => setIsMobileMenuOpen(false)} />
-                        <MobileNavLink path="/about" label="About" active={location.pathname === '/about'} onClick={() => setIsMobileMenuOpen(false)} />
+                        <MobileNavLink path="/" label={t('nav.home')} active={location.pathname === '/'} onClick={() => setIsMobileMenuOpen(false)} />
+                        <MobileNavLink path="/explore" label={`🗺 ${t('nav.mappingTool')}`} active={location.pathname === '/explore'} onClick={() => setIsMobileMenuOpen(false)} />
+                        <MobileNavLink path="/methodology" label={t('nav.methods')} active={location.pathname === '/methodology'} onClick={() => setIsMobileMenuOpen(false)} />
+                        <MobileNavLink path="/data" label={t('nav.data')} active={location.pathname === '/data'} onClick={() => setIsMobileMenuOpen(false)} />
+                        <MobileNavLink path="/about" label={t('nav.about')} active={location.pathname === '/about'} onClick={() => setIsMobileMenuOpen(false)} />
 
-                        <div className="mt-2 pt-2 border-t border-slate-100 flex justify-center pb-2">
+                        <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between pb-2 px-2">
+                            <button
+                                onClick={toggleLanguage}
+                                className="text-sm font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-all"
+                            >
+                                {i18n.language.slice(0, 2).toUpperCase()}
+                            </button>
                             <img
                                 src="/EscuelaCienciasSocialesyGobierno_Horizontal_Negro.webp"
                                 alt="Escuela de Ciencias Sociales y Gobierno — Tecnológico de Monterrey"
@@ -179,6 +206,33 @@ export function GlobalHeader() {
                 </div>
             )}
         </>
+    );
+}
+
+function LanguageSwitcher({ currentLang, isScrolled, isHomePage, onToggle }: {
+    currentLang: string;
+    isScrolled: boolean;
+    isHomePage: boolean;
+    onToggle: () => void;
+}) {
+    const lang = currentLang.slice(0, 2);
+    const titles: Record<string, string> = { en: 'Cambiar a Español', es: 'Wechseln zu Deutsch', de: 'Switch to English' };
+    return (
+        <button
+            onClick={onToggle}
+            className={`header-link flex items-center gap-1 text-xs font-black px-2.5 py-1.5 rounded-lg border transition-all duration-300 ${
+                isHomePage && !isScrolled
+                    ? 'text-white border-white/25 hover:bg-white/10'
+                    : 'text-slate-500 border-slate-200 hover:text-slate-900 hover:bg-slate-50'
+            }`}
+            title={titles[lang] ?? 'Switch language'}
+        >
+            <span className={lang === 'en' ? 'text-brand-500' : 'text-slate-400'}>EN</span>
+            <span className="text-slate-300">/</span>
+            <span className={lang === 'es' ? 'text-brand-500' : 'text-slate-400'}>ES</span>
+            <span className="text-slate-300">/</span>
+            <span className={lang === 'de' ? 'text-brand-500' : 'text-slate-400'}>DE</span>
+        </button>
     );
 }
 
@@ -211,7 +265,7 @@ function MobileNavLink({ path, label, active, onClick }: { path: string; label: 
     );
 }
 
-function ToolLink({ to, icon, label, description, active, disabled, onClick }: { to: string; icon: React.ReactNode; label: string; description?: string; active?: boolean; disabled?: boolean; onClick?: () => void }) {
+function ToolLink({ to, icon, label, description, active, disabled, onClick, soonLabel }: { to: string; icon: React.ReactNode; label: string; description?: string; active?: boolean; disabled?: boolean; onClick?: () => void; soonLabel?: string }) {
     if (disabled) {
         return (
             <div className="flex items-center gap-3 p-3 text-slate-400 opacity-50 cursor-not-allowed select-none rounded-xl">
@@ -221,7 +275,7 @@ function ToolLink({ to, icon, label, description, active, disabled, onClick }: {
                 <div className="flex flex-col">
                     <div className="flex items-center gap-2">
                         <span className="text-sm font-bold">{label}</span>
-                        <span className="text-[8px] bg-slate-200 px-1 rounded text-slate-500 font-black">SOON</span>
+                        <span className="text-[8px] bg-slate-200 px-1 rounded text-slate-500 font-black">{soonLabel ?? 'SOON'}</span>
                     </div>
                     {description && <p className="text-[10px] text-slate-400 leading-tight">{description}</p>}
                 </div>

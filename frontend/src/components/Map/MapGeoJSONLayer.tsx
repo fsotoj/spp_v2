@@ -7,26 +7,14 @@ import {
 } from 'lucide-react';
 import chroma from 'chroma-js';
 import { useSidebar } from '../Layout';
-
-const TYPE_MAPS: Record<string, Record<any, string>> = {
-    binary: { 0: "No", 1: "Yes" },
-    gender: { 0: "Male", 1: "Female", 2: "Other" },
-    chamber: { 1: "Unicameral", 2: "Bicameral" },
-    system: {
-        1: "Proportional Representation (PR)",
-        2: "Simple Majority",
-        3: "Mixed (PR + Majority)",
-        4: "Mixed (PR + predefined districts)"
-    },
-    renewal: { 1: "Staggered every 2 years", 2: "Full renewal" },
-    ordinal: { 1: "Left", 2: "Center Left", 3: "Center Right", 4: "Right" }
-};
+import { useTranslation } from 'react-i18next';
 
 /**
  * Core Leaflet layer component for rendering data-bound polygons.
  * Handles the heavy lifting of color scaling, interactive filtering, and performance synchronization.
  */
 export function MapGeoJSONLayer({ features, obsData, year, variable, vType, palette, prettyName, partyColors, activeDataset }: { features: any[], obsData: Record<number, any>, year: number, variable: string, vType: string, palette?: string | null, prettyName?: string | null, partyColors?: Record<string, string>, activeDataset: string }) {
+    const { t } = useTranslation();
     const [expandedDetails, setExpandedDetails] = useState<Record<string, boolean>>({});
 
     const toggleDetails = (stateId: number, key: string) => {
@@ -35,6 +23,21 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
             [`${stateId}-${key}`]: !prev[`${stateId}-${key}`]
         }));
     };
+
+    // Language-aware type maps — rebuilt when language changes
+    const TYPE_MAPS = useMemo<Record<string, Record<any, string>>>(() => ({
+        binary: { 0: t('popup.no'), 1: t('popup.yes') },
+        gender: { 0: t('popup.male'), 1: t('popup.female'), 2: t('popup.other') },
+        chamber: { 1: t('popup.unicameral'), 2: t('popup.bicameral') },
+        system: {
+            1: t('popup.proportionalRepresentation'),
+            2: t('popup.simpleMajority'),
+            3: t('popup.mixedPRMajority'),
+            4: t('popup.mixedPRDistricts'),
+        },
+        renewal: { 1: t('popup.staggeredEvery2Years'), 2: t('popup.fullRenewal') },
+        ordinal: { 1: t('popup.left'), 2: t('popup.centerLeft'), 3: t('popup.centerRight'), 4: t('popup.right') },
+    }), [t]);
 
     // Parse palette (comma separated hex)
     const paletteArray = useMemo(() => {
@@ -57,7 +60,6 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
         if (isSpecial) {
             const map = TYPE_MAPS[vType];
             const domain = Object.keys(map).map(Number).sort((a, b) => a - b);
-            // Use discrete scale for special types
             const scale = chroma.scale(paletteArray).domain([Math.min(...domain), Math.max(...domain)]).classes(domain.length);
             return {
                 colorScale: scale,
@@ -71,7 +73,6 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
             const min = Math.min(...numValues);
             const count = numValues.length;
 
-            // Dynamic binning resolution based on observation count
             let k = 5;
             if (count < 5) k = 3;
             else if (count >= 15 && count < 35) k = 4;
@@ -81,22 +82,15 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
 
             let bks: number[] = [];
             try {
-                // Primary strategy: k-means (Jenks-like statistical clusters)
                 bks = chroma.limits(numValues, 'k', k);
-
-                // FALLBACK: If k-means returns fewer bins than requested (common with skewed data)
-                // we try quantiles ('q') to ensure the requested resolution is met.
                 if (bks.length < k + 1 && uniqueVals.length >= k) {
                     bks = chroma.limits(numValues, 'q', k);
                 }
             } catch (e) {
-                // Secondary Fallback: Equal intervals ('e')
                 bks = chroma.limits(numValues, 'e', k);
             }
 
             bks = Array.from(new Set(bks)).sort((a, b) => a - b);
-
-            // Final safety: if still only 1 point, create a tiny range to satisfy the scale
             if (bks.length < 2) bks = [min, min + 0.001];
 
             const scale = chroma.scale(paletteArray).domain([bks[0], bks[bks.length - 1]]).classes(bks);
@@ -113,33 +107,26 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
         }
 
         return { colorScale: null, breaks: [], labels: [] };
-    }, [features, variable, vType, paletteArray, isNumeric, isSpecial]);
+    }, [features, variable, vType, paletteArray, isNumeric, isSpecial, TYPE_MAPS]);
 
     const [hiddenIndices, setHiddenIndices] = useState<number[]>([]);
     const [hiddenNA, setHiddenNA] = useState(false);
 
-    // Reset filters when variable changes
     useEffect(() => {
         setHiddenIndices([]);
         setHiddenNA(false);
     }, [variable]);
 
-    /**
-     * Color selection logic.
-     * For categorical variables, handles party-specific colors or falls back to palette cycles.
-     */
     const getColor = (val: any) => {
-        if (val === undefined || val === null) return '#999999'; // R's default NA color
+        if (val === undefined || val === null) return '#999999';
 
         if (isNumeric && colorScale) {
             return (colorScale as any)(Number(val)).hex();
         }
 
-        // Categorical selection logic
         if (vType === 'categorical') {
             const partyVal = String(val).trim();
             if (partyColors && partyColors[partyVal]) return partyColors[partyVal];
-            // If no party color, use a hash-based or cyclic fallback from palette
             const uniqueCats = Array.from(new Set(features.map(f => f.properties[variable]).filter(v => v))).sort();
             const idx = uniqueCats.indexOf(val);
             return paletteArray[idx % paletteArray.length];
@@ -148,9 +135,6 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
         return '#999999';
     };
 
-    /**
-     * Determines if a feature should be visible based on legend category toggles.
-     */
     const isFeatureVisible = (val: any) => {
         if (val === undefined || val === null) return !hiddenNA;
 
@@ -160,19 +144,15 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                 const idx = (breaks as number[]).indexOf(num);
                 return !hiddenIndices.includes(idx);
             } else {
-                // Find bin index
                 let binIdx = -1;
                 const bks = breaks as number[];
                 for (let i = 0; i < bks.length - 1; i++) {
-                    // Inclusion logic for k-means breaks
                     if (num >= bks[i] && (i === bks.length - 2 ? num <= bks[i + 1] : num < bks[i + 1])) {
                         binIdx = i;
                         break;
                     }
                 }
-                // Fallback for exact max
                 if (binIdx === -1 && num === bks[bks.length - 1]) binIdx = bks.length - 2;
-
                 return !hiddenIndices.includes(binIdx);
             }
         }
@@ -187,7 +167,7 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
     };
 
     const formatDisplayValue = (val: any) => {
-        if (val === undefined || val === null) return 'Not Available';
+        if (val === undefined || val === null) return t('popup.notAvailable');
         if (isSpecial) return TYPE_MAPS[vType][val] || val;
 
         const num = Number(val);
@@ -208,7 +188,6 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
             .join(' ');
     };
 
-    // We'll use a local ref to track the Leaflet object
     const geoJsonInstanceRef = useRef<L.GeoJSON>(null);
 
     const geoJsonStyle = (feature: any) => {
@@ -227,7 +206,6 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
         };
     };
 
-    // Use Refs to bypass stale closures in Leaflet event listeners
     const styleRef = useRef(geoJsonStyle);
     const visibleRef = useRef(isFeatureVisible);
 
@@ -237,7 +215,6 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
     }, [geoJsonStyle, isFeatureVisible]);
 
     const onEachFeature = (feature: any, layer: L.Layer) => {
-        // Log initialization of layers
         if (feature.properties.state_id === features[0]?.properties.state_id || feature.properties.state_id === features[features.length - 1]?.properties.state_id) {
             console.log(`[LayerDebug] Initializing feature layer for ${feature.properties.name} (ID: ${feature.properties.state_id})`);
         }
@@ -258,13 +235,11 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
             }
         });
 
-        // Tooltips should also use the latest data
         layer.on('add', () => {
             updateTooltip(layer, feature);
         });
     };
 
-    // Helper to update tooltip content without re-binding everything
     const updateTooltip = (layer: any, feature: any) => {
         const stateId = feature.properties.state_id;
         const currentData = obsData[stateId];
@@ -281,11 +256,9 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
     `, { sticky: true, className: 'bg-white/95 backdrop-blur border-none shadow-2xl rounded-lg p-0' });
     };
 
-    // Extract unique values for categorical legend
     const uniqueCategoricals = useMemo(() => {
         if (isNumeric) return [];
 
-        // Only for governor party, filter categories to only those in the current view/selection
         const isGovernorParty = variable.includes('head_party');
 
         const baseValues = isGovernorParty
@@ -303,11 +276,6 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
         );
     };
 
-    /**
-     * Imperative Synchronization.
-     * Leaflet is not reactive. This effect force-synchronizes the polygon styles and 
-     * tooltip content when React data (years, variables, filters) changes.
-     */
     useEffect(() => {
         if (geoJsonInstanceRef.current) {
             let updateCount = 0;
@@ -337,7 +305,6 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                 const data = obsData[stateId] || {};
                 const val = data[variable];
 
-                // Comprehensive debug log
                 if (f.properties.name.toLowerCase().includes('buenos') || f.properties.name.toLowerCase().includes('sao paulo')) {
                     console.log(`[PopupDebug] State: ${f.properties.name}, TargetDatasets: ${activeDataset}, ActiveVar: ${variable}, Available Keys:`, Object.keys(data));
                 }
@@ -365,28 +332,28 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                                 {/* Body */}
                                 <div className="flex flex-col gap-1 mb-4">
                                     <div className="popup-row">
-                                        <span className="popup-label">State:</span>
+                                        <span className="popup-label">{t('popup.state')}:</span>
                                         <span className="popup-value">{toTitleCase(f.properties.name)}</span>
                                     </div>
                                     <div className="popup-row">
-                                        <span className="popup-label">Governor:</span>
+                                        <span className="popup-label">{t('popup.governor')}:</span>
                                         <span className="popup-value truncate max-w-[180px]" title={data.winner_candidate_sub_exe}>
                                             {toTitleCase(data.winner_candidate_sub_exe)}
                                         </span>
                                     </div>
                                     <div className="popup-row">
-                                        <span className="popup-label">Party:</span>
+                                        <span className="popup-label">{t('popup.party')}:</span>
                                         <span className="popup-value truncate max-w-[180px]" title={data.head_party_sub_exe}>
                                             {toTitleCase(data.head_party_sub_exe)}
                                         </span>
                                     </div>
                                     <div className="popup-row">
-                                        <span className="popup-label">Chamber:</span>
+                                        <span className="popup-label">{t('popup.chamber')}:</span>
                                         <span className="popup-value">
                                             {(() => {
                                                 const chRaw = data.chamber_sub_leg ?? data.chamber_sub_leg_1 ?? data.chamber_sub_leg_2;
                                                 const ch = Number(chRaw);
-                                                return ch === 1 ? "Unicameral" : ch === 2 ? "Bicameral" : "N/A";
+                                                return ch === 1 ? t('popup.unicameral') : ch === 2 ? t('popup.bicameral') : 'N/A';
                                             })()}
                                         </span>
                                     </div>
@@ -400,47 +367,47 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                                             onClick={() => toggleDetails(stateId, 'gov')}
                                             className="w-full flex justify-between items-center px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:bg-slate-100 transition-colors"
                                         >
-                                            Governor details
+                                            {t('popup.governorDetails')}
                                             {expandedDetails[`${stateId}-gov`] ? <ChevronUp size={12} /> : <ChevronDownIcon size={12} />}
                                         </button>
                                         {expandedDetails[`${stateId}-gov`] && (
                                             <div className="px-3 py-2 text-[11px] border-t border-slate-200 bg-white space-y-1">
                                                 <div className="flex justify-between">
-                                                    <span className="text-slate-400">Ideology:</span>
+                                                    <span className="text-slate-400">{t('popup.ideology')}:</span>
                                                     <span className="font-semibold">{TYPE_MAPS.ordinal[data.ideo_party_sub_exe] || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex justify-between">
-                                                    <span className="text-slate-400">Alignment:</span>
-                                                    <span className="font-semibold">{data.alignment_with_nat_sub_exe === 1 ? 'Yes' : 'No'}</span>
+                                                    <span className="text-slate-400">{t('popup.alignment')}:</span>
+                                                    <span className="font-semibold">{data.alignment_with_nat_sub_exe === 1 ? t('popup.yes') : t('popup.no')}</span>
                                                 </div>
                                                 <div className="flex justify-between">
-                                                    <span className="text-slate-400">Reelected:</span>
-                                                    <span className="font-semibold">{data.consecutive_reelection_sub_exe === 1 ? 'Yes' : 'No'}</span>
+                                                    <span className="text-slate-400">{t('popup.reelected')}:</span>
+                                                    <span className="font-semibold">{data.consecutive_reelection_sub_exe === 1 ? t('popup.yes') : t('popup.no')}</span>
                                                 </div>
                                             </div>
                                         )}
                                     </div>
 
-                                    {/* Legislative Details (check multiple possible keys) */}
+                                    {/* Legislative Details */}
                                     {(data.chamber_sub_leg || data.chamber_sub_leg_1 || data.chamber_sub_leg_2 || data.total_chamber_seats_sub_leg_1) && (
                                         <div className="border border-slate-200 rounded-lg overflow-hidden bg-slate-50/50">
                                             <button
                                                 onClick={() => toggleDetails(stateId, 'leg')}
                                                 className="w-full flex justify-between items-center px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 hover:bg-slate-100 transition-colors"
                                             >
-                                                Legislative details
+                                                {t('popup.legislativeDetails')}
                                                 {expandedDetails[`${stateId}-leg`] ? <ChevronUp size={12} /> : <ChevronDownIcon size={12} />}
                                             </button>
                                             {expandedDetails[`${stateId}-leg`] && (
                                                 <div className="px-3 py-2 text-[11px] border-t border-slate-200 bg-white space-y-1">
                                                     <div className="flex justify-between">
-                                                        <span className="text-slate-400">Lower Chamber:</span>
-                                                        <span className="font-semibold">{data.total_chamber_seats_sub_leg_1 || 0} seats</span>
+                                                        <span className="text-slate-400">{t('map.lowerChamber')}:</span>
+                                                        <span className="font-semibold">{data.total_chamber_seats_sub_leg_1 || 0} {t('popup.seats')}</span>
                                                     </div>
                                                     {(data.chamber_sub_leg === 2 || data.chamber_sub_leg_1 === 2 || data.total_chamber_seats_sub_leg_2) && (
                                                         <div className="flex justify-between">
-                                                            <span className="text-slate-400">Upper Chamber:</span>
-                                                            <span className="font-semibold">{data.total_chamber_seats_sub_leg_2 || 0} seats</span>
+                                                            <span className="text-slate-400">{t('map.upperChamber')}:</span>
+                                                            <span className="font-semibold">{data.total_chamber_seats_sub_leg_2 || 0} {t('popup.seats')}</span>
                                                         </div>
                                                     )}
                                                 </div>
@@ -449,15 +416,15 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                                     )}
                                 </div>
 
-                                {/* Dumb Buttons */}
+                                {/* Buttons */}
                                 <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100">
                                     <button className="flex-1 flex items-center justify-center gap-2 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold hover:bg-slate-800 transition-colors">
                                         <Landmark size={14} />
-                                        Camera
+                                        {t('popup.cameraBtn')}
                                     </button>
                                     <button className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-50 transition-colors">
                                         <BarChart3 size={14} />
-                                        Graph
+                                        {t('popup.graphBtn')}
                                     </button>
                                 </div>
                             </div>
@@ -466,11 +433,11 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                 );
             })}
 
-            {/* Dynamic Legend — sits above the FAB on mobile (bottom-20), normal on md+ (bottom-6) */}
+            {/* Legend */}
             <div className={`absolute bottom-20 md:bottom-6 right-2 md:right-6 z-[1000] bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-white/50 p-2 md:p-4 min-w-[150px] md:min-w-[180px] max-w-[min(200px,calc(100vw-1rem))] md:max-w-sm max-h-[35vh] md:max-h-[60vh] overflow-y-auto transition-all duration-300 origin-bottom-right ${isOverlaysHidden ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
                 <div className="flex flex-col gap-1.5 md:gap-2">
                     <div className="border-l-4 border-brand-500 pl-2 md:pl-3 py-0.5 md:py-1 transition-all">
-                        <h4 className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5 md:mb-1">Variable</h4>
+                        <h4 className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5 md:mb-1">{t('popup.variable')}</h4>
                         <div className="text-[11px] md:text-sm font-bold text-slate-800 leading-tight">{prettyName || variable}</div>
                     </div>
 
@@ -481,7 +448,7 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                             onClick={() => setHiddenNA(!hiddenNA)}
                         >
                             <i className="w-4 h-2 md:w-5 md:h-3 rounded-sm border border-slate-300" style={{ background: '#999999' }} />
-                            <span className={`text-[10px] md:text-[11px] font-medium text-slate-600 uppercase ${hiddenNA ? 'line-through' : ''}`}>Not Available</span>
+                            <span className={`text-[10px] md:text-[11px] font-medium text-slate-600 uppercase ${hiddenNA ? 'line-through' : ''}`}>{t('popup.notAvailable')}</span>
                         </div>
 
                         {isNumeric && colorScale && labels.length > 0 ? (
@@ -507,7 +474,7 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                                 </div>
                             ))
                         ) : (
-                            <div className="text-[10px] text-slate-400 italic py-1">No active data points</div>
+                            <div className="text-[10px] text-slate-400 italic py-1">{t('popup.noActiveData')}</div>
                         )}
                     </div>
                 </div>

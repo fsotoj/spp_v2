@@ -5,6 +5,7 @@ import { Play, Pause, Camera, Settings } from 'lucide-react';
 import { useStatesGeo, useVariables, usePartyColors, useObservations, useCountries } from '../api/hooks';
 import { toPng } from 'html-to-image';
 import { SidebarPortal } from '../components/Layout';
+import { useTranslation } from 'react-i18next';
 
 import { VariableTreeGroup } from '../components/Map/VariableTreeGroup';
 import { GeographyTreeGroup } from '../components/Map/GeographyTreeGroup';
@@ -30,6 +31,8 @@ import { MapGeoJSONLayer } from '../components/Map/MapGeoJSONLayer';
  * Manages global state for variables, geography, and time.
  */
 export function MapModule() {
+    const { t, i18n } = useTranslation();
+    const lang = i18n.language.slice(0, 2);
     const [dataset, setDataset] = useState('SEED');
     const [variable, setVariable] = useState('perc_voter_sub_exe');
     const [year, setYear] = useState(2015);
@@ -77,6 +80,7 @@ export function MapModule() {
 
     interface TreeGroup {
         dbName: string;
+        displayName: string;
         vars: any[];
         subgroups?: TreeGroup[];
     }
@@ -88,19 +92,26 @@ export function MapModule() {
             const db = v.dataset;
             if (!db || db === 'Other' || db === 'Others') return;
 
+            const pickDataset = (v: any) =>
+                lang === 'de' ? (v.dataset_de || db)
+                : lang === 'es' ? (v.dataset_es || db)
+                : db;
+
             if (db === 'Legislative Elections') {
                 if (!groups[db]) {
                     groups[db] = {
-                        dbName: db, vars: [], subgroups: [
-                            { dbName: "Lower Chamber", vars: [] },
-                            { dbName: "Upper Chamber", vars: [] }
+                        dbName: db, displayName: pickDataset(v), vars: [], subgroups: [
+                            { dbName: t('map.lowerChamber'), displayName: t('map.lowerChamber'), vars: [] },
+                            { dbName: t('map.upperChamber'), displayName: t('map.upperChamber'), vars: [] }
                         ]
                     };
                 }
                 groups[db].subgroups![0].vars.push({ ...v, variable: `${v.variable}_1` });
                 groups[db].subgroups![1].vars.push({ ...v, variable: `${v.variable}_2` });
             } else {
-                if (!groups[db]) groups[db] = { dbName: db, vars: [] };
+                if (!groups[db]) {
+                    groups[db] = { dbName: db, displayName: pickDataset(v), vars: [] };
+                }
                 groups[db].vars.push(v);
             }
         });
@@ -108,7 +119,7 @@ export function MapModule() {
         const sortedGroups: TreeGroup[] = [];
         Object.keys(groups).sort().forEach(k => { sortedGroups.push(groups[k]); });
         return sortedGroups;
-    }, [mapVariables]);
+    }, [mapVariables, t, lang]);
 
     const activeVarMeta = useMemo(() => {
         const cleanVar = variable.replace(/_[12]$/, '');
@@ -123,19 +134,35 @@ export function MapModule() {
 
         let chamberText = "";
         if (activeVarMeta.dataset === "Legislative Elections") {
-            if (variable.endsWith('_1')) chamberText = " (Lower Chamber)";
-            else if (variable.endsWith('_2')) chamberText = " (Upper Chamber)";
+            if (variable.endsWith('_1')) chamberText = ` (${t('map.lowerChamber')})`;
+            else if (variable.endsWith('_2')) chamberText = ` (${t('map.upperChamber')})`;
         }
+
+        const label = lang === 'de'
+            ? (activeVarMeta.description_for_ui_de || activeVarMeta.pretty_name_de || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
+            : lang === 'es'
+            ? (activeVarMeta.description_for_ui_es || activeVarMeta.pretty_name_es || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
+            : (activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable);
+        const datasetLabel = lang === 'de'
+            ? (activeVarMeta.dataset_de || activeVarMeta.dataset || '')
+            : lang === 'es'
+            ? (activeVarMeta.dataset_es || activeVarMeta.dataset || '')
+            : (activeVarMeta.dataset || '');
+        const addIndices = lang === 'de'
+            ? (activeVarMeta.add_indices_de || activeVarMeta.add_indices)
+            : lang === 'es'
+            ? (activeVarMeta.add_indices_es || activeVarMeta.add_indices)
+            : activeVarMeta.add_indices;
 
         return (
             <VariableDescriptionOverlay
-                label={activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable}
-                dataset={activeVarMeta.dataset || ''}
+                label={label}
+                dataset={datasetLabel}
                 chamberText={chamberText}
-                addIndices={activeVarMeta.add_indices}
+                addIndices={addIndices}
             />
         );
-    }, [activeVarMeta, variable]);
+    }, [activeVarMeta, variable, lang]);
 
     const activeDataset = useMemo(() => {
         if (!activeVarMeta) return dataset;
@@ -206,10 +233,10 @@ export function MapModule() {
                     {/* Section Label */}
                     <div className="flex items-center gap-2 text-[10px] font-black text-brand-500 uppercase tracking-widest border-b border-brand-100 pb-2">
                         <Settings size={12} />
-                        Visualization Settings
+                        {t('map.visualizationSettings')}
                     </div>
                     <div>
-                        <label className="block text-xs font-bold text-spp-gray uppercase tracking-wider mb-2">Variables</label>
+                        <label className="block text-xs font-bold text-spp-gray uppercase tracking-wider mb-2">{t('map.variables')}</label>
                         <div className="bg-spp-bgLight border border-slate-200 rounded-lg text-sm overflow-hidden flex flex-col shadow-inner">
                             {groupedVariables.map((group) => (
                                 <VariableTreeGroup
@@ -217,6 +244,7 @@ export function MapModule() {
                                     group={group}
                                     activeVariable={variable}
                                     onSelect={(v) => setVariable(v)}
+                                    lang={lang}
                                 />
                             ))}
                         </div>
@@ -225,11 +253,11 @@ export function MapModule() {
                     <div>
                         <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                             <div className="flex items-center gap-2">
-                                <span>Year</span>
+                                <span>{t('map.year')}</span>
                                 <button
                                     onClick={() => setIsPlaying(!isPlaying)}
                                     className={`flex items-center justify-center p-1 rounded-full transition-all ${isPlaying ? 'bg-brand-100 text-brand-600 shadow-sm' : 'hover:bg-slate-100 text-slate-400'}`}
-                                    title={isPlaying ? "Pause animation" : "Play animation"}
+                                    title={isPlaying ? t('map.pauseAnimation') : t('map.playAnimation')}
                                 >
                                     {isPlaying ? <Pause size={14} fill="currentColor" /> : <Play size={14} fill="currentColor" />}
                                 </button>
@@ -248,7 +276,7 @@ export function MapModule() {
                     </div>
 
                     <div>
-                        <label className="block text-xs font-bold text-spp-gray uppercase tracking-wider mb-2">Geography</label>
+                        <label className="block text-xs font-bold text-spp-gray uppercase tracking-wider mb-2">{t('map.geography')}</label>
                         <div className="bg-spp-bgLight border border-slate-200 rounded-lg overflow-hidden shadow-inner flex flex-col">
                             {countries?.map(country => (
                                 <GeographyTreeGroup
@@ -291,7 +319,7 @@ export function MapModule() {
                                 }}
                                 className="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors"
                             >
-                                Reset Selection
+                                {t('map.resetSelection')}
                             </button>
                             <button
                                 onClick={async () => {
@@ -319,14 +347,14 @@ export function MapModule() {
                                 title="Take Dashboard Screenshot"
                             >
                                 <Camera size={14} />
-                                Screenshot
+                                {t('map.screenshot')}
                             </button>
                         </div>
                     </div>
 
                     {isFetchingObs && (
                         <div className="text-xs text-brand-600 font-medium flex items-center animate-pulse">
-                            Fetching data...
+                            {t('map.fetchingData')}
                         </div>
                     )}
                 </div>
@@ -360,7 +388,7 @@ export function MapModule() {
                         variable={variable}
                         vType={activeVarMeta.type}
                         palette={activeVarMeta.palette}
-                        prettyName={activeVarMeta.pretty_name}
+                        prettyName={lang === 'de' ? (activeVarMeta.pretty_name_de || activeVarMeta.pretty_name) : lang === 'es' ? (activeVarMeta.pretty_name_es || activeVarMeta.pretty_name) : activeVarMeta.pretty_name}
                         partyColors={partyColors}
                         activeDataset={activeDataset}
                     />

@@ -226,6 +226,14 @@ class SPPProcessor:
                 scope=_safe_str(r.get("scope")),
                 description_for_ui=_safe_str(r.get("description_for_ui")),
                 add_indices=_safe_str(r.get("add_indices")),
+                pretty_name_es=_safe_str(r.get("pretty_name_es")),
+                dataset_es=_safe_str(r.get("dataset_es")),
+                description_for_ui_es=_safe_str(r.get("description_for_ui_es")),
+                add_indices_es=_safe_str(r.get("add_indices_es")),
+                pretty_name_de=_safe_str(r.get("pretty_name_de")),
+                dataset_de=_safe_str(r.get("dataset_de")),
+                description_for_ui_de=_safe_str(r.get("description_for_ui_de")),
+                add_indices_de=_safe_str(r.get("add_indices_de")),
             ))
         session.flush()
 
