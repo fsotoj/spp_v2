@@ -3,6 +3,7 @@ import { GlobalHeader } from './components/GlobalHeader';
 import { Layout } from './components/Layout';
 import { MapModule } from './modules/MapModule';
 import { LandingPage } from './modules/LandingPage';
+import { MethodologyPage } from './modules/MethodologyPage';
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
             </Layout>
           }
         />
-        <Route path="/methodology" element={<PlaceholderPage title="Methodology" />} />
+        <Route path="/methodology" element={<MethodologyPage />} />
         <Route path="/data" element={<PlaceholderPage title="Data Portal" />} />
         <Route path="/about" element={<PlaceholderPage title="About SPP" />} />
       </Routes>

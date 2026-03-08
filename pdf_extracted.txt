@@ -1,0 +1,1710 @@
+Total pages: 52
+
+=== PAGE 1 ===
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT
+CODEBOOK
+
+
+=== PAGE 2 ===
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT
+Principal Investigator
+Agustina Giraudy American University / Tecnológico de Monterrey
+Collaborators
+Francisco Urdinez Universidad Católica de Chile
+Guadalupe González University of Maryland, College Park
+Felipe Soto Jorquera Hertie School, Berlin
+Research Assistant
+Sergio Huertas Hernández Universidad Católica de Chile
+Version:  1
+Date:  October 2025
+Suggested Citation for Codebook
+Giraudy, Agustina; Gonzalez, Guadalupe Andrea; Urdinez, 
+Francisco, 2025, “Codebook: Subnational Politics Project (SPP)  
+(v. 1)”,  https://doi.org/10.17605/OSF.IO/H96FD
+
+=== PAGE 3 ===
+Suggested Citation for Each Database
+Database Name Abbreviation Suggested Citation
+Subnational 
+Executive DatabaseSED Giraudy, Agustina, Guadalupe Andrea 
+Gonzalez, Sergio Huertas-Hernández, and 
+Francisco Urdinez. 2025. “Subnational 
+Executive Database (SED) (v. 1).” 
+Subnational Politics Project. https://doi.
+org/doi:10.7910/DVN/1D3P3J
+Subnational 
+Executive Elections 
+DatabaseSEED Giraudy, Agustina, Guadalupe Andrea 
+Gonzalez, Sergio Huertas-Hernández, and 
+Francisco Urdinez. 2025. “Subnational 
+Executive Elections Database (SEED) (v. 
+1).” Subnational Politics Project. https://doi.
+org/doi:10.7910/DVN/UPOWMW
+Subnational 
+Legislative Elections 
+DatabaseSLED Giraudy, Agustina, and Guadalupe 
+Andrea Gonzalez. 2025. “Subnational 
+Legislative Elections Database (SLED) (v. 
+1).” Subnational Politics Project. https://doi.
+org/doi:10.7910/DVN/084FXF
+Subnational 
+Democracy IndicesSDI Giraudy, Agustina. 2025. “Subnational 
+Democracy Indices (SDI) (v. 1).” 
+Subnational Politics Project. https://doi.
+org/doi:10.7910/DVN/7TNLBW
+Capital Federal & 
+Tierra del Fuego 
+Legislatures 
+DatabaseCFTDFLD Giraudy, Agustina, and Guadalupe Andrea 
+Gonzalez. 2025. “Capital Federal &amp; 
+Tierra Del Fuego Legislatures Database 
+(CFTDFLD) (v. 1).” Subnational Politics 
+Project. https://doi.org/doi:10.7910/DVN/
+AJJLHX
+National Executive 
+DatabaseNED Giraudy, Agustina, Guadalupe Andrea 
+Gonzalez, Sergio Huertas-Hernández, 
+and Francisco Urdinez. 2025. “National 
+Executive Database (NED) (v. 1).” 
+Subnational Politics Project. https://doi.
+org/doi:10.7910/DVN/HNKQUH
+
+=== PAGE 4 ===
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTIntroduction 7
+Databases 8
+Databases’ Structure 8
+Intellectual Property 8
+Quality Assurance 9
+Variable Information 9
+Country Coverage and Temporal Scope 11
+Note on Coverage 11
+Description of Individual Variables 13
+Identifier Variables 13
+Country Name (country_name) 13
+Country Code (country_code) 13
+State Name (state_name) 13
+State Code (state_code) 14
+Country State Code (country_state_code) 14
+Region Name (region_name) 14
+Year (year) 14
+Executive Branch Variables 15
+National Executive 15
+President Name (name_head_nat_exe) 15
+President Gender (sex_head_nat_exe) 15
+Start Date of Presidential Term (start_date_head_nat_exe) 15
+End Date of Presidential Term (end_date_head_nat_exe) 16
+Presidential Term Length (term_length_in_years_nat_exe) 16
+Presidential Reelection (consecutive_reelection_nat_exe) 16
+President Early Exit (early_exit_nat_exe) 16
+President Party (head_party_nat_exe) 17
+President Party Ideology (ideo_party_nat_exe) 17
+Presidential Election Year (year_election_nat_exe) 18
+President Years in Power (cumulative_years_in_power_nat_exe) 18
+Subnational Executive 18
+Governor Name (name_head_sub_exe) 18
+Governor Gender (sex_head_sub_exe) 19
+Start Date of Governor Term (start_date_head_sub_exe) 19
+End Date of Governor Term (end_date_head_sub_exe) 19Table of Contents
+
+=== PAGE 5 ===
+5
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTGubernatorial Term Length (term_length_in_years_sub_exe) 19
+Governor Turnover (turnover_head_sub_exe) 20
+Cumulative Changes of Governor (cumulative_changes_head_sub_exe) 20
+Governor Early Exit (early_exit_sub_exe) 20
+Governor Reelection (consecutive_reelection_sub_exe) 21
+Governor Years in Power (cumulative_years_in_power_sub_exe) 21
+Governor Party (head_party_sub_exe) 21
+Party Years in Power (cumulative_years_in_power_party_sub_exe ) 21
+Governor Party Ideology (ideo_party_sub_exe) 22
+Subnational Executive Elections Concurrent with National Elections (concurrent_with_
+nat_election_sub_exe) 22
+Party Turnover (turnover_party_sub_exe) 23
+Cumulative Changes of Party (cumulative_changes_party_sub_exe) 23
+Political Alignment With National Government (alignment_with_nat_sub_exe) 23
+Electoral Variables 25
+Subnational Executive 25
+Gubernatorial Election Year (election_sub_exe) 25
+Winning Candidate Name (winner_candidate_sub_exe) 25
+Election Date (date_election_sub_exe) 25
+Registered Voters (voters_registered_sub_exe) 26
+Total Voters (total_voters_sub_exe) 26
+Voter Turnout Percentage (perc_voter_sub_exe) 26
+Valid Votes (valid_votes_sub_exe) 26
+Valid Vote Percentage (perc_valid_votes_sub_exe) 26
+Invalid Votes (invalid_votes_sub_exe) 26
+Invalid Vote Percentage (perc_invalid_votes_sub_exe) 27
+Winner Total Votes (votes_candidate_winner_sub_exe) 27
+Winner Vote Percentage (perc_votes_winner_candidate_sub_exe) 27
+Second Place Total Votes (second_place_votes_sub_exe) 27
+Second Place Vote Percentage (perc_second_place_sub_exe) 27
+Last Place Total Votes (last_place_votes_sub_exe) 28
+Last Place Vote Percentage (perc_last_place_sub_exe) 28
+Margin of Victory (margin_victory_sub_exe) 28
+Number of Parties Competing in Elections (num_parties_election_contest_sub_exe) 28
+Cumulative Executive Elections (cumulative_elections_year_sub_exe) 28
+Snap Election (snap_election_sub_exe) 29
+Effective Number of Parties (Laakso and Taagepera, 1979) (enp_sub_exe) 29
+Subnational Legislative 30
+Chamber Election (chamber_election_sub_leg) 30
+Date of Legislative Election (date_election_sub_leg) 30
+Registered Voters in Legislative Election (voters_registered_sub_leg) 30
+Total Voters in Legislative Election (total_voters_sub_leg) 30
+Voter Turnout in Legislative Election (perc_voters_sub_leg) 31
+Valid Votes in Legislative Election (valid_votes_sub_leg) 31
+Percentage of Valid Votes in Legislative Election (perc_valid_votes_sub_leg) 31
+Party Name in Legislative Election (party_name_sub_leg) 31
+Party Votes in Legislative Election (total_votes_party_sub_leg) 32
+Percentage of Party Votes in Legislative Election (perc_votes_party_sub_leg) 32
+
+=== PAGE 6 ===
+6
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTParty Seats (total_seats_party_sub_leg) 32
+Percentage of Party Seats in Legislative Election (perc_seats_party_sub_leg) 33
+Number of Blank Votes (blank_votes_sub_leg) 33
+Number of Null Votes (null_votes_sub_leg) 33
+Number of Challenged Votes (challenged_votes_sub_leg) 33
+Number of Contested Votes (contested_votes_sub_leg) 33
+Number of Votes Offset by Discrepancy (compensation_for_record_discrepancy_votes_
+sub_leg) 34
+Margin of Victory in Legislative Election (margin_victory_sub_leg) 34
+Cumulative Legislative Elections (cumulative_elections_year_sub_leg) 34
+Subnational Legislative Elections Concurrent with National Elections (concurrent_
+election_with_nat_sub_leg) 34
+Number of Parties in Contest in Legislative Elections (num_parties_election_contest_
+sub_leg) 35
+Total of Seats in Contest in Legislative Elections (total_seats_in_contest_sub_leg) 35
+Total of Seats in Chamber in Legislative Elections (total_chamber_seats_sub_leg) 36
+Number of Seats of Incumbent in Legislative Elections (num_seats_incumbent_sub_leg) 36
+Percentage of Seats of Incumbent in Legislative Elections (perc_seats_incumbent_sub_
+leg) 36
+Number of Seats of Opposition in Legislative Elections (num_seats_opos_sub_leg) 37
+Percentage of Seats of Opposition in Legislative Elections (perc_seats_opos_sub_leg) 37
+Effective Number of Parties (Laakso and Taagepera, 1979) in Leg. (enp_sub_leg) 37
+Type of Chamber (chamber_sub_leg) 38
+Legislators’ Term Length (term_length_in_years_sub_leg) 39
+Type of Renewal in Chamber (renewal_type_sub_leg) 39
+Type of Electoral System in Chamber (electoral_system_sub_leg) 39
+Subnational Democracy Indices 40
+SUR Index Giraudy (2015) (SUR_index_giraudy_2015) 40
+SUR Index (SUR_index_sub_exe) 40
+Subnational Contestation Executive (contestation_sub_exe) 40
+Subnational Contestation Legislative (contestation_sub_leg) 40
+Turnover Executive (turnover_sub_exe) 41
+Clean Elections Giraudy (2015) (clean_elections_sub_exe_giraudy_2015) 41
+Data Sources 44
+Primary Sources 44
+Argentina: 44
+Brazil: 44
+Mexico: 44
+Appendices 45
+Appendix A: Subnational Units by Country 45
+Argentina (24 units) 45
+Brazil (27 units) 45
+Mexico (32 units) 45
+Appendix B: State Codes by Country 46
+Appendix C: Key References 51
+
+=== PAGE 7 ===
+7
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTIntroduction
+The Subnational Politics Project  (SPP)  is a collaborative initiative dedicated to com -
+piling, generating, and disseminating systematic, transparent, and publicly accessible 
+data on subnational political institutions, processes, and electoral outcomes across Lat -
+in America. The SPP’s central goal is to build a comprehensive and standardized data 
+infrastructure that enables both detailed within-country analysis and robust cross-na -
+tional comparisons of subnational political dynamics.
+By providing consistent, high-quality, and spatially disaggregated longitudinal data, the 
+SPP seeks to advance scholarly and policy-oriented research on the political founda -
+tions and consequences of territorial inequality in Latin America. This data infrastruc -
+ture will support empirical work on a wide range of topics, including federalism, decen -
+tralization, subnational democracy and authoritarianism, party competition, electoral 
+accountability, territorial governance, among others.
+This codebook outlines the coding strategies, data sources, and variable construction 
+protocols employed in the development of the SPP databases. As of September 2025, 
+the project includes comprehensive databases for three federal countries in Latin Amer -
+ica—Argentina, Brazil, and Mexico—covering the period from the 1980s through 2024 
+(see Table 1 below for detailed country-specific information).
+
+=== PAGE 8 ===
+8
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTDatabases
+Databases’ Structure
+As Figure 1 shows, the Subnational Politics Project is made up of different databases. 
+Each database employs a country-state-year structure, with observations at the subna -
+tional unit level for each electoral year. Each observation represents a subnational unit 
+(province/state) in a given year.
+Capital Federal and Tierra del Fuego 
+Legislatures Database (CFTDFLD)
+Subnational Democracy Index (SDI)
+Subnational Legislative Elections 
+Database (SLED)
+Electoral Data
+Subnational 
+Democracy IndexSubnational 
+Politics Project 
+(SPP)
+Additional Data
+Executive Data
+Subnational Executive Elections 
+Database (SEED)
+Subnational Executive Database 
+(SED)
+National Executive Database (NED)
+Figure 1:  Databases in SPP
+Intellectual Property
+Variables taken directly from external sources, with no original coding beyond possible 
+imputation of missing data, are not considered products of the Subnational Politics 
+Project . In contrast, when data are drawn from multiple sources and combined in a way 
+that involves analytical judgment, mathematical alteration, or aggregation, the result -
+ing variable is classified as a Subnational Politics Project  product.
+
+=== PAGE 9 ===
+9
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTQuality Assurance
+All data have undergone rigorous verification processes:
+1. Primary Source Verification:  All data were cross-checked with official electoral 
+records
+2. Academic Validation:  Data were compared to established academic datasets, 
+when available
+3. Multiple Source Confirmation:  Key variables were verified through multiple 
+independent sources
+4. Temporal Consistency Checks:  Longitudinal data were reviewed for consistency 
+and logical progression
+Variable Information
+As shown in Figure 2, the databases in the Subnational Politics Project  divide variables 
+into the following variable types:
+Variables Type Sub-variable Type Description Dataset
+Identifiers Variables Cross-National VariablesData on country names, years,  
+and states
+Executive Branch  
+VariablesNational Executive Vari -
+ablesData on national executive branches per 
+countryNED
+Sub-national Executive 
+VariablesData on subnational executive branches 
+per state/province, per countrySED
+Electoral VariablesSubnational Executive 
+Elections VariablesData on electoral results for executive 
+branchSEED
+Subnational Legislative 
+Elections VariablesData on subnational executive elections 
+per state/province, per countrySLED
+Subnational Legislatures 
+VariablesData on institutional and electoral information 
+about state-level/provincial legislaturesSLED
+Index VariablesSubnational Democracy 
+Index VariablesData on levels of subnational democracy 
+per state/province, per countrySDID
+Figure 2:  Variables and Corresponding Database
+
+=== PAGE 10 ===
+10
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTVariables include the following information:
+a. Identifier Variables : Data identifying country names and codes, state names 
+and codes, region names, and time periods
+b. Executive Branch Variables : Data on national and subnational executive 
+branches, such as length of term, incumbent party, cumulative years of president/
+governor in office, etc.
+c. Electoral Variables : Data on subnational executive and subnational legislative 
+elections, including legislatures’ composition
+d. Indices : Data generated by adding and combining variables, or creating 
+cumulative scales
+
+=== PAGE 11 ===
+11
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTCountry Coverage and 
+Temporal Scope
+Table 1:  Coverage by Country
+CountrySubnational 
+UnitsExecutive 
+Elections; data 
+collection starts 
+in:Legislative Election; 
+data collection 
+starts inTemporal 
+Coverage
+Argentina 24 provinces 1983 1983 1983-2024
+Brazil 27 states 1998 1998 1998-2024
+Mexico 32 states 1985 1985 1985-2024
+Note on Coverage
+Argentina : Data for most provinces start in 1983, coinciding with the country’s return to 
+democracy. Data for Tierra del Fuego and Ciudad Autónoma de Buenos Aires (formerly 
+Capital Federal) began in 1991 and 1996, respectively, when these two subnational juris -
+dictions acquired the same legal status as all other provinces. In addition, information 
+may be missing or incomplete for subnational legislative elections in Salta (1993), La 
+Rioja (2015), and San Luis (2019).
+Brazil : Electoral data for all 27 states begin in 1998, the earliest year for which systemat -
+ically verified data are available. The database is compiled primarily from records of the 
+Tribunal Superior Eleitoral  and cross-validated using the ElectionsBR database (Meire -
+les et al., 2016).
+
+=== PAGE 12 ===
+12
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTMexico : The general starting point for data collection in v. 1 is 1985, though coverage 
+varies across states. The following states are included beginning in:
+• 1985: Campeche, Colima, Guanajuato, Nuevo León, Querétaro, Sonora
+• 1986: Aguascalientes, Chihuahua, Durango, Guerrero, Michoacán, Puebla, Sinaloa, 
+Tamaulipas, Tlaxcala, Veracruz
+• 1987: Baja California Sur, Coahuila, Quintana Roo
+• 1988: Chiapas, Jalisco, Morelos, Tabasco
+• 1989: Baja California
+• 1991: San Luis Potosí
+• 1992: Oaxaca, Zacatecas
+• 1993: Hidalgo, Nayarit
+• 1995: Yucatán
+• 1997: CDMX
+• 1999: Estado de México
+
+=== PAGE 13 ===
+13
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTDescription of 
+Individual Variables
+Identifier Variables
+Country Name (country_name)
+• Description: Indicates the country’s name
+• Type:  Categorical
+• Values:  ARGENTINA, BRAZIL, MEXICO
+• Source:  Subnational Politics Project , own coding based on ISO 3166 country 
+names
+Country Code (country_code)
+• Description: Indicates the numeric country code according to ISO 3166-1 standard
+• Type:  Categorical
+• Values:  032 (Argentina), 076 (Brazil), 484 (Mexico)
+• Source:  Subnational Politics Project , own coding based on ISO 3166-1 numeric 
+country codes
+State Name (state_name)
+• Description:  Indicates the name of the subnational unit (province/state)
+• Type:  Categorical
+• Note:  See Appendix A for a complete list of subnational units by country
+• Source:  Subnational Politics Project , own coding based on official administrative 
+records
+
+=== PAGE 14 ===
+14
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTState Code (state_code)
+• Description: Indicates the numeric code for subnational unit within a given 
+country
+• Type:  Categorical
+• Note:  Follows official coding systems used by each country’s electoral authorities. 
+See Appendix B for a complete list of subnational codes
+• Source:  Subnational Politics Project , own coding based on official coding systems 
+from national electoral authorities
+Country State Code (country_state_code)
+• Description:  Indicates the combined country and state code ( country_code  + 
+state_code )
+• Type:  Categorical
+• Format:  5-digit numeric code
+• Note:  List of codes available in Appendix B
+• Source:  Subnational Politics Project , own coding based on official country and 
+state codes
+Region Name (region_name)
+• Description:  Indicates the geographic region within a given country
+• Type:  Categorical
+• Note:  Regional classifications follow established geographic divisions for each 
+country. See Appendix B for a complete list of regions
+• Source:  Subnational Politics Project , own coding based on official geographic 
+classifications for each country
+Year (year)
+• Description:  Indicates the calendar year of observation
+• Type:  Numeric
+• Range:  1983-2024 (varies by country)
+• Source:  Subnational Politics Project , own coding
+
+=== PAGE 15 ===
+15
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTExecutive Branch Variables
+National Executive
+President Name (name_head_nat_exe)
+• Description:  Indicates the national head of state’s name (i.e., President)
+• Type:  Text
+• Note:  If the president held office during a given year, their name is recorded for 
+the entirety of that year. For example, in 2024 the president of Argentina was 
+Javier Milei; therefore, the variable name_head_nat_exe for 2024 records “Javier 
+Milei”. In years with multiple presidents in office—such as electoral years—the 
+name of the winning candidate is recorded as president for that year. For instance, 
+presidents-elect in Argentina take office on December 10. In 2023, the variable 
+name_head_nat_exe records “Javier Milei”, as he took office on December 10, 2023
+• Source:  Subnational Politics Project , own coding based on World Statesmen 
+(worldstatesmen.org) and V-Dem
+President Gender (sex_head_nat_exe)
+• Description: Indicates the national head of state’s gender
+• Type:  Binary
+• Values:
+ о0 = Male
+ о1 = Female
+• Source:  V-Dem
+Start Date of Presidential Term (start_date_head_nat_exe)
+• Description: Indicates the start date of the presidential term, in year-month-day 
+format
+• Type: Date
+• Format:  yyyy-mm-dd (ISO 8601 standard)
+• Source: V-Dem
+
+=== PAGE 16 ===
+16
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTEnd Date of Presidential Term (end_date_head_nat_exe)
+• Description: Indicates the end date of the presidential term, in year-month-day 
+format
+• Type: Date
+• Format:  yyyy-mm-dd (ISO 8601 standard)
+• Source: V-Dem
+Presidential Term Length (term_length_in_years_nat_exe)
+• Description: Indicates the total duration of the president’s current term in office
+• Type: Numeric
+• Unit: Years (decimal values allowed)
+• Formula: Length of presidential term in years, calculated as the difference 
+between start_date_head_nat_exe  and end_date_head_nat_exe.
+• Example:
+ оBrazil, Lula’s first term (2003-2006): years_nat_gov = 4.0 for all years 2003, 
+2004, 2005, 2006
+ оMexico, AMLO’s term (2018-2024): years_nat_gov = 6.0 for all years 2018, 2019, 
+2020, 2021, 2022, 2023, 2024
+• Source: Subnational Politics Project , own calculation based on start_date_head_
+nat_exe  and end_date_head_nat_exe (V-Dem)
+Presidential Reelection (consecutive_reelection_nat_exe)
+• Description:  Indicates whether a president was re-elected to a consecutive term
+• Type:  Binary
+• Values:
+ о1 = Head of government has been reelected
+ о0 = Otherwise
+• Note:  Only consecutive re-elections are coded. Non-consecutive terms are not 
+considered as re-elections
+• Example:  Lula da Silva’s third term (2023–) is not coded as a re-election, despite 
+the fact that he served in office in the past (from 2002 through 2010)
+• Source:  Subnational Politics Project , own coding based on V-Dem
+President Early Exit (early_exit_nat_exe)
+• Description:  Indicates whether the president left office before completing their 
+constitutional term
+
+=== PAGE 17 ===
+17
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Type:  Binary
+• Values:
+ о1 = Early exit from office (due to resignation, death, impeachment, removal, or 
+other causes)
+ о0 = Completed full constitutional term or still in office
+• Note:  Includes all forms of early departure, regardless of cause.
+ оRaúl Ricardo Alfonsín (Argentina) had an early exit in July of 1989 because he 
+official/constitutional term ended in December of 1989. He is not coded as 
+early exit
+• Source:  Subnational Politics Project , own coding based on official records
+President Party (head_party_nat_exe)
+• Description:  Indicates the president’s political party
+• Type:  Categorical
+• Source:  Subnational Politics Project , own coding based on World Statesmen 
+(worldstatesmen.org) and V-Dem
+President Party Ideology (ideo_party_nat_exe)
+• Description:  Indicates the ideology of the president’s political party
+• Type:  Ordinal
+• Values:
+ о1 = Left
+ о2 = Center-left
+ о3 = Center-right
+ о4 = Right
+ о[blank] = Independent or no political affiliation
+• Note:  Coding captures political party platforms and programs, not the policies 
+implemented by its leaders
+• Examples:
+ оLeft (1):  Brazil’s PT (Partido dos Trabalhadores) under Lula/Dilma 2003-2016
+ оCenter-left (2):  Argentina’s FREPASO (Frente País Solidario) or Brazil’s PSB 
+(Partido Socialista Brasileiro) in coalition governments
+ оCenter-right (3):  Argentina’s UCR (Unión Cívica Radical) or Brazil’s PSDB 
+(Partido da Social Democracia Brasileira)
+ оRight (4):  Mexico’s PAN (Partido Acción Nacional) 2000-2012, Argentina’s PRO 
+(Propuesta Republicana) under Macri
+ оIndependent [blank]:  Rare at presidential level in these countries
+
+=== PAGE 18 ===
+18
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Source:  Subnational Politics Project , own coding based on Coppedge (1997), 
+Szajkowski (2005), Murillo et al. (2010), and official party platforms/websites
+Presidential Election Year (year_election_nat_exe)
+• Description:  Indicates whether national presidential elections were held during 
+the observed calendar year
+• Type:  Binary
+• Values:
+ о1 = Presidential election year
+ о0 = Otherwise
+• Source:  Subnational Politics Project , own coding based on national electoral 
+agencies: argentina.gob.ar/dine, ine.mx, tse.jus.br
+President Years in Power (cumulative_years_in_power_nat_exe)
+• Description:  Indicates the total number of years the president held executive office
+• Type:  Numeric (count)
+• Source:  Subnational Politics Project , own calculation based on official records of 
+executive office tenure
+Subnational Executive
+Governor Name (name_head_sub_exe)
+• Description:  Indicates the head of subnational state’s (Governor) name
+• Type:  Text
+• Note:  If the governor held office during a given year, their name is recorded 
+for the entirety of that year. For example, in 2019 the Jefe de Gobierno of CDMX 
+was Claudia Sheinbaum; therefore, the variable name_head_sub_exe for 2019 
+records “Claudia Sheinbaum”. In years with multiple governors in office—such as 
+electoral years—the name of the winning candidate is recorded as governor for 
+that year. For instance, Jefe de Gobierno-elect in CDMX took office on December 
+5. In 2018, the variable name_head_sub_exe records “Claudia Sheinbaum”, as she 
+took office on December 5, 2018
+• Source:  Subnational Politics Project , own coding based on Andy Tow’s data 
+(Argentina) Argentine data verified by Tulia Falleti, email correspondence on 
+04/21/2023). For Brazil and Mexico: official subnational electoral information and 
+state web portals
+
+=== PAGE 19 ===
+19
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTGovernor Gender (sex_head_sub_exe)
+• Description:  Indicates the governor’s gender
+• Type:  Binary
+• Values:
+ о0 = Male
+ о1 = Female
+• Source:  Subnational Politics Project , own coding based on official records
+Start Date of Governor Term (start_date_head_sub_exe)
+• Description: Indicates the start date of the gubernatorial term, in year-month-
+day format
+• Type: Date
+• Format:  yyyy-mm-dd (ISO 8601 standard)
+• Source: Subnational Politics Project , own coding based on V-Dem
+End Date of Governor Term (end_date_head_sub_exe)
+• Description: Indicates the  end date of the gubernatorial term, in year-month-
+day format
+• Type: Date
+• Format:  yyyy-mm-dd (ISO 8601 standard)
+• Source: Subnational Politics Project , own coding based on V-Dem
+Gubernatorial Term Length (term_length_in_years_sub_exe)
+• Description: Indicates the total duration of the governor’s term
+• Type: Numeric
+• Unit: Years (decimal values allowed)
+• Formula: Length of governor’s term in years, calculated as the difference between 
+start_date_head_sub_exe and end end_date_head_sub_exe . Example :
+ оMaría Eugenia Vidal served as Governor of Buenos Aires (Argentina) from 
+December 11, 2015, to December 11, 2019, which amounts to approximately 
+4.00 years, using December 10, 2023, as the reference date
+• Source: Subnational Politics Project , own calculation based on start_date_head_
+sub_exe  and end_date_head_sub_exe  (V-Dem)
+
+=== PAGE 20 ===
+20
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTGovernor Turnover (turnover_head_sub_exe)
+• Description:  Indicates whether there was turnover in the subnational executive 
+branch
+• Type:  Binary
+• Values:
+ о1 = Year when turnover occurred
+ о0 = Otherwise
+• Note:  Refers to any type of turnover, including succession due to early exit/federal 
+intervention/death/etc.
+• Source:  Subnational Politics Project , own coding based on official records
+Cumulative Changes of Governor (cumulative_changes_
+head_sub_exe)
+• Description:  Indicates the cumulative count of gubernatorial changes since start 
+of data series (specific to each individual state)
+• Type:  Numeric (count)
+• Range:  0 to n (where n = total changes observed)
+• Note:  Increments of 1, each time a new governor takes office, including interim 
+or new appointment (due to early exit)
+• Measurement:  Cumulative count from first year of data coverage for each state
+• Example:
+ оBuenos Aires Province, 1983-2023:
+ ■1983: Felipe Solá becomes governor (cumulative_changes_head_sub = 1)
+ ■1987: Antonio Cafiero takes office (cumulative_changes_head_sub = 2)
+ ■1991: Eduardo Duhalde elected (cumulative_changes_head_sub = 3)
+ ■1999: Carlos Ruckauf takes office (cumulative_changes_head_sub = 4)
+ ■2002: Felipe Solá returns to office (cumulative_changes_head_sub = 5)
+ ■2007: Daniel Scioli elected (cumulative_changes_head_sub = 6)
+ ■2015: María Eugenia Vidal takes office (cumulative_changes_head_sub = 7)
+ ■2019: Axel Kicillof elected (cumulative_changes_head_sub = 8)
+• Source:  Subnational Politics Project , own calculation based on official records
+Governor Early Exit (early_exit_sub_exe)
+• Description:  Indicates early exit from gubernatorial office for a given year (as 
+a result of, for example, resignation, death, impeachment, federal intervention, 
+among others)
+
+=== PAGE 21 ===
+21
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Type:  Binary
+• Values:
+ о1 = Early exit
+ о0 = Otherwise
+• Source:  Subnational Politics Project , own coding based on official records
+Governor Reelection (consecutive_reelection_sub_exe)
+• Description:  Indicates whether a governor was re-elected to a consecutive term
+• Type:  Binary
+• Values:
+ о1 = Governor was reelected (won election for consecutive term)
+ о0 = Governor was not reelected (first term, term-limited, or defeated)
+ о[blank] = Not applicable (e.g., Mexico where gubernatorial reelection is 
+prohibited)
+• Note:  Only consecutive re-elections are coded. Non-consecutive terms are not 
+considered as re-elections
+• Source:  Subnational Politics Project , own coding based on official records
+Governor Years in Power (cumulative_years_in_power_sub_exe)
+• Description:  Indicates the total number of years the governor held subnational 
+executive office
+• Type:  Numeric (count)
+• Source:  Subnational Politics Project , own calculation based on official records of 
+executive office tenure
+Governor Party (head_party_sub_exe)
+• Description:  Indicates the governor’s political party
+• Type:  Categorical
+• Source:  Subnational Politics Project , own coding based on national and 
+subnational electoral agencies
+Party Years in Power (cumulative_years_in_power_party_
+sub_exe  )
+• Description:  Indicates the cumulative number of years that a party has controlled 
+subnational executive office
+• Type:  Numeric
+• Unit:  Years (decimal values allowed)
+
+=== PAGE 22 ===
+22
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Governor Party Ideology (ideo_party_sub_exe)
+• Description:  Indicates the governor’s political party’s ideology
+• Type:  Ordinal
+• Values:
+ о1 = Left
+ о2 = Center-left
+ о3 = Center-right
+ о4 = Right
+ о[blank] = Independent or no political affiliation
+• Note:  Classification based on party platforms and programs, not on implemented 
+policies
+• Source:  Subnational Politics Project , own coding based on Coppedge (1997), 
+Szajkowski (2005), Murillo et al. (2010), and official party platforms/websites
+Subnational Executive Elections Concurrent with National 
+Elections (concurrent_with_nat_election_sub_exe)
+• Description:  Indicates whether gubernatorial and presidential elections were 
+held concurrently on a given year
+• Type:  Binary
+• Values:
+ о1 = Concurrent election (both gubernatorial and presidential elections held)
+ о0 = Non-concurrent (only one type of election or neither)
+• Measurement:  Based on calendar year, not exact election dates
+• Note:  Important for analyzing electoral coattail effects and vertical electoral 
+coordination
+• Examples:
+ оConcurrent (1):  Brazil, 2018 - All states elect governors in October alongside a 
+presidential elections
+ оConcurrent (1):  Mexico, 2018 - 9 states (including CDMX, Jalisco, and Morelos) 
+hold gubernatorial elections the same year as the presidential election
+ оNon-concurrent (0):  Argentina, 2017 - No presidential election, but several 
+provinces (Buenos Aires, Córdoba, etc.) elect governors
+ оNon-concurrent (0):  Mexico, 2019 - No presidential election, but Baja California 
+holds gubernatorial election
+
+=== PAGE 23 ===
+23
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT оCountry patterns:  Brazil always concurrent (every 4 years), Argentina/Mexico 
+mixed timing
+• Source: Subnational Politics Project , own coding based on national and 
+subnational electoral agencies
+Party Turnover (turnover_party_sub_exe)
+• Description:  Indicates party turnover in gubernatorial office
+• Type:  Binary
+• Values:
+ о1 = Year when turnover occurred
+ о0 = Otherwise
+• Source:  Subnational Politics Project , own coding based on official records
+Cumulative Changes of Party (cumulative_changes_party_
+sub_exe)
+• Description: Indicates the cumulative count of changes of a political party
+• Type:  Numeric (count)
+• Source:  Subnational Politics Project , own coding based on official records
+Political Alignment With National Government (alignment_
+with_nat_sub_exe)
+• Description:  Indicates political alignment between the president and the 
+governor
+• Type:  Binary
+• Values:
+ о1 = Political alignment exists
+ о0 = No political alignment
+• Coding Criteria:  Following Giraudy (2015) and Niedzwiecki (2018), coded as 1 if 
+any of the following conditions are met:
+ оSame party membership:  President and governor belong to the same 
+political party
+ оCoalition partnership:  Governor’s party is part of the president’s legislative 
+coalition (at national level)
+ оPolitical cooperation:  Despite different party affiliations, observable political 
+affinity and cooperative behavior exists between president and governor
+
+=== PAGE 24 ===
+24
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Examples:
+ оCriterion 1 - São Paulo, 2003:  PT President Lula + PT Governor José Genoino 
+= 1 (same party)
+ оCriterion 2 - Santa Fe, Argentina, 2008:  PJ President Cristina Kirchner + PS 
+Governor Hermes Binner = 1 (PS supports national government coalition)
+ оCriterion 3 - Nuevo León, Mexico, 2001:  PAN President Fox + Independent 
+Governor Natividad González = 1 (cooperation despite different affiliations)
+ оNo alignment - Córdoba, Argentina, 2017:  Cambiemos President Macri + PJ 
+Governor Schiaretti = 0 (opposition parties, no cooperation)
+• Note:  Focuses on political cooperation rather than strict party membership
+• Source:  Subnational Politics Project , own coding based on Giraudy (2015) and 
+Niedzwiecki (2018)
+
+=== PAGE 25 ===
+25
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTElectoral Variables
+Subnational Executive
+Gubernatorial Election Year (election_sub_exe)
+• Description:  Indicates whether there legislative elections were held on a given 
+year
+• Type:  Binary
+• Values:
+ о1 = Election held
+ о0 = Otherwise
+• Source:  Subnational Politics Project , own coding based on official records of 
+subnational executive elections
+Winning Candidate Name (winner_candidate_sub_exe)
+• Description:  Indicates the winning candidate name who effectively took office
+• Type:  Text
+• Source: Subnational Politics Project , own coding based on Andy Tow’s data 
+(Argentina, verified by Tulia Falleti, email correspondence on 04/21/2023) and, for 
+other countries, official subnational electoral information and state web portals
+Election Date (date_election_sub_exe)
+• Description:  Indicates the date of the subnational executive electoral process
+• Type: Date
+• Format:  yyyy-mm-dd (ISO 8601 standard)
+• Source:  Subnational Electoral Agencies
+
+=== PAGE 26 ===
+26
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTRegistered Voters (voters_registered_sub_exe)
+• Description:  Indicates the total number of registered voters for each subnational 
+executive elections
+• Type:  Numeric (count)
+• Source:  Subnational Electoral Agencies
+Total Voters (total_voters_sub_exe)
+• Description:  Indicates the total number of voters in subnational executive 
+elections
+• Type:  Numeric (count)
+• Note:  Includes votes for parties, blank votes, and null votes
+• Source:  Subnational Electoral Agencies
+Voter Turnout Percentage (perc_voter_sub_exe)
+• Description:  Indicates the voter turnout rate for subnational executive elections
+• Type:  Numeric (percentage)
+• Formula:  (total_voters_sub  / voters_registered_sub ) × 100
+• Source:  Subnational Politics Project , own calculation based on data from 
+subnational electoral agencies
+Valid Votes (valid_votes_sub_exe)
+• Description:  Indicates the total valid votes for subnational executive elections
+• Type:  Numeric (count)
+• Source:  Subnational Electoral Agencies
+Valid Vote Percentage (perc_valid_votes_sub_exe)
+• Description:  Indicates the valid votes as percentage of total votes in subnational 
+executive elections
+• Type:  Numeric (percentage)
+• Formula:  (valid_votes_sub  / total_voters_sub ) × 100
+• Source:  Subnational Politics Project , own calculation based on data from 
+subnational electoral agencies
+Invalid Votes (invalid_votes_sub_exe)
+• Description:  Indicates the total invalid/void votes for subnational executive 
+elections
+
+=== PAGE 27 ===
+27
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Type:  Numeric (count)
+• Source:  Subnational Politics Project , own calculation based on data from 
+subnational electoral agencies
+Invalid Vote Percentage (perc_invalid_votes_sub_exe)
+• Description:  Indicates the invalid votes as percentage of total votes in subnational 
+executive elections
+• Type:  Numeric (percentage)
+• Formula:  (invalid_votes_sub  / total_voters_sub ) × 100
+• Source:  Subnational Politics Project , own calculation based on data from 
+subnational electoral agencies
+Winner Total Votes (votes_candidate_winner_sub_exe)
+• Description:  Indicates the total votes for the winning gubernatorial candidate
+• Type:  Numeric (count)
+• Source:  Subnational Electoral Agencies
+Winner Vote Percentage (perc_votes_winner_candidate_
+sub_exe)
+• Description:  Indicates the vote share for the winning gubernatorial candidate
+• Type:  Numeric (percentage)
+• Formula:  (votes_candidate_winner  / valid_votes_sub ) × 100
+• Source:  Subnational Politics Project , own calculation based on data from 
+subnational electoral agencies
+Second Place Total Votes (second_place_votes_sub_exe)
+• Description:  Indicates the total votes for the second-place gubernatorial 
+candidate
+• Type:  Numeric (count)
+• Source:  Subnational Electoral Agencies
+Second Place Vote Percentage (perc_second_place_sub_exe)
+• Description:  Indicates the vote share for second-place gubernatorial candidate
+• Type:  Numeric (percentage)
+• Formula:  (second_place_votes  / valid_votes_sub ) × 100
+• Source:  Subnational Politics Project , own coding based on subnational electoral 
+agencies
+
+=== PAGE 28 ===
+28
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTLast Place Total Votes (last_place_votes_sub_exe)
+• Description:  Indicates the total votes for last-place gubernatorial candidate
+• Type:  Numeric (count)
+• Source: Subnational Electoral Agencies
+Last Place Vote Percentage (perc_last_place_sub_exe)
+• Description:  Indicates the vote share for last-place gubernatorial candidate
+• Type:  Numeric (percentage)
+• Formula:  (last_place_votes  / valid_votes_sub ) × 100
+• Source:  Subnational Politics Project, own calculation based on subnational 
+electoral agencies
+Margin of Victory (margin_victory_sub_exe)
+• Description:  Indicates the margin of victory between the winner and runner-up 
+in gubernatorial elections
+• Type:  Numeric (percentage)
+• Formula:  winner_candidate_ratio - second_place_ratio
+• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Number of Parties Competing in Elections (num_parties_
+election_contest_sub_exe)
+• Description:  Indicates the number of parties competing in gubernatorial 
+elections
+• Type:  Numeric (count)
+• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Cumulative Executive Elections (cumulative_elections_
+year_sub_exe)
+• Description:  Indicates the cumulative count of subnational executive elections 
+in a state
+• Type:  Numeric (count)
+• Source: Subnational Politics Project , own calculation based on official subnational 
+electoral calendars
+
+=== PAGE 29 ===
+29
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTSnap Election (snap_election_sub_exe)
+• Description:  Indicates snap subnational executive elections
+• Type:  Binary
+• Values:
+ о1 = Snap election occurred
+ о0 = Otherwise
+• Source:  Subnational Politics Project , own coding based on national and 
+subnational electoral agencies
+Effective Number of Parties (Laakso and Taagepera, 1979) 
+(enp_sub_exe)
+• Description:  Indicates the effective number of parties competing in gubernatorial 
+elections
+• Type:  Numeric (continuous)
+• Range:  1.0 to n (where n = theoretical maximum based on number of candidates)
+• Formula:  ENP = 1/ Σ(pi²), where pi is the vote share of party i
+• Calculation:  Based on Laakso and Taagepera (1979) index using vote shares of all 
+competing parties
+• Interpretation:
+ оValues near 1.0 = dominant party system
+ оValues near 2.0 = two-party competition
+ оHigher values = more fragmented party system
+• Examples:
+ оDominant system (ENP ≈ 1.2):  Coahuila, Mexico, 2005 - PRI candidate wins 
+with 89% vs. 8% PAN, 3% others
+ оTwo-party competition (ENP ≈ 2.1):  São Paulo, Brazil, 2018 - PSDB 51.7% vs. PT 
+48.3% in runoff
+ оFragmented system (ENP ≈ 3.8):  Buenos Aires, Argentina, 2015 - Cambiemos 
+35.4%, FPV 30.1%, Massa 20.8%, others 13.7%
+ оHighly fragmented (ENP ≈ 5.2):  CDMX, Mexico, 2018 - MORENA 32.1%, PAN 
+21.8%, PRD 15.4%, PRI 12.3%, others 18.4%
+• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+
+=== PAGE 30 ===
+30
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTSubnational Legislative
+Chamber Election (chamber_election_sub_leg)
+• Description:  Indicates the chamber in which elections are held on a given year
+• Type:  Categorical
+• Values:
+ о1 = Lower Chamber
+ о2 = Upper Chamber
+• Source:  Subnational Politics Project , own coding based on official records
+Date of Legislative Election (date_election_sub_leg)
+• Description:  Indicates the date of subnational legislative elections
+• Type: Date
+• Format:  yyyy-mm-dd (ISO 8601 standard)
+• Source:  Subnational Electoral Agencies
+Registered Voters in Legislative Election (voters_registered_
+sub_leg)
+• Description:  Indicates the total number of registered voters for subnational 
+legislative elections
+• Type:  Numeric (count)
+• Note: In states with mixed electoral systems, the total number of registered voters 
+equals the sum of all registered voters across all districts in each province. For 
+example, Río Negro’s (Argentina) legislature is made up of 46 seats/legislators. 
+24 legislators are elected in selected electoral districts, while 22 are elected to 
+represent the province as a single district. In the 2023 legislative election there 
+were a total of 589,251 registered voters, each of whom cast two ballots due to 
+the mixed system. Accordingly, the database records 1,178,502 (589,251 × 2) as the 
+total number of registered voters in that year for Río Negro
+• Source:  Subnational Electoral Agencies
+Total Voters in Legislative Election (total_voters_sub_leg)
+• Description:  Indicates the total number of people who voted in subnational 
+legislative elections
+• Type:  Numeric (count)
+• Note:  Includes votes for parties, blank votes, and null votes.
+
+=== PAGE 31 ===
+31
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTIn states with mixed electoral systems, the total number of voters equals the sum of 
+those counted across all districts. For example, Río Negro’s (Argentina) legislature 
+is made up of 46 seats/legislators. 24 legislators are elected in selected electoral 
+districts, while 22 are elected to represent the province as a single district. In the 
+2023 legislative election there were a total of 400,227 voters for the former, and 
+400,993 voters for the latter. Accordingly, the database records 801,220 (400,227 + 
+400,993) as the total number of voters for Río Negro in that year
+• Source: Subnational Electoral Agencies
+Voter Turnout in Legislative Election (perc_voters_sub_leg)
+• Description:  Indicates the voter turnout rate for subnational legislative elections
+• Type:  Numeric (percentage)
+• Formula:  (total_voters_sub_leg  / voters_registered_sub_leg ) × 100
+• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Valid Votes in Legislative Election (valid_votes_sub_leg)
+• Description:  Indicates the total number of valid votes for subnational legislative 
+elections
+• Type:  Numeric (count)
+• Note: Official records sometimes report the same number of valid votes and 
+positive votes for selected electoral years. Additionally, the number of valid votes 
+in states with mixed electoral systems equals the sum of valid votes obtained by 
+each party across all electoral districts
+• Source: Subnational Electoral Agencies
+Percentage of Valid Votes in Legislative Election (perc_
+valid_votes_sub_leg)
+• Description:  Indicates the percentage of valid votes in legislative elections
+• Type:  Numeric (percentage)
+• Formula:  (valid_votes_sub_leg  / total_voters_sub_leg ) × 100
+• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Party Name in Legislative Election (party_name_sub_leg)
+• Description:  Indicates the political party’s or electoral coalition’s name competing 
+in subnational legislative elections
+• Type:  Text
+
+=== PAGE 32 ===
+32
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Source:  Subnational Politics Project , own coding based on subnational electoral 
+agencies
+Party Votes in Legislative Election (total_votes_party_sub_leg)
+• Description:  Indicates the total number of people who voted for a party/electoral 
+coalition in subnational legislative elections
+• Type:  Numeric (count)
+• Note: In states with mixed electoral systems, the total number of votes obtained 
+by each party equals the sum of votes cast across all districts. For example, Río 
+Negro’s (Argentina) legislature is made up of 46 seats/legislators. 24 legislators 
+are elected in selected electoral districts, while 22 are elected to represent the 
+province as a single district. In the 2023 elections, Juntos Somos Río Negro 
+obtained 101,159 votes across the electoral districts and 85,592 votes in the single 
+provincial district, for a total of 186,751 votes. Accordingly, the database records 
+186,751 as the total votes obtained by that party in that year
+• Source:  Subnational Electoral Agencies
+Percentage of Party Votes in Legislative Election (perc_
+votes_party_sub_leg)
+• Description:  Indicates the party/electoral coalition’s percentage of votes obtained 
+in subnational legislative elections
+• Type:  Numeric (percentage)
+• Formula:  (total_votes_party_sub_leg  / valid_votes_sub_leg ) × 100
+• Source: Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Party Seats (total_seats_party_sub_leg)
+• Description:  Indicates the number of seats obtained by the party/electoral 
+coalition in subnational legislative elections
+• Type:  Numeric (count)
+• Note: In states with mixed electoral systems, the total number of seats obtained 
+by each party equals the sum of seats cast across all districts. For example, in the 
+Río Negro (Argentina) elections, 24 legislators are elected per electoral district, 
+while another 22 are elected using the province as a single district. In the 2023 
+elections, Juntos Somos Río Negro obtained 13 seats across the electoral districts 
+and 6 seats in the single provincial district, for a total of 19 seats. Accordingly, the 
+database records 19 as the total seats obtained by that party in that year
+• Source: subnational legislatures and subnational electoral agencies
+
+=== PAGE 33 ===
+33
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTPercentage of Party Seats in Legislative Election (perc_
+seats_party_sub_leg)
+• Description:  Indicates the percentage of seats obtained by the party/electoral 
+coalition in subnational legislative elections
+• Type:  Numeric (percentage)
+• Formula:  (total_seats_party_sub_leg  / total_seats_in_contest_sub_leg ) × 100
+• Source: Subnational Politics Project , own calculations from total_seats_party_
+sub_leg  variable
+Number of Blank Votes (blank_votes_sub_leg)
+• Description:  Indicates the number of blank votes in subnational legislative 
+elections
+• Type:  Numeric (count)
+• Note: The number of blank votes in states with mixed electoral systems equals 
+the sum of blank votes obtained by each party across all electoral districts
+• Source:  Subnational Electoral Agencies
+Number of Null Votes (null_votes_sub_leg)
+• Description:  Indicates the number of null votes in subnational legislative 
+elections
+• Type:  Numeric (count)
+• Note: The number of null votes in states with mixed electoral systems equals the 
+sum of null votes obtained by each party across all electoral districts
+• Source:  Subnational Electoral Agencies
+Number of Challenged Votes (challenged_votes_sub_leg)
+• Description:  Indicates the number of challenged votes in subnational legislative 
+elections
+• Type:  Numeric (count)
+• Note: The number of challenged votes in states with mixed electoral systems 
+equals the sum of challenged votes obtained by each party across all electoral 
+districts
+• Source: Subnational Electoral Agencies
+Number of Contested Votes (contested_votes_sub_leg)
+• Description:  Indicates the number of contested votes in subnational legislative 
+elections
+
+=== PAGE 34 ===
+34
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Type:  Numeric (count)
+• Note: In Argentina this is called ‘votos de identidad impugnada’. The number 
+of contested votes in states with mixed electoral systems equals the sum of 
+contested votes obtained by each party across all electoral districts
+• Source: Subnational Electoral Agencies
+Number of Votes Offset by Discrepancy (compensation_
+for_record_discrepancy_votes_sub_leg)
+• Description:  Indicates the number of votes offset by discrepancy in the tally 
+sheets in subnational legislative elections
+• Type:  Numeric (count)
+• Source: Subnational Electoral Agencies
+Margin of Victory in Legislative Election (margin_victory_
+sub_leg)
+• Description:  Indicates the margin of victory between the winner and runner-up 
+in subnational legislative elections
+• Type:  Numeric (percentage)
+• Formula:  percentage of votes obtained by the winning party - percentage of 
+votes obtained by the second-place party
+• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Cumulative Legislative Elections (cumulative_elections_
+year_sub_leg)
+• Description:  Indicates the cumulative count of subnational legislative elections
+• Type:  Numeric (count)
+• Note:  Running total from beginning of data series
+• Source:  Subnational Politics Project , own coding based on subnational electoral 
+agencies
+Subnational Legislative Elections Concurrent with National 
+Elections (concurrent_election_with_nat_sub_leg)
+• Description:  Indicates whether gubernatorial and presidential elections were 
+held during the same year
+• Type:  Binary
+• Values:
+
+=== PAGE 35 ===
+35
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT о1 = Concurrent election year (both gubernatorial and presidential elections 
+held)
+ о0 = Non-concurrent year (only one type of election or neither)
+• Measurement:  Based on calendar year, not exact election dates
+• Note:  Important for analyzing electoral coattail effects and vertical electoral 
+coordination
+• Examples:
+ оConcurrent (1):  Brazil, 2018 - All states elect governors in October alongside 
+presidential election
+ оConcurrent (1):  Mexico, 2018 - 9 states (including CDMX, Jalisco, and Morelos) 
+hold gubernatorial elections same year as presidential
+ оNon-concurrent (0):  Argentina, 2017 - No presidential election, but several 
+provinces (Buenos Aires, Córdoba, etc.) elect governors
+ оNon-concurrent (0):  Mexico, 2019 - No presidential election, but Baja California 
+holds gubernatorial election
+ оCountry patterns:  Brazil always concurrent (every 4 years), Argentina/Mexico 
+mixed timing
+• Source:  Subnational Politics Project , own coding based on national and 
+subnational electoral agencies
+Number of Parties in Contest in Legislative Elections (num_
+parties_election_contest_sub_leg)
+• Description:  Indicates the number of parties that competed in subnational 
+legislative elections
+• Type:  Numeric (count)
+• Source:  Subnational Politics Project , own coding based on subnational electoral 
+agencies
+Total of Seats in Contest in Legislative Elections (total_
+seats_in_contest_sub_leg)
+• Description:  Indicates the number of seats in dispute in subnational legislative 
+elections
+• Type:  Numeric (count)
+• Note: For states with mixed electoral systems, the variable total_seats_contest 
+is defined as the sum of all seats in dispute across electoral districts within the 
+state. For example, in the 2023 Río Negro (Argentina) election, 46 seats where in 
+contest, where 24 legislators are elected to represent special electoral district, 
+
+=== PAGE 36 ===
+36
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTwhile 22 are elected to represent the province as a single district. The total 
+number of seats in the dataset for that state/year equals ‘46’
+• Source: Subnational Electoral Agencies
+Total of Seats in Chamber in Legislative Elections (total_
+chamber_seats_sub_leg)
+• Description:  Indicates the total seats in subnational lower/single chamber
+• Type:  Numeric (count)
+• Source: Subnational Electoral Agencies
+Number of Seats of Incumbent in Legislative Elections 
+(num_seats_incumbent_sub_leg)
+• Description:  Indicates the seats held by the governor’s party in subnational 
+legislatures
+• Type:  Numeric (count)
+• Note:  Excludes coalition partners; only the governor’s own party. Additionally, for 
+states with mixed electoral systems, the variable num_seats_incumbent_sub_
+leg is defined as the sum of all seats obtained by the incumbent party across 
+electoral districts within the state
+• Source:  Subnational Politics Project , own coding based on subnational electoral 
+agencies
+Percentage of Seats of Incumbent in Legislative Elections 
+(perc_seats_incumbent_sub_leg)
+• Description:  Indicates the percentage of legislative seats held by the governor’s 
+political party
+• Type:  Numeric (percentage)
+• Range:  0.0 to 100.0
+• Formula:  (num_seats_legislative_government  / num_legislative_seats ) × 100
+• Measurement Rules:
+ оParty identification:  Only counts seats won by the governor’s exact party
+ оCoalition exclusion:  Does not include allied or coalition parties
+ оIndependent governors:  Coded as 0 when governor has no party affiliation
+• Interpretation:
+ оValues > 50.0 = Governor’s party has legislative majority
+ оValues < 50.0 = Governor’s party in legislative minority
+
+=== PAGE 37 ===
+37
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Examples:
+ оStrong majority:  Veracruz, Mexico, 2016 - PAN Governor + 30 of 50 seats (60.0%)
+ оBare majority:  Minas Gerais, Brazil, 2018 - NOVO Governor + 38 of 77 seats 
+(49.4%)
+ оWeak minority:  Buenos Aires, Argentina, 2015 - Cambiemos Governor + 15 of 
+92 seats (16.3%)
+ оCoalition scenario:  Santa Fe, Argentina, 2019 - PJ Governor wins but allied 
+parties hold additional seats not counted in this variable
+ оIndependent governor:  Nuevo León, Mexico, 2015 - Independent Governor = 
+0.0% (no party affiliation)
+• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Number of Seats of Opposition in Legislative Elections 
+(num_seats_opos_sub_leg)
+• Description:  Indicates the seats held by opposition parties in subnational 
+legislatures
+• Type:  Numeric (count)
+• Note:  Includes all parties in the opposition. Additionally, for states with mixed 
+electoral systems, the variable num_seats_incumbent_sub_leg is defined as 
+the total number of seats won by opposition parties across all electoral districts 
+within the state
+• Source:  Subnational Politics Project , own coding based on subnational electoral 
+agencies
+Percentage of Seats of Opposition in Legislative Elections 
+(perc_seats_opos_sub_leg)
+• Description:  Indicates the percentage of legislative seats held by the opposition
+• Type:  Numeric (percentage)
+• Formula:  (num_seats_legislative_opos  / num_legislative_seats ) × 100
+• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Effective Number of Parties (Laakso and Taagepera, 1979) in 
+Leg. (enp_sub_leg)
+• Description:  Indicates the effective number of legislative parties
+• Type:  Numeric (continuous)
+
+=== PAGE 38 ===
+38
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Range:  1.0 to n (where n = theoretical maximum based on number of parties)
+• Formula:  ENPL = 1/Σ(vi²), where vi is the vote share of party i in legislative elections
+• Calculation:  Based on Laakso and Taagepera (1979) index using vote shares of all 
+competing parties in subnational legislative elections
+• Interpretation:
+ оValues near 1.0 = dominant party system in legislature
+ оValues near 2.0 = two-party competition
+ оHigher values = more fragmented party system
+• Examples:
+ оDominant system (ENP ≈ 1.1):  La Rioja, Argentina, 2023 - FRENTE DE TODOS 
+82.22% vs. JUNTOS POR EL CAMBIO 10.34%, LA LIBERTAD AVANZA 5.46%, 
+others 1.89%
+ оTwo-party competition (ENP ≈ 2. 0): Santa Cruz, Argentina, 1987 - FRENTE 
+RENOVADOR JUSTICIALISTA 49.35% vs. UNION CIVICA RADICAL 47.34% in 
+runoff
+ оFragmented system (ENP ≈ 3.8):  La Pampa, Argentina, 1983 - JUSTICIALISTA 
+40.38%, UNION CIVICA RADICAL 32.07%, MOVIMIENTO FEDERALISTA 
+PAMPEANO 19.62%, others 7.93%
+ оHighly fragmented (ENP ≈ 8. 9): Ciudad de Buenos Aires, Argentina, 2003 - 
+ALIANZA FUERZA PORTEÑA 13.84%, AUTODETERMINACIÓN Y LIBERTAD 
+12.53%, ALIANZA FRENTE DE LA ESPERANZA PORTEÑA
+ о12.20%, ALIANZA FRENTE COMPROMISO PARA EL CAMBIO 10.35%, others 
+51.13%
+• Note:  Measures party system fragmentation at the electoral level (votes) rather 
+than seat allocation
+• Source:  Subnational Politics Project , own calculation based on subnational 
+electoral agencies
+Type of Chamber (chamber_sub_leg)
+• Description:  Indicates the number of chambers in subnational legislatures
+• Type:  Categorical
+• Values:
+ о1 = Unicameral
+ о2 = Bicameral
+• Note:  Data captured for lower or single chamber only. The following Argentine 
+provincial changes are reflected:
+ оCórdoba was bicameral until the 2001 constitutional reform, when it became 
+unicameral
+
+=== PAGE 39 ===
+39
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT оSan Luis has been bicameral since 1987
+ оTucumán has been unicameral since 1990
+• Source:  Official records.
+Legislators’ Term Length (term_length_in_years_sub_leg)
+• Description:  Indicates the legislator’s tenure in years as of July 2025
+• Type:  Numeric (count)
+• Source: Official records. Latest version of provincial constitutions through July 
+2025
+Type of Renewal in Chamber (renewal_type_sub_leg)
+• Description:  Indicates the type of renewal per chamber as of July 2025
+• Type:  Categorical
+• Values:
+ о1 = Staggered every 2 years
+ о2 = Full renewal
+• Source:  Official records. Latest version of provincial constitutions through July 
+2025
+Type of Electoral System in Chamber (electoral_system_
+sub_leg)
+• Description:  Indicates the type of electoral system per chamber as of July 2025
+• Type:  Categorical
+• Values:
+ о1 = Proportional Representation
+ о2 = Simple Majority
+ о3 = Mixed (Proportional Representation and Simple Majority)
+ о4 = Mixed (Proportional Representation with predefined electoral districts)
+• Source:  Official records. Latest version of provincial constitutions through July 
+2025
+
+=== PAGE 40 ===
+40
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTSubnational Democracy Indices
+SUR Index Giraudy (2015) (SUR_index_giraudy_2015)
+• Description:  Measures levels of subnational democracy in Argentina and Mexico 
+(only)
+• Type:  Numeric (continuous)
+• Calculation:
+ оArgentina: turnover_sub_exe  + (contestation_sub_exe × contestation_sub_leg )
+ оMexico: turnover_sub_exe  + (contestation_sub_exe × contestation_sub_leg × 
+clean_elections_sub_exe)
+• Note:  Higher values indicate higher levels of subnational democracy. All individual 
+indicators are standardized between 0 and 1
+The values of this index are based on Giraudy (2015), and not on the individual 
+variables compiled by SPP
+• Source:  Giraudy (2015)
+SUR Index (SUR_index_sub_exe)
+• Description:  Measures levels of subnational democracy in the executive branch
+• Type:  Numeric (continuous)
+• Calculation:  turnover_sub_exe + contestation_sub_exe
+• Note:  Higher values indicate higher levels of subnational democracy. All individual 
+indicators are standardized between 0 and 1
+• Source:  Subnational Politics Project
+Subnational Contestation Executive (contestation_sub_exe)
+• Description:  Measures levels of subnational contestation (i.e., electoral 
+competitiveness) in the executive branch
+• Type:  Numeric (continuous)
+• Calculation:  ( enp_sub_exe + (1- margin_victory_sub_exe ))/2.
+• Note:  enp_sub_exe and margin_victory_sub_exe are standardized between 0 and 1
+• Source:  Subnational Politics Project
+Subnational Contestation Legislative (contestation_sub_leg)
+• Description:  Measures levels of subnational contestation (i.e., electoral 
+competitiveness) in the legislature branch
+• Type:  Numeric (continuous)
+
+=== PAGE 41 ===
+41
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT• Calculation:  ( enp_sub_leg + (1- margin_victory_sub_leg ))/2.
+• Note:  enp_sub_leg and margin_victory_sub_leg are standardized between 0 and 1
+• Source:  Giraudy (2015)
+Turnover Executive (turnover_sub_exe)
+• Description:  Average of governor turnover and party turnover at the subnational 
+executive in a given year
+• Type:  Numeric (continuous)
+• Calculation: (Governor turnover + Party turnover) /2
+ оArgentina: Governor turnover = 1 if governor in office for less than or equal to 
+3 consecutive terms, 0 otherwise (this rule follows Levitsky and Way (2010))
+ оParty turnover = 1 if party in office for less than or equal to 3 consecutive terms, 
+0 otherwise (this rule follows Levitsky and Way (2010))
+ оBrazil: Governor turnover = 1 if governor in office for less than or equal to 3 
+consecutive terms, 0 otherwise (this rule follows Levitsky and Way (2010))
+ оParty turnover = 1 if party in office for less than or equal to 3 consecutive terms, 
+0 otherwise (this rule follows Levitsky and Way (2010))
+ оMexico: Governor turnover = 1 if governor in office for less than 12 consecutive 
+years, 0 otherwise (this rule follows Levitsky and Way (2010))
+ оParty turnover = 1 if party in office for less than 12 consecutive years, 0 otherwise 
+(this rule follows Levitsky and Way (2010))
+• Note:  Governor turnover and Party turnover are standardized between 0 and 1
+• Source:  Subnational Politics Project
+Clean Elections Giraudy (2015) (clean_elections_sub_exe_
+giraudy_2015)
+• Description:  Clean Elections (Index of Post-electoral Conflict (Giraudy 2015)).
+• Calculation:  Duration and intensity of post-electoral conflict is calculated following 
+Eisentadt’s (2004) index. Post-electoral conflicts are defined as instances of social 
+mobilization following gubernatorial elections in which protestors demand a 
+vote recount. The Index of Post electoral conflict ranges from 0 to 3, where 3 = 
+absence of post electoral conflict, 2 = post electoral conflict lasted less than a 
+week (7 days), and there were no dead and/or human casualties, 1 = post electoral 
+conflict lasted more than a week (8 days to 30 days), and/or people were held in 
+custody, and/or there were human/material casualties, 0 = post electoral conflict 
+lasted more than one month and/or there were human deaths. Post electoral 
+conflicts were manually coded using local newspapers in all 32 states. A list of the 
+newspapers includes:
+
+=== PAGE 42 ===
+42
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTState Newspaper
+Aguascalientes Hidrocálido
+Baja CaliforniaSemanario Zeta
+El Mexicano
+Baja California Sur Sudcaliforniano
+Campeche Novedades de Campeche
+CoahuilaEl Sol del Norte
+El Siglo del Torreón
+Colima Diario de Colima
+Chiapas Cuarto Poder
+Chihuahua El Heraldo de Chihuahua
+Distrito Federal La Jornada
+Durango El Sol de Durango
+GuanajuatoEl Heraldo de León
+El Sol del Bajío
+El Universal
+GuerreroEl Sol de Chilpancingo
+El Sol de Acapulco
+Hidalgo El Sol de Hidalgo
+JaliscoEl Occidental
+Ocho Columnas
+Estado de MéxicoEl Demócrata
+El Sol de Toluca
+MichoacánEl Sol de Morelia
+Diario de Michoacán
+El Sol de Michoacán
+Morelos El Diario de Morelos
+NayaritMeridiano de Nayarit
+El Heraldo de Nayarit
+Nuevo León El Norte
+Oaxaca El Imparcial
+
+=== PAGE 43 ===
+43
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTState Newspaper
+PueblaEl Sol de Puebla
+El Heraldo de Puebla
+Novedades de Puebla
+Querétaro Diario de Querétaro
+Quintana Roo Novedades de Quintana Roo
+San Luis Potosí El Sol de San Luis
+Sinaloa El Sol de Sinaloa
+SonoraNuevo Día
+El Independiente
+El Imparcial
+TabascoMilenio Tabasco
+Avance
+El Heraldo
+Tamaulipas El Sol de Tampico
+TlaxcalaEl Sol de Tlaxcala
+ABC Noticias
+VeracruzEl Sol de Veracruz
+El Liberal Del Sur
+YucatánDiario de Yucatán
+Diario Sureste
+El Mundo al Día
+Zacatecas Novedades de Zacatecas
+• Coverage:  Mexico 2000-2009
+• Type:  Numeric (ordinal)
+• Source:  Giraudy (2015)
+
+=== PAGE 44 ===
+44
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTData Sources
+Primary Sources
+Argentina:
+• Dirección Nacional Electoral (argentina.gob.ar/dine)
+• Cámara Nacional Electoral
+• Selected Provincial Electoral Tribunals
+• Andy Tow’s Electoral Repository (andytow.com)
+Brazil:
+• Tribunal Superior Eleitoral (tse.jus.br)
+• ElectionsBR database (Meireles et al., 2016)
+• State Electoral Tribunals
+Mexico:
+• Instituto Nacional Electoral (ine.mx)
+• State Electoral Institutes (Instituto Electoral Estatal)
+
+=== PAGE 45 ===
+45
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTAppendices
+Appendix A: Subnational Units by Country
+Argentina (24 units)
+Buenos Aires, Ciudad Autónoma de Buenos Aires, Catamarca, Chaco, Chubut, Córdoba, 
+Corrientes, Entre Ríos, Formosa, Jujuy, La Pampa, La Rioja, Mendoza, Misiones, Neuquén, 
+Río Negro, Salta, San Juan, San Luis, Santa Cruz, Santa Fe, Santiago del Estero, Tierra del 
+Fuego, Tucumán
+Brazil (27 units)
+Acre, Alagoas, Amapá, Amazonas, Bahia, Ceará, Distrito Federal, Espírito Santo, Goiás, 
+Maranhão, Mato Grosso do Sul, Mato Grosso, Minas Gerais, Pará, Paraíba, Paraná, Per -
+nambuco, Piauí, Rio de Janeiro, Rio Grande do Norte, Rio Grande do Sul, Rondônia, Ror -
+aima, Santa Catarina, São Paulo, Sergipe, Tocantins
+Mexico (32 units)
+Aguascalientes, Baja California, Baja California Sur, Campeche, Ciudad de México, Chi -
+apas, Chihuahua, Coahuila, Colima, Durango, Guanajuato, Guerrero, Hidalgo, Jalisco, 
+México, Michoacán, Morelos, Nayarit, Nuevo León, Oaxaca, Puebla, Querétaro, Quintana 
+Roo, San Luis Potosí, Sinaloa, Sonora, Tabasco, Tamaulipas, Tlaxcala, Veracruz, Yucatán, 
+Zacatecas
+
+=== PAGE 46 ===
+46
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTAppendix B: State Codes by Country
+Table B.1: Complete List of Subnational Units with Codes
+CountryCountry 
+CodeState NameState 
+CodeCombined 
+CodeRegion
+Argentina 032
+Argentina 032 BUENOS AIRES 06 03206 PAMPA
+Argentina 032 CAPITAL FEDERAL 02 03202 PAMPA
+Argentina 032 CATAMARCA 10 03210 NOROESTE
+Argentina 032 CHACO 22 03222 NORDESTE
+Argentina 032 CHUBUT 26 03226 PATAGONIA
+Argentina 032 CORDOBA 14 03214 CENTRO
+Argentina 032 CORRIENTES 18 03218 NORDESTE
+Argentina 032 ENTRE RIOS 30 03230 CENTRO
+Argentina 032 FORMOSA 34 03234 NORDESTE
+Argentina 032 JUJUY 38 03238 NOROESTE
+Argentina 032 LA PAMPA 42 03242 PAMPA
+Argentina 032 LA RIOJA 46 03246 CUYO
+Argentina 032 MENDOZA 50 03250 CUYO
+Argentina 032 MISIONES 54 03254 NORDESTE
+Argentina 032 NEUQUEN 58 03258 PATAGONIA
+Argentina 032 RIO NEGRO 62 03262 PATAGONIA
+Argentina 032 SALTA 66 03266 NOROESTE
+Argentina 032 SAN JUAN 70 03270 CUYO
+
+=== PAGE 47 ===
+47
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTCountryCountry 
+CodeState NameState 
+CodeCombined 
+CodeRegion
+Argentina 032 SAN LUIS 74 03274 CUYO
+Argentina 032 SANTA CRUZ 78 03278 PATAGONIA
+Argentina 032 SANTA FE 82 03282 CENTRO
+Argentina 032SANTIAGO DEL 
+ESTERO86 03286 NOROESTE
+Argentina 032TIERRA DEL 
+FUEGO94 03294 PATAGONIA
+Argentina 032 TUCUMAN 90 03290 NOROESTE
+BRAZIL 076
+Brazil 076 ACRE 12 07612 NORTE
+Brazil 076 ALAGOAS 27 07627 NORDESTE
+Brazil 076 AMAPA 16 07616 NORTE
+Brazil 076 AMAZONAS 13 07613 NORTE
+Brazil 076 BAHIA 29 07629 NORDESTE
+Brazil 076 CEARA 23 07623 NORDESTE
+Brazil 076DISTRITO 
+FEDERAL53 07653CENTRO 
+OESTE
+Brazil 076 ESPIRITO SANTO 32 07632 SUDESTE
+Brazil 076 GOIAS 52 07652CENTRO 
+OESTE
+Brazil 076 MARANHAO 21 07621 NORDESTE
+Brazil 076MATO GROSSO 
+DO SUL50 07650CENTRO 
+OESTE
+
+=== PAGE 48 ===
+48
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTCountryCountry 
+CodeState NameState 
+CodeCombined 
+CodeRegion
+Brazil 076 MATO GROSSO 51 07651CENTRO 
+OESTE
+Brazil 076 MINAS GERAIS 31 07631 SUDESTE
+Brazil 076 PARA 15 07615 NORTE
+Brazil 076 PARAIBA 25 07625 NORDESTE
+Brazil 076 PARANA 41 07641 SUR
+Brazil 076 PERNAMBUCO 26 07626 NORDESTE
+Brazil 076 PIAUI 22 07622 NORDESTE
+Brazil 076 RIO DE JANEIRO 33 07633 SUDESTE
+Brazil 076RIO GRANDE DO 
+NORTE24 07624 NORDESTE
+Brazil 076RIO GRANDE DO 
+SUL43 07643 SUR
+Brazil 076 RONDÔNIA 11 07611 NORTE
+Brazil 076 RORAIMA 14 07614 NORTE
+Brazil 076 SANTA CATARINA 42 07642 SUR
+Brazil 076 SAO PAULO 35 07635 SUDESTE
+Brazil 076 SERGIPE 28 07628 NORDESTE
+Brazil 076 TOCANTINS 17 07617 NORTE
+MEXICO 484
+Mexico 484 AGUASCALIENTES 01 48401 OCCIDENTE
+Mexico 484 BAJA CALIFORNIA 02 48402 NOROESTE
+
+=== PAGE 49 ===
+49
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTCountryCountry 
+CodeState NameState 
+CodeCombined 
+CodeRegion
+Mexico 484BAJA CALIFORNIA 
+SUR03 48403 NOROESTE
+Mexico 484 CAMPECHE 04 48404 SUR
+Mexico 484 CDMX 09 48409CENTRO 
+SUR
+Mexico 484 CHIAPAS 07 48407 SUR
+Mexico 484 CHIHUAHUA 08 48408 NOROESTE
+Mexico 484 COAHUILA 05 48405 NORESTE
+Mexico 484 COLIMA 06 48406 OCCIDENTE
+Mexico 484 DURANGO 10 48410 NOROESTE
+Mexico 484 GUANAJUATO 11 48411CENTRO 
+NORTE
+Mexico 484 GUERRERO 12 48412 SUR
+Mexico 484 HIDALGO 13 48413CENTRO 
+NORTE
+Mexico 484 JALISCO 14 48414 OCCIDENTE
+Mexico 484 MEXICO 15 48415CENTRO 
+NORTE
+Mexico 484 MICHOACAN 16 48416 OCCIDENTE
+Mexico 484 MORELOS 17 48417CENTRO 
+SUR
+Mexico 484 NAYARIT 18 48418 NOROESTE
+Mexico 484 NUEVO LEON 19 48419 NORESTE
+Mexico 484 OAXACA 20 48420 ORIENTE
+
+=== PAGE 50 ===
+50
+Subnational Politics Project (SPP) • Codebook  SPPSUBNATIONAL  
+POLITICS  
+PROJECTCountryCountry 
+CodeState NameState 
+CodeCombined 
+CodeRegion
+Mexico 484 PUEBLA 21 48421CENTRO 
+SUR
+Mexico 484 QUERETARO 22 48422CENTRO 
+NORTE
+Mexico 484 QUINTANA ROO 23 48423 SUR
+Mexico 484 SAN LUIS POTOSI 24 48424CENTRO 
+NORTE
+Mexico 484 SINALOA 25 48425 NOROESTE
+Mexico 484 SONORA 26 48426 NOROESTE
+Mexico 484 TABASCO 27 48427 SUR
+Mexico 484 TAMAULIPAS 28 48428 NORESTE
+Mexico 484 TLAXCALA 29 48429CENTRO 
+SUR
+Mexico 484 VERACRUZ 30 48430 ORIENTE
+Mexico 484 YUCATAN 31 48431 SUR
+Mexico 484 ZACATECAS 32 48432CENTRO 
+NORTE
+
+=== PAGE 51 ===
+51
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTAppendix C: Key References
+Coppedge, Michael. 1997. “A classification of Latin American political parties.” Working 
+Paper #224 . Kellogg Institute.
+Giraudy, Agustina. 2015. Democrats and autocrats: Pathways of subnational undemo -
+cratic regime continuity within democratic countries . Oxford University Press.
+Laakso, Markku, and Rein Taagepera. 1979. “Effective number of parties: a measure with 
+application to West Europe.” Comparative Political Studies  12(1): 3-27.
+Meireles, Fernando, Denisson Silva, and Beatriz Costa. 2016. “electionsBR: R functions to 
+download and clean Brazilian electoral data.” Available at: http://electionsbr
+Murillo, María Victoria, Virginia Oliveros, and Milan Vaishnav. 2010. “Dataset on Political 
+Ideology of Presidents and Parties in Latin America.” Columbia University Press.
+Szajkowski, Bogdan. 2005. Political Parties of the World . 6th ed. London: John Harper.
+
+=== PAGE 52 ===
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT

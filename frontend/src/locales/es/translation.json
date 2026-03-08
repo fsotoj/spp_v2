@@ -104,5 +104,108 @@
     "principalInvestigator": "Investigadora Principal",
     "collaborator": "Colaborador/a",
     "researchAssistant": "Asistente de Investigación"
+  },
+  "methodology": {
+    "title": "Metodología",
+    "heading": "Manual de Codificación y Metodología",
+    "subheading": "Una referencia integral para las bases de datos del Subnational Politics Project, que cubre definiciones de variables, fuentes de datos y decisiones de codificación.",
+    "version": "Versión 1 — Octubre 2025",
+    "date": "Investigadora Principal: Agustina Giraudy",
+    "downloadCodebook": "Descargar Manual Completo",
+    "tableOfContents": "En esta página",
+    "nav": {
+      "introduction": "Introducción",
+      "databases": "Bases de Datos",
+      "coverage": "Cobertura por País",
+      "variables": "Variables",
+      "idVariables": "Variables Identificadoras",
+      "execVariables": "Variables del Ejecutivo",
+      "electoralExec": "Electoral — Ejecutivo",
+      "electoralLeg": "Electoral — Legislativo",
+      "democracyIndices": "Índices de Democracia",
+      "dataSources": "Fuentes de Datos",
+      "appendices": "Apéndices"
+    },
+    "introduction": {
+      "p1": "El Subnational Politics Project (SPP) es un esfuerzo sistemático para compilar, armonizar y difundir datos sobre instituciones políticas subnacionales y resultados electorales en América Latina. El proyecto cubre actualmente tres países — Argentina, Brasil y México — con más de cuatro décadas de política democrática.",
+      "p2": "Este manual documenta las variables incluidas en las seis bases de datos del SPP, las reglas de codificación aplicadas y las fuentes consultadas. Acompaña los conjuntos de datos alojados en Harvard Dataverse y está diseñado para garantizar un uso transparente y reproducible de los datos.",
+      "citationLabel": "Cita del manual:"
+    },
+    "databases": {
+      "p1": "El SPP publica seis bases de datos complementarias que capturan distintas dimensiones de la política subnacional. Cada una es citable de forma independiente y está alojada en Harvard Dataverse.",
+      "sed": {
+        "name": "Base de Datos del Ejecutivo Subnacional",
+        "desc": "Panel anual con datos sobre gobernadores, afiliación partidaria, ideología, género, alternancia y características del mandato.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández y Francisco Urdinez. 2025. 'Subnational Executive Database (SED) (v. 1).' Subnational Politics Project."
+      },
+      "seed": {
+        "name": "Base de Datos de Elecciones Ejecutivas Subnacionales",
+        "desc": "Datos a nivel electoral sobre contiendas gubernamentales: porcentajes de votos, márgenes de victoria, participación y número efectivo de partidos.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández y Francisco Urdinez. 2025. 'Subnational Executive Elections Database (SEED) (v. 1).' Subnational Politics Project."
+      },
+      "sled": {
+        "name": "Base de Datos de Elecciones Legislativas Subnacionales",
+        "desc": "Datos por partido sobre elecciones legislativas subnacionales: porcentaje de votos y escaños, sistemas electorales y composición de cámaras.",
+        "citation": "Giraudy, Agustina y Guadalupe Andrea Gonzalez. 2025. 'Subnational Legislative Elections Database (SLED) (v. 1).' Subnational Politics Project."
+      },
+      "sdi": {
+        "name": "Índices de Democracia Subnacional",
+        "desc": "Índices compuestos que miden la calidad democrática subnacional basados en la contestación electoral y la alternancia en el ejecutivo.",
+        "citation": "Giraudy, Agustina. 2025. 'Subnational Democracy Indices (SDI) (v. 1).' Subnational Politics Project."
+      },
+      "cftdfld": {
+        "name": "Base de Datos de Legislaturas de Capital Federal y Tierra del Fuego",
+        "desc": "Datos legislativos de la Capital Federal y Tierra del Fuego de Argentina, codificados por separado debido a sus características institucionales.",
+        "citation": "Giraudy, Agustina y Guadalupe Andrea Gonzalez. 2025. 'Capital Federal & Tierra Del Fuego Legislatures Database (CFTDFLD) (v. 1).' Subnational Politics Project."
+      },
+      "ned": {
+        "name": "Base de Datos del Ejecutivo Nacional",
+        "desc": "Panel anual con datos sobre presidentes y características del ejecutivo nacional, que permite análisis multinivel con datos subnacionales.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández y Francisco Urdinez. 2025. 'National Executive Database (NED) (v. 1).' Subnational Politics Project."
+      },
+      "structure": "Estructura de las Bases de Datos",
+      "structureDesc": "Todas las bases de datos están organizadas como paneles país-estado-año. Cada fila identifica de manera única una unidad subnacional en un año determinado. Las variables siguen una convención de nomenclatura consistente con sufijos (_sub_exe, _nat_exe, _sub_leg) para facilitar la fusión entre bases de datos.",
+      "quality": "Garantía de Calidad",
+      "qualityDesc": "Todas las variables fueron codificadas por un equipo de asistentes de investigación capacitados con manuales estandarizados. Las discrepancias se resolvieron mediante triangulación de al menos dos fuentes independientes. Las decisiones de codificación para casos ambiguos están documentadas en los apéndices por base de datos."
+    },
+    "coverage": {
+      "p1": "El SPP cubre actualmente tres países latinoamericanos con elecciones subnacionales para el ejecutivo y el legislativo. La cobertura temporal comienza en la primera elección competitiva tras la democratización de cada país.",
+      "countries": "Países cubiertos",
+      "units": "Unidades subnacionales",
+      "years": "Años de cobertura",
+      "variables": "Variables documentadas",
+      "country": "País",
+      "unitsCol": "Unidades",
+      "exeStart": "Inicio ejecutivo",
+      "legStart": "Inicio legislativo",
+      "note": "Nota: La cobertura de Argentina inicia en 1983 (retorno a la democracia), con Tierra del Fuego desde 1991 y CABA desde 1996. La cobertura sistemática de Brasil comienza en 1998, primer año con datos completamente verificados (fuente: TSE / ElectionsBR). El año de inicio en México varía por estado, generalmente entre 1985 y 1999."
+    },
+    "idVariables": {
+      "p1": "Todos los registros de las bases de datos del SPP incluyen variables identificadoras que permiten vincularlas entre sí y fusionarlas con fuentes externas como V-Dem, LAPOP y oficinas estadísticas nacionales."
+    },
+    "execVariables": {
+      "p1": "Las variables ejecutivas se distribuyen entre dos bases de datos: la Base de Datos del Ejecutivo Nacional (NED) para presidentes y la Base de Datos del Ejecutivo Subnacional (SED) para gobernadores. Ambas siguen las mismas convenciones de codificación.",
+      "nationalTitle": "Variables del Ejecutivo Nacional",
+      "subnationalTitle": "Variables del Ejecutivo Subnacional"
+    },
+    "electoralExec": {
+      "p1": "La Base de Datos de Elecciones Ejecutivas Subnacionales (SEED) proporciona datos a nivel electoral para cada contienda gubernamental en el universo de cobertura del SPP. Cada fila representa una elección en un estado."
+    },
+    "electoralLeg": {
+      "p1": "La Base de Datos de Elecciones Legislativas Subnacionales (SLED) proporciona datos por partido para las elecciones legislativas subnacionales. Cada fila representa los resultados de un partido en una elección en una cámara."
+    },
+    "democracyIndices": {
+      "p1": "La Base de Datos de Índices de Democracia Subnacional (SDI) ofrece medidas compuestas de la calidad democrática subnacional basadas en la alternancia de gobernadores y la contestación electoral. El Índice SUR (Giraudy 2015) es la medida principal, con subcomponentes estandarizados disponibles para agregación personalizada."
+    },
+    "dataSources": {
+      "p1": "Las fuentes de datos primarias varían según el país y la base de datos. Todos los datos electorales fueron obtenidos de fuentes oficiales y validados con bases de datos académicas secundarias.",
+      "p2": "La documentación de fuentes específicas por país y las notas de codificación de variables individuales están disponibles en los apéndices por base de datos descargables desde Harvard Dataverse."
+    },
+    "appendices": {
+      "p1": "El manual completo en PDF contiene apéndices con notas de codificación por país, el inventario completo de variables con estadísticas de cobertura y la lista de referencias clave.",
+      "fullCodebook": "Manual Completo (PDF):",
+      "fullCodebookDesc": "Para el inventario completo de variables, notas por país y mapas de cobertura, descargue el manual oficial.",
+      "keyRefsTitle": "Apéndice C: Referencias Clave"
+    }
   }
 }

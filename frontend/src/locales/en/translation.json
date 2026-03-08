@@ -104,5 +104,108 @@
     "principalInvestigator": "Principal Investigator",
     "collaborator": "Collaborator",
     "researchAssistant": "Research Assistant"
+  },
+  "methodology": {
+    "title": "Methodology",
+    "heading": "Codebook & Methodology",
+    "subheading": "A comprehensive reference for the Subnational Politics Project datasets, covering variable definitions, data sources, and coding decisions.",
+    "version": "Version 1 — October 2025",
+    "date": "Principal Investigator: Agustina Giraudy",
+    "downloadCodebook": "Download Full Codebook",
+    "tableOfContents": "On this page",
+    "nav": {
+      "introduction": "Introduction",
+      "databases": "Databases",
+      "coverage": "Country Coverage",
+      "variables": "Variables",
+      "idVariables": "Identifier Variables",
+      "execVariables": "Executive Variables",
+      "electoralExec": "Electoral — Executive",
+      "electoralLeg": "Electoral — Legislative",
+      "democracyIndices": "Democracy Indices",
+      "dataSources": "Data Sources",
+      "appendices": "Appendices"
+    },
+    "introduction": {
+      "p1": "The Subnational Politics Project (SPP) is a systematic effort to compile, harmonize, and disseminate data on subnational political institutions and electoral outcomes across Latin America. The project currently covers three countries — Argentina, Brazil, and Mexico — spanning over four decades of democratic politics.",
+      "p2": "This codebook documents the variables included in the six SPP databases, the coding rules applied, and the sources consulted. It accompanies the datasets hosted on Harvard Dataverse and is designed to ensure transparent, reproducible use of the data.",
+      "citationLabel": "Codebook citation:"
+    },
+    "databases": {
+      "p1": "The SPP releases six complementary databases capturing distinct dimensions of subnational politics. Each is independently citable and hosted on Harvard Dataverse.",
+      "sed": {
+        "name": "Subnational Executive Database",
+        "desc": "Annual panel data on governors, their party affiliation, ideology, gender, turnover, and tenure characteristics.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández, and Francisco Urdinez. 2025. 'Subnational Executive Database (SED) (v. 1).' Subnational Politics Project."
+      },
+      "seed": {
+        "name": "Subnational Executive Elections Database",
+        "desc": "Election-level data on gubernatorial contests: vote shares, margins of victory, turnout, and effective number of parties.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández, and Francisco Urdinez. 2025. 'Subnational Executive Elections Database (SEED) (v. 1).' Subnational Politics Project."
+      },
+      "sled": {
+        "name": "Subnational Legislative Elections Database",
+        "desc": "Party-level data on subnational legislative elections including vote shares, seat shares, electoral systems, and chamber composition.",
+        "citation": "Giraudy, Agustina, and Guadalupe Andrea Gonzalez. 2025. 'Subnational Legislative Elections Database (SLED) (v. 1).' Subnational Politics Project."
+      },
+      "sdi": {
+        "name": "Subnational Democracy Indices",
+        "desc": "Composite indices measuring subnational democratic quality based on electoral contestation and executive turnover.",
+        "citation": "Giraudy, Agustina. 2025. 'Subnational Democracy Indices (SDI) (v. 1).' Subnational Politics Project."
+      },
+      "cftdfld": {
+        "name": "Capital Federal & Tierra del Fuego Legislatures Database",
+        "desc": "Legislative data for Argentina's Capital Federal and Tierra del Fuego, coded separately due to their distinct institutional features.",
+        "citation": "Giraudy, Agustina, and Guadalupe Andrea Gonzalez. 2025. 'Capital Federal & Tierra Del Fuego Legislatures Database (CFTDFLD) (v. 1).' Subnational Politics Project."
+      },
+      "ned": {
+        "name": "National Executive Database",
+        "desc": "Annual panel data on presidents and national executive characteristics, enabling cross-level analysis with subnational data.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández, and Francisco Urdinez. 2025. 'National Executive Database (NED) (v. 1).' Subnational Politics Project."
+      },
+      "structure": "Database Structure",
+      "structureDesc": "All databases are organized as country-state-year panel datasets. Each row uniquely identifies a subnational unit in a given year. Variables follow a consistent naming convention using suffixes (_sub_exe, _nat_exe, _sub_leg) to facilitate merging across databases.",
+      "quality": "Quality Assurance",
+      "qualityDesc": "All variables were coded by a team of trained research assistants using standardized coding manuals. Discrepancies were resolved through triangulation across at least two independent sources. Coding decisions for ambiguous cases are documented in database-level appendices."
+    },
+    "coverage": {
+      "p1": "The SPP currently covers three Latin American countries with subnational elections for executive and legislative office. Temporal coverage begins at the first competitive subnational election following each country's democratization.",
+      "countries": "Countries covered",
+      "units": "Subnational units",
+      "years": "Years of coverage",
+      "variables": "Variables documented",
+      "country": "Country",
+      "unitsCol": "Units",
+      "exeStart": "Executive start",
+      "legStart": "Legislative start",
+      "note": "Note on coverage: Argentina's coverage begins in 1983 (return to democracy), with Tierra del Fuego from 1991 and CABA from 1996. Brazil's systematic coverage starts in 1998, the earliest year with fully verified data (source: TSE / ElectionsBR). Mexico's start year varies by state, generally between 1985 and 1999."
+    },
+    "idVariables": {
+      "p1": "Every record across all SPP databases includes a set of identifier variables that enable linking and merging with external data sources such as V-Dem, LAPOP, and national statistical offices."
+    },
+    "execVariables": {
+      "p1": "Executive variables are split across two databases: the National Executive Database (NED) for presidents, and the Subnational Executive Database (SED) for governors. Both follow identical coding conventions.",
+      "nationalTitle": "National Executive Variables",
+      "subnationalTitle": "Subnational Executive Variables"
+    },
+    "electoralExec": {
+      "p1": "The Subnational Executive Elections Database (SEED) provides election-level data for each gubernatorial contest in the SPP coverage universe. Each row represents one election in one state."
+    },
+    "electoralLeg": {
+      "p1": "The Subnational Legislative Elections Database (SLED) provides party-level data for subnational legislative elections. Each row represents one party's results in one election in one chamber."
+    },
+    "democracyIndices": {
+      "p1": "The Subnational Democracy Indices database (SDI) provides composite measures of subnational democratic quality based on gubernatorial turnover and electoral contestation. The SUR Index (Giraudy 2015) is the primary measure, with standardized sub-components available for custom aggregation."
+    },
+    "dataSources": {
+      "p1": "Primary data sources vary by country and database. All electoral data was obtained from official government sources and cross-validated with secondary academic databases.",
+      "p2": "Country-specific source documentation and coding notes for individual variables are available in the per-database appendices downloadable from Harvard Dataverse."
+    },
+    "appendices": {
+      "p1": "The full codebook PDF contains appendices documenting country-specific coding notes, a complete variable inventory with coverage statistics, and the list of key references.",
+      "fullCodebook": "Full Codebook (PDF):",
+      "fullCodebookDesc": "For the complete variable inventory, country notes, and coverage maps, download the official codebook.",
+      "keyRefsTitle": "Appendix C: Key References"
+    }
   }
 }

@@ -12,14 +12,22 @@ export function LandingPage() {
             <TeamSection />
 
             {/* ── Footer ────────────────────────────────────────────────── */}
-            <footer className="py-12 border-t border-slate-100">
-                <div className="max-w-7xl mx-auto px-6 text-center text-slate-400 text-[10px] font-bold uppercase tracking-widest flex flex-col gap-2">
-                    <div>&copy; {new Date().getFullYear()} Subnational Politics Project</div>
-                    <div>
-                        Designed by:{' '}
-                        <a href="https://www.linkedin.com/in/felipesotojorquera/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-400 transition-colors">
-                            Felipe Soto Jorquera
-                        </a>
+            <footer className="py-16 border-t border-slate-100 bg-slate-50/50">
+                <div className="max-w-7xl mx-auto px-6 flex flex-col items-center gap-8">
+                    <img 
+                        src="/EscuelaCienciasSocialesyGobierno_Horizontal_Blanco.webp" 
+                        alt="Escuela de Ciencias Sociales y Gobierno" 
+                        className="header-university-logo h-10 w-auto opacity-40 hover:opacity-100 transition-all duration-500"
+                    />
+                    
+                    <div className="flex flex-col items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                        <div>&copy; {new Date().getFullYear()} Subnational Politics Project</div>
+                        <div>
+                            Designed by:{' '}
+                            <a href="https://www.linkedin.com/in/felipesotojorquera/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-400 transition-colors">
+                                Felipe Soto Jorquera
+                            </a>
+                        </div>
                     </div>
                 </div>
             </footer>

@@ -104,5 +104,108 @@
     "principalInvestigator": "Hauptforscherin",
     "collaborator": "Mitarbeiter/in",
     "researchAssistant": "Forschungsassistent/in"
+  },
+  "methodology": {
+    "title": "Methodik",
+    "heading": "Kodebuch & Methodik",
+    "subheading": "Eine umfassende Referenz für die Datensätze des Subnational Politics Project, die Variablendefinitionen, Datenquellen und Kodierungsentscheidungen abdeckt.",
+    "version": "Version 1 — Oktober 2025",
+    "date": "Hauptforscherin: Agustina Giraudy",
+    "downloadCodebook": "Vollständiges Kodebuch herunterladen",
+    "tableOfContents": "Auf dieser Seite",
+    "nav": {
+      "introduction": "Einleitung",
+      "databases": "Datenbanken",
+      "coverage": "Länderabdeckung",
+      "variables": "Variablen",
+      "idVariables": "Identifikatorvariablen",
+      "execVariables": "Exekutive Variablen",
+      "electoralExec": "Wahlen — Exekutive",
+      "electoralLeg": "Wahlen — Legislative",
+      "democracyIndices": "Demokratieindizes",
+      "dataSources": "Datenquellen",
+      "appendices": "Anhänge"
+    },
+    "introduction": {
+      "p1": "Das Subnational Politics Project (SPP) ist ein systematisches Bemühen, Daten zu subnationalen politischen Institutionen und Wahlergebnissen in Lateinamerika zu kompilieren, zu harmonisieren und zu verbreiten. Das Projekt umfasst derzeit drei Länder — Argentinien, Brasilien und Mexiko — über mehr als vier Jahrzehnte demokratischer Politik.",
+      "p2": "Dieses Kodebuch dokumentiert die Variablen in den sechs SPP-Datenbanken, die angewandten Kodierungsregeln und die konsultierten Quellen. Es begleitet die auf Harvard Dataverse gehosteten Datensätze und gewährleistet eine transparente, reproduzierbare Nutzung der Daten.",
+      "citationLabel": "Kodebuch-Zitierweise:"
+    },
+    "databases": {
+      "p1": "Das SPP veröffentlicht sechs komplementäre Datenbanken, die verschiedene Dimensionen der subnationalen Politik erfassen. Jede ist unabhängig zitierbar und auf Harvard Dataverse gehostet.",
+      "sed": {
+        "name": "Subnationale Exekutivdatenbank",
+        "desc": "Jährliche Paneldaten zu Gouverneuren, Parteizugehörigkeit, Ideologie, Geschlecht, Wechsel und Amtscharakteristika.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández und Francisco Urdinez. 2025. 'Subnational Executive Database (SED) (v. 1).' Subnational Politics Project."
+      },
+      "seed": {
+        "name": "Subnationale Exekutivwahlendatenbank",
+        "desc": "Wahlbezogene Daten zu Gouverneurswahlen: Stimmenanteile, Siegesmargen, Wahlbeteiligung und effektive Parteienanzahl.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández und Francisco Urdinez. 2025. 'Subnational Executive Elections Database (SEED) (v. 1).' Subnational Politics Project."
+      },
+      "sled": {
+        "name": "Subnationale Legislativwahlendatenbank",
+        "desc": "Parteiebene-Daten zu subnationalen Legislativwahlen: Stimm- und Sitzanteile, Wahlsysteme und Kammerzusammensetzung.",
+        "citation": "Giraudy, Agustina und Guadalupe Andrea Gonzalez. 2025. 'Subnational Legislative Elections Database (SLED) (v. 1).' Subnational Politics Project."
+      },
+      "sdi": {
+        "name": "Subnationale Demokratieindizes",
+        "desc": "Zusammengesetzte Indizes zur Messung der subnationalen Demokratiequalität anhand von Wahlwettbewerb und exekutivem Wechsel.",
+        "citation": "Giraudy, Agustina. 2025. 'Subnational Democracy Indices (SDI) (v. 1).' Subnational Politics Project."
+      },
+      "cftdfld": {
+        "name": "Datenbank der Gesetzgebenden Körperschaften von Capital Federal & Tierra del Fuego",
+        "desc": "Legislativdaten für Argentiniens Capital Federal und Tierra del Fuego, getrennt kodiert aufgrund ihrer besonderen institutionellen Merkmale.",
+        "citation": "Giraudy, Agustina und Guadalupe Andrea Gonzalez. 2025. 'Capital Federal & Tierra Del Fuego Legislatures Database (CFTDFLD) (v. 1).' Subnational Politics Project."
+      },
+      "ned": {
+        "name": "Nationale Exekutivdatenbank",
+        "desc": "Jährliche Paneldaten zu Präsidenten und nationalen Exekutivmerkmalen für länderübergreifende Analysen mit subnationalen Daten.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández und Francisco Urdinez. 2025. 'National Executive Database (NED) (v. 1).' Subnational Politics Project."
+      },
+      "structure": "Datenbankstruktur",
+      "structureDesc": "Alle Datenbanken sind als Länder-Staat-Jahr-Paneldatensätze organisiert. Jede Zeile identifiziert eindeutig eine subnationale Einheit in einem bestimmten Jahr. Variablen folgen einer konsistenten Benennungskonvention mit Suffixen (_sub_exe, _nat_exe, _sub_leg), um das Zusammenführen zu erleichtern.",
+      "quality": "Qualitätssicherung",
+      "qualityDesc": "Alle Variablen wurden von einem Team ausgebildeter Forschungsassistenten anhand standardisierter Kodierungshandbücher kodiert. Diskrepanzen wurden durch Triangulation aus mindestens zwei unabhängigen Quellen gelöst. Kodierungsentscheidungen für mehrdeutige Fälle sind in den datenbankspezifischen Anhängen dokumentiert."
+    },
+    "coverage": {
+      "p1": "Das SPP umfasst derzeit drei lateinamerikanische Länder mit subnationalen Wahlen für das Exekutiv- und Legislativamt. Die zeitliche Abdeckung beginnt bei der ersten kompetitiven subnationalen Wahl nach der Demokratisierung jedes Landes.",
+      "countries": "Abgedeckte Länder",
+      "units": "Subnationale Einheiten",
+      "years": "Jahre der Abdeckung",
+      "variables": "Dokumentierte Variablen",
+      "country": "Land",
+      "unitsCol": "Einheiten",
+      "exeStart": "Exekutivstart",
+      "legStart": "Legislativstart",
+      "note": "Hinweis: Die Abdeckung Argentiniens beginnt 1983 (Rückkehr zur Demokratie), Tierra del Fuego ab 1991 und CABA ab 1996. Brasiliens systematische Abdeckung beginnt 1998, dem ersten Jahr mit vollständig verifizierten Daten (Quelle: TSE / ElectionsBR). Mexikos Startjahr variiert je nach Bundesstaat, im Allgemeinen zwischen 1985 und 1999."
+    },
+    "idVariables": {
+      "p1": "Alle Datensätze der SPP-Datenbanken enthalten Identifikatorvariablen, die die Verknüpfung untereinander und die Zusammenführung mit externen Quellen wie V-Dem, LAPOP und nationalen Statistikämtern ermöglichen."
+    },
+    "execVariables": {
+      "p1": "Exekutive Variablen sind auf zwei Datenbanken aufgeteilt: die Nationale Exekutivdatenbank (NED) für Präsidenten und die Subnationale Exekutivdatenbank (SED) für Gouverneure. Beide folgen identischen Kodierungskonventionen.",
+      "nationalTitle": "Nationale Exekutivvariablen",
+      "subnationalTitle": "Subnationale Exekutivvariablen"
+    },
+    "electoralExec": {
+      "p1": "Die Subnationale Exekutivwahlendatenbank (SEED) bietet wahlbezogene Daten für jeden Gouverneurswettbewerb im SPP-Abdeckungsuniversum. Jede Zeile repräsentiert eine Wahl in einem Bundesstaat."
+    },
+    "electoralLeg": {
+      "p1": "Die Subnationale Legislativwahlendatenbank (SLED) bietet parteiebene Daten für subnationale Legislativwahlen. Jede Zeile repräsentiert die Ergebnisse einer Partei bei einer Wahl in einer Kammer."
+    },
+    "democracyIndices": {
+      "p1": "Die Subnationale Demokratieindizes-Datenbank (SDI) bietet zusammengesetzte Maße der subnationalen Demokratiequalität basierend auf Gouverneurswechsel und Wahlwettbewerb. Der SUR-Index (Giraudy 2015) ist das Hauptmaß, mit standardisierten Teilkomponenten für individuelle Aggregation."
+    },
+    "dataSources": {
+      "p1": "Die primären Datenquellen variieren je nach Land und Datenbank. Alle Wahldaten wurden aus offiziellen Regierungsquellen bezogen und mit sekundären akademischen Datenbanken kreuzkontrolliert.",
+      "p2": "Länderspezifische Quelldokumentation und Kodierungsnotizen für einzelne Variablen sind in den datenbankspezifischen Anhängen verfügbar, die über Harvard Dataverse heruntergeladen werden können."
+    },
+    "appendices": {
+      "p1": "Das vollständige Kodebuch-PDF enthält Anhänge mit länderspezifischen Kodierungsnotizen, einem vollständigen Variableninventar mit Abdeckungsstatistiken und der Schlüsselreferenzliste.",
+      "fullCodebook": "Vollständiges Kodebuch (PDF):",
+      "fullCodebookDesc": "Für das vollständige Variableninventar, Ländernotizen und Abdeckungskarten laden Sie das offizielle Kodebuch herunter.",
+      "keyRefsTitle": "Anhang C: Schlüsselreferenzen"
+    }
   }
 }

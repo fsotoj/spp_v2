@@ -305,8 +305,12 @@ body {
   backdrop-filter: none !important;
 }
 
-.header--scrolled .header-university-logo {
+.header-university-logo {
   filter: brightness(0);
+}
+
+.header--top .header-university-logo {
+  filter: none;
 }
 
 .header--top .header-link {

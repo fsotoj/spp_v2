@@ -1,0 +1,85 @@
+Table of Contents found:
+- _heading=h.wc20x0qkfn81
+- _heading=h.jlvi40jui4qh
+- _heading=h.kffiy87a147y
+- _heading=h.3qko959c6pr1
+- _heading=h.9fxrbqub47zy
+- _heading=h.xhl3yovgkea
+- _heading=h.qkg5v563mpm5
+- _heading=h.67zu9o8fjl8t
+- _heading=h.ntjklq7x53yp
+- Introduction
+- Databases
+- Country Coverage and Temporal Scope
+- Description of Individual Variables
+- Executive Branch Variables
+- Electoral Variables
+- Data Sources
+- Appendices
+- Appendix C: Key References
+
+
+First 5 pages text preview:
+--- Page 1 ---
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT
+CODEBOOK
+
+--- Page 2 ---
+SPPSUBNATIONAL  
+POLITICS  
+PROJECT
+Principal Investigator
+Agustina Giraudy American University / Tecnológico de Monterrey
+Collaborators
+Francisco Urdinez Universidad Católica de Chile
+Guadalupe González University of Maryland, College Park
+Felipe Soto Jorquera Hertie School, Berlin
+Research Assistant
+Sergio Huertas Hernández Universidad Católica de Chile
+Version:  1
+Date:  October 2025
+Suggested 
+--- Page 3 ---
+Suggested Citation for Each Database
+Database Name Abbreviation Suggested Citation
+Subnational 
+Executive DatabaseSED Giraudy, Agustina, Guadalupe Andrea 
+Gonzalez, Sergio Huertas-Hernández, and 
+Francisco Urdinez. 2025. “Subnational 
+Executive Database (SED) (v. 1).” 
+Subnational Politics Project. https://doi.
+org/doi:10.7910/DVN/1D3P3J
+Subnational 
+Executive Elections 
+DatabaseSEED Giraudy, Agus
+--- Page 4 ---
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTIntroduction 7
+Databases 8
+Databases’ Structure 8
+Intellectual Property 8
+Quality Assurance 9
+Variable Information 9
+Country Coverage and Temporal Scope 11
+Note on Coverage 11
+Description of Individual Variables 13
+Identifier Variables 13
+Country Name (country_name) 13
+Country Code (country_code) 13
+State Name (state_name) 13
+State Code (state_code) 14
+Country St
+--- Page 5 ---
+5
+SPPSUBNATIONAL  
+POLITICS  
+PROJECTGubernatorial Term Length (term_length_in_years_sub_exe) 19
+Governor Turnover (turnover_head_sub_exe) 20
+Cumulative Changes of Governor (cumulative_changes_head_sub_exe) 20
+Governor Early Exit (early_exit_sub_exe) 20
+Governor Reelection (consecutive_reelection_sub_exe) 21
+Governor Years in Power (cumulative_years_in_power_sub_exe) 21
+Governor Party (head_party_

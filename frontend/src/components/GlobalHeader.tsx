@@ -79,9 +79,9 @@ export function GlobalHeader() {
 
     return (
         <>
-            <header className={`fixed top-0 left-0 w-full h-20 z-[1000] flex items-center justify-between px-4 md:px-12 transition-all duration-300 ${headerVariantClass}`}>
+            <header className={`fixed top-0 left-0 w-full h-20 z-[1000] flex items-center px-4 md:px-12 transition-all duration-300 ${headerVariantClass}`}>
                 {/* Left: Branding */}
-                <div className="flex items-center gap-4">
+                <div className="flex-1 md:flex-none flex justify-start">
                     <Link to="/" className="flex items-center group transition-transform hover:scale-105 active:scale-95">
                         <img src={isScrolled ? "/SPP.svg" : "/SPP_blanco.svg"} className="h-10 md:h-12 header-logo transition-all duration-300" alt="SPP Logo" />
                     </Link>
@@ -155,35 +155,76 @@ export function GlobalHeader() {
 
                     <div className="h-6 w-px bg-slate-200 mx-2 transition-colors duration-300" />
 
-                    <img
-                        src="/EscuelaCienciasSocialesyGobierno_Horizontal_Blanco.webp"
-                        alt="Escuela de Ciencias Sociales y Gobierno — Tecnológico de Monterrey"
-                        className="header-university-logo h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-all duration-300"
-                    />
+                    <a 
+                        href="https://egobiernoytp.tec.mx/es/escuela-de-ciencias-sociales-y-gobierno" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center"
+                    >
+                        <img
+                            src="/EscuelaCienciasSocialesyGobierno_Horizontal_Blanco.webp"
+                            alt="Escuela de Ciencias Sociales y Gobierno — Tecnológico de Monterrey"
+                            className="header-university-logo h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-all duration-300"
+                        />
+                    </a>
                 </nav>
 
                 {/* Right: Mobile Hamburger */}
-                <button
-                    className="header-link md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-all duration-300"
-                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                    aria-label="Toggle navigation menu"
-                >
-                    {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                </button>
+                <div className="md:hidden flex items-center">
+                    <button
+                        className={`p-2 -mr-2 rounded-xl transition-all duration-300 ${isHomePage && !isScrolled ? 'text-white' : 'text-slate-600'}`}
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        aria-label="Toggle navigation menu"
+                    >
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                </div>
             </header>
 
             {/* Mobile Slide-Down Drawer */}
             {isMobileMenuOpen && (
-                <div className="md:hidden fixed top-20 left-0 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xl z-[99] animate-in fade-in slide-in-from-top-2 duration-200">
-                    <nav className="flex flex-col p-4 gap-1">
-                        <MobileNavLink path="/" label={t('nav.home')} active={location.pathname === '/'} onClick={() => setIsMobileMenuOpen(false)} />
-                        <MobileNavLink path="/explore" label={`🗺 ${t('nav.mappingTool')}`} active={location.pathname === '/explore'} onClick={() => setIsMobileMenuOpen(false)} />
-                        <MobileNavLink path="/methodology" label={t('nav.methods')} active={location.pathname === '/methodology'} onClick={() => setIsMobileMenuOpen(false)} />
-                        <MobileNavLink path="/data" label={t('nav.data')} active={location.pathname === '/data'} onClick={() => setIsMobileMenuOpen(false)} />
-                        <MobileNavLink path="/about" label={t('nav.about')} active={location.pathname === '/about'} onClick={() => setIsMobileMenuOpen(false)} />
+                <div className="md:hidden fixed top-20 left-0 w-full bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-2xl z-[99] animate-in fade-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-100px)] overflow-y-auto">
+                    <nav className="flex flex-col p-4 gap-4">
+                        {/* Primary Links */}
+                        <div className="flex flex-col gap-1">
+                            <MobileNavLink path="/" label={t('nav.home')} active={location.pathname === '/'} onClick={() => setIsMobileMenuOpen(false)} />
+                            
+                            {/* Explore Section */}
+                            <div className="flex flex-col gap-3 py-2">
+                                <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest px-4">{t('nav.explore')}</h3>
+                                <div className="grid gap-2">
+                                    <ToolLink
+                                        to="/explore"
+                                        icon={<Map size={20} />}
+                                        label={t('nav.mappingTool')}
+                                        active={location.pathname === '/explore'}
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    />
+                                    <ToolLink
+                                        to="#"
+                                        icon={<BarChart3 size={20} />}
+                                        label={t('nav.graphTool')}
+                                        disabled
+                                        soonLabel={t('nav.soon')}
+                                    />
+                                    <ToolLink
+                                        to="#"
+                                        icon={<Landmark size={20} />}
+                                        label={t('nav.chamberTool')}
+                                        disabled
+                                        soonLabel={t('nav.soon')}
+                                    />
+                                </div>
+                            </div>
 
-                        <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between pb-2 px-2">
-                            <div className="flex gap-2">
+                            <MobileNavLink path="/methodology" label={t('nav.methods')} active={location.pathname === '/methodology'} onClick={() => setIsMobileMenuOpen(false)} />
+                            <MobileNavLink path="/data" label={t('nav.data')} active={location.pathname === '/data'} onClick={() => setIsMobileMenuOpen(false)} />
+                            <MobileNavLink path="/about" label={t('nav.about')} active={location.pathname === '/about'} onClick={() => setIsMobileMenuOpen(false)} />
+                        </div>
+
+                        {/* Language & Footer */}
+                        <div className="mt-2 pt-4 border-t border-slate-100 flex flex-col gap-4">
+                            <div className="flex flex-wrap gap-2 px-2">
                                 {['en', 'es', 'de'].map((l) => (
                                     <button
                                         key={l}
@@ -191,21 +232,31 @@ export function GlobalHeader() {
                                             i18n.changeLanguage(l);
                                             setIsMobileMenuOpen(false);
                                         }}
-                                        className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${
+                                        className={`flex-1 text-xs font-bold px-3 py-2 rounded-xl border transition-all ${
                                             i18n.language.startsWith(l)
                                                 ? 'bg-brand-50 text-brand-600 border-brand-200'
                                                 : 'text-slate-600 border-slate-200 hover:bg-slate-50'
                                         }`}
                                     >
-                                        {l.toUpperCase()}
+                                        {l === 'en' ? 'English' : l === 'es' ? 'Español' : 'Deutsch'}
                                     </button>
                                 ))}
                             </div>
-                            <img
-                                src="/EscuelaCienciasSocialesyGobierno_Horizontal_Negro.webp"
-                                alt="Escuela de Ciencias Sociales y Gobierno — Tecnológico de Monterrey"
-                                className="h-7 w-auto object-contain opacity-70"
-                            />
+                            
+                            <div className="flex justify-end pr-2 group pb-2">
+                                <a 
+                                    href="https://egobiernoytp.tec.mx/es/escuela-de-ciencias-sociales-y-gobierno" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="block"
+                                >
+                                    <img
+                                        src="/EscuelaCienciasSocialesyGobierno_Horizontal_Blanco.webp"
+                                        alt="Escuela de Ciencias Sociales y Gobierno"
+                                        className="header-university-logo h-7 w-auto object-contain opacity-50 group-hover:opacity-100 transition-opacity"
+                                    />
+                                </a>
+                            </div>
                         </div>
                     </nav>
                 </div>
@@ -300,7 +351,7 @@ function MobileNavLink({ path, label, active, onClick }: { path: string; label: 
         <Link
             to={path}
             onClick={onClick}
-            className={`text-base font-bold px-4 py-3 rounded-xl transition-all ${active
+            className={`text-sm font-bold px-4 py-2.5 rounded-xl transition-all ${active
                 ? 'bg-brand-50 text-brand-600'
                 : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
                 }`}
@@ -332,17 +383,17 @@ function ToolLink({ to, icon, label, description, active, disabled, onClick, soo
         <Link
             to={to}
             onClick={onClick}
-            className={`flex items-center gap-3 p-3 rounded-xl transition-all ${active
+            className={`flex items-center gap-3 p-2.5 rounded-xl transition-all ${active
                 ? 'bg-brand-50 text-brand-600 shadow-sm border border-brand-100'
                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 group'
                 }`}
         >
-            <div className={`p-2 rounded-lg transition-colors ${active ? 'bg-white shadow-sm' : 'bg-slate-50 group-hover:bg-brand-50'}`}>
+            <div className={`p-1.5 rounded-lg transition-colors ${active ? 'bg-white shadow-sm' : 'bg-slate-50 group-hover:bg-brand-50'}`}>
                 {icon}
             </div>
             <div className="flex flex-col">
-                <span className="text-sm font-bold">{label}</span>
-                {description && <p className={`text-[10px] leading-tight ${active ? 'text-brand-400' : 'text-slate-400'}`}>{description}</p>}
+                <span className="text-sm font-bold leading-tight">{label}</span>
+                {description && <p className={`text-[10px] leading-tight mt-0.5 ${active ? 'text-brand-400' : 'text-slate-400'}`}>{description}</p>}
             </div>
         </Link>
     );

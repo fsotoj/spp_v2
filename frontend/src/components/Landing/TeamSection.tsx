@@ -35,7 +35,7 @@ const PEOPLE = [
         roleKey: "team.collaborator" as const,
         linkedin: "https://www.linkedin.com/in/felipesotojorquera/",
         site: null,
-        org: "Hertie School, Berlin",
+        org: "Hertie School",
         img: "/felipe.webp",
         color: "#722464",
     },
