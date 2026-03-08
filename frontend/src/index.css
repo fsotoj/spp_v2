@@ -58,7 +58,8 @@ body {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  background: var(--color-brand-50);
+  background: var(--spp-bgLight);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
   transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
@@ -177,6 +178,11 @@ body {
 .spp-person-card:hover .spp-person-info {
   height: 0;
   opacity: 0;
+}
+
+.spp-person-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .spp-person-card:hover .spp-person-photo {

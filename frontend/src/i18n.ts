@@ -16,6 +16,7 @@ i18n
             de: { translation: de },
         },
         fallbackLng: 'en',
+        lng: 'en', // Force English as predetermined language
         supportedLngs: ['en', 'es', 'de'],
         interpolation: {
             escapeValue: false,

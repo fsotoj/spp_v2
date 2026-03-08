@@ -30,7 +30,8 @@ export function GlobalHeader() {
     // Handle clicking outside to close explore dropdown
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            const target = event.target as Node;
+            if (dropdownRef.current && !dropdownRef.current.contains(target)) {
                 setIsExploreOpen(false);
             }
         };
@@ -74,12 +75,7 @@ export function GlobalHeader() {
 
     const headerVariantClass = isScrolled ? 'header--scrolled' : 'header--top';
 
-    const LANGS = ['en', 'es', 'de'] as const;
-    const toggleLanguage = () => {
-        const current = i18n.language.slice(0, 2) as typeof LANGS[number];
-        const idx = LANGS.indexOf(current);
-        i18n.changeLanguage(LANGS[(idx + 1) % LANGS.length]);
-    };
+
 
     return (
         <>
@@ -154,10 +150,7 @@ export function GlobalHeader() {
 
                     {/* Language Switcher */}
                     <LanguageSwitcher
-                        currentLang={i18n.language}
-                        isScrolled={isScrolled}
-                        isHomePage={isHomePage}
-                        onToggle={toggleLanguage}
+                        i18n={i18n}
                     />
 
                     <div className="h-6 w-px bg-slate-200 mx-2 transition-colors duration-300" />
@@ -190,12 +183,24 @@ export function GlobalHeader() {
                         <MobileNavLink path="/about" label={t('nav.about')} active={location.pathname === '/about'} onClick={() => setIsMobileMenuOpen(false)} />
 
                         <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between pb-2 px-2">
-                            <button
-                                onClick={toggleLanguage}
-                                className="text-sm font-bold text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-all"
-                            >
-                                {i18n.language.slice(0, 2).toUpperCase()}
-                            </button>
+                            <div className="flex gap-2">
+                                {['en', 'es', 'de'].map((l) => (
+                                    <button
+                                        key={l}
+                                        onClick={() => {
+                                            i18n.changeLanguage(l);
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                        className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-all ${
+                                            i18n.language.startsWith(l)
+                                                ? 'bg-brand-50 text-brand-600 border-brand-200'
+                                                : 'text-slate-600 border-slate-200 hover:bg-slate-50'
+                                        }`}
+                                    >
+                                        {l.toUpperCase()}
+                                    </button>
+                                ))}
+                            </div>
                             <img
                                 src="/EscuelaCienciasSocialesyGobierno_Horizontal_Negro.webp"
                                 alt="Escuela de Ciencias Sociales y Gobierno — Tecnológico de Monterrey"
@@ -209,30 +214,68 @@ export function GlobalHeader() {
     );
 }
 
-function LanguageSwitcher({ currentLang, isScrolled, isHomePage, onToggle }: {
-    currentLang: string;
-    isScrolled: boolean;
-    isHomePage: boolean;
-    onToggle: () => void;
+function LanguageSwitcher({ i18n }: {
+    i18n: any;
 }) {
-    const lang = currentLang.slice(0, 2);
-    const titles: Record<string, string> = { en: 'Cambiar a Español', es: 'Wechseln zu Deutsch', de: 'Switch to English' };
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    const lang = i18n.language.slice(0, 2);
+    
+    const langNames: Record<string, string> = {
+        en: 'English',
+        es: 'Español',
+        de: 'Deutsch'
+    };
+
+    const currentLangName = langNames[lang] || 'English';
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     return (
-        <button
-            onClick={onToggle}
-            className={`header-link flex items-center gap-1 text-xs font-black px-2.5 py-1.5 rounded-lg border transition-all duration-300 ${
-                isHomePage && !isScrolled
-                    ? 'text-white border-white/25 hover:bg-white/10'
-                    : 'text-slate-500 border-slate-200 hover:text-slate-900 hover:bg-slate-50'
-            }`}
-            title={titles[lang] ?? 'Switch language'}
+        <div 
+            className="relative h-full flex items-center" 
+            ref={dropdownRef}
+            onMouseEnter={() => setIsOpen(true)}
+            onMouseLeave={() => setIsOpen(false)}
         >
-            <span className={lang === 'en' ? 'text-brand-500' : 'text-slate-400'}>EN</span>
-            <span className="text-slate-300">/</span>
-            <span className={lang === 'es' ? 'text-brand-500' : 'text-slate-400'}>ES</span>
-            <span className="text-slate-300">/</span>
-            <span className={lang === 'de' ? 'text-brand-500' : 'text-slate-400'}>DE</span>
-        </button>
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="flex items-center gap-2 text-sm font-bold px-3 py-2 rounded-lg transition-all duration-300 text-brand-500 hover:bg-white/10"
+            >
+                <span>{currentLangName}</span>
+                <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isOpen && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-32 bg-white border border-slate-200 rounded-xl shadow-xl p-1 z-[110] animate-in fade-in slide-in-from-top-1 duration-200">
+                    {Object.entries(langNames).map(([code, name]) => (
+                        <button
+                            key={code}
+                            onClick={() => {
+                                i18n.changeLanguage(code);
+                                setIsOpen(false);
+                            }}
+                            className={`w-full text-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                lang === code
+                                    ? 'bg-brand-50 text-brand-600'
+                                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                            }`}
+                        >
+                            {name}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
     );
 }
 

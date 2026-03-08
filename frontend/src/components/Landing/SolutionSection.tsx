@@ -6,9 +6,16 @@ export function SolutionSection() {
     const { t } = useTranslation();
 
     return (
-        <section className="py-24 lg:pr-6 xl:pr-12 bg-white relative overflow-hidden -mt-12 rounded-t-[3rem] z-20 shadow-[0_-20px_40px_rgba(0,0,0,0.03)] border-t border-slate-100 flex flex-col lg:flex-row items-center gap-0 lg:gap-12">
+        <section className="py-24 lg:pr-6 xl:pr-12 bg-slate-900 relative overflow-hidden z-20 flex flex-col lg:flex-row items-center gap-0 lg:gap-12">
+            {/* Background SVG as cover */}
+            <img
+                src="/background.svg"
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-80 pointer-events-none z-0"
+            />
+
             {/* Background embellishments */}
-            <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-50/50 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/3 z-0 pointer-events-none" />
+            <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/3 z-0 pointer-events-none" />
 
             {/* Desktop Image: The Engine (Left Bleed) */}
             <div className="hidden lg:flex w-1/2 relative z-10 items-center justify-start pr-12">
@@ -16,7 +23,7 @@ export function SolutionSection() {
                 <img
                     src="/spp_map_tool.webp"
                     alt="SPP Data Dashboard"
-                    className="w-full h-auto rounded-r-[3rem] shadow-2xl border-y border-r border-slate-200 object-cover object-left transition-transform duration-1000 hover:scale-[1.01]"
+                    className="w-full h-auto shadow-2xl border-y border-r border-slate-200 object-cover object-left transition-transform duration-1000 hover:scale-[1.01]"
                     onError={(e) => { e.currentTarget.src = "/spp_map_tool.png" }}
                 />
             </div>
@@ -26,10 +33,10 @@ export function SolutionSection() {
 
                 {/* Header Narrative */}
                 <div className="space-y-6">
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-brand-400 tracking-tight leading-tight">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
                         {t('solution.title')}
                     </h2>
-                    <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed drop-shadow-sm">
+                    <p className="text-base sm:text-lg text-slate-100 font-medium leading-relaxed drop-shadow-sm">
                         {t('solution.body')}
                     </p>
                 </div>
@@ -46,7 +53,7 @@ export function SolutionSection() {
 
                 {/* Use Cases Grid */}
                 <div className="space-y-4">
-                    <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest pl-2">{t('solution.empoweringWorkflows')}</p>
+                    <p className="text-[11px] font-black text-slate-100 uppercase tracking-widest pl-2">{t('solution.empoweringWorkflows')}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <UseCaseCard
                             icon={<BookOpen size={18} />}
