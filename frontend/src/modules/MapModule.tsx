@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Play, Pause, Camera, Settings } from 'lucide-react';
+import { Play, Pause, Camera, BarChart3 } from 'lucide-react';
 import { useStatesGeo, useVariables, usePartyColors, useObservations, useCountries } from '../api/hooks';
 import { toPng } from 'html-to-image';
 import { SidebarPortal } from '../components/Layout';
@@ -51,8 +51,11 @@ export function MapModule() {
         if (isPlaying) {
             interval = setInterval(() => {
                 setYear(prev => {
-                    const next = prev + 1;
-                    return next > 2024 ? 1983 : next;
+                    if (prev >= 2024) {
+                        setIsPlaying(false);
+                        return prev;
+                    }
+                    return prev + 1;
                 });
             }, 1000);
         }
@@ -230,11 +233,6 @@ export function MapModule() {
         <div ref={dashboardRef} className="relative w-full h-full flex overflow-hidden">
             <SidebarPortal>
                 <div className="flex flex-col gap-6 p-6 pb-20 bg-spp-bgMuted">
-                    {/* Section Label */}
-                    <div className="flex items-center gap-2 text-[10px] font-black text-brand-500 uppercase tracking-widest border-b border-brand-100 pb-2">
-                        <Settings size={12} />
-                        {t('map.visualizationSettings')}
-                    </div>
                     <div>
                         <label className="block text-xs font-bold text-spp-gray uppercase tracking-wider mb-2">{t('map.variables')}</label>
                         <div className="bg-spp-bgLight border border-slate-200 rounded-lg text-sm overflow-hidden flex flex-col shadow-inner">
@@ -251,7 +249,7 @@ export function MapModule() {
                     </div>
 
                     <div>
-                        <label className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                        <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
                             <div className="flex items-center gap-2">
                                 <span>{t('map.year')}</span>
                                 <button
@@ -263,7 +261,7 @@ export function MapModule() {
                                 </button>
                             </div>
                             <span className="text-brand-600 font-black text-sm tabular-nums">{year}</span>
-                        </label>
+                        </div>
                         <input
                             type="range"
                             min="1983"
@@ -314,12 +312,12 @@ export function MapModule() {
                         {/* Reset / Screenshot row */}
                         <div className="flex gap-2">
                             <button
-                                onClick={() => {
-                                    if (geoData) setSelectedStateIds(geoData.map(s => s.id));
-                                }}
-                                className="flex-1 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-[10px] font-bold uppercase tracking-wider transition-colors"
+                                disabled
+                                className="flex-1 flex items-center justify-center gap-2 py-1.5 bg-slate-100 text-slate-400 rounded-lg text-[10px] font-bold uppercase tracking-wider cursor-not-allowed border border-dashed border-slate-300"
+                                title="Statistical plotting feature coming soon for academic papers"
                             >
-                                {t('map.resetSelection')}
+                                <BarChart3 size={14} />
+                                Make a plot
                             </button>
                             <button
                                 onClick={async () => {

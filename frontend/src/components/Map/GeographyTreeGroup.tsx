@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { ChevronRight, ChevronDown } from 'lucide-react';
+import { ChevronRight, ChevronDown, Check } from 'lucide-react';
 import type { CountryGeo, StateGeo } from '../../api/hooks';
 
 /**
@@ -63,19 +63,33 @@ export function GeographyTreeGroup({
 
             {isExpanded && (
                 <div className="bg-spp-bgMuted/30 py-1 border-t border-slate-200/50">
-                    {states.map(state => (
-                        <label key={state.id} className="flex items-center gap-2 pl-9 pr-3 py-1 hover:bg-brand-50/50 cursor-pointer group transition-colors">
-                            <input
-                                type="checkbox"
-                                checked={selectedStateIds.includes(state.id)}
-                                onChange={() => onToggleState(state.id)}
-                                className="w-3.5 h-3.5 rounded border-slate-300 text-brand-600 accent-brand-500"
-                            />
-                            <span className="text-[11px] text-spp-gray group-hover:text-spp-textDark truncate transition-colors">
-                                {state.name}
-                            </span>
-                        </label>
-                    ))}
+                    {states.map(state => {
+                        const isSelected = selectedStateIds.includes(state.id);
+                        return (
+                            <label
+                                key={state.id}
+                                className={`flex items-center gap-2 ml-9 pr-3 py-1.5 cursor-pointer group transition-all duration-200 border-l-2 ${isSelected
+                                    ? 'bg-spp-purple text-white border-spp-purple'
+                                    : 'hover:bg-brand-50 border-transparent text-spp-gray hover:text-spp-textDark'
+                                    }`}
+                            >
+                                <div className="relative flex items-center justify-center ml-1">
+                                    <input
+                                        type="checkbox"
+                                        checked={isSelected}
+                                        onChange={() => onToggleState(state.id)}
+                                        className="appearance-none w-3.5 h-3.5 rounded border border-slate-300 bg-white checked:border-white transition-colors cursor-pointer"
+                                    />
+                                    {isSelected && (
+                                        <Check className="absolute pointer-events-none text-spp-purple" size={12} strokeWidth={4} />
+                                    )}
+                                </div>
+                                <span className="text-[11px] font-medium truncate">
+                                    {state.name}
+                                </span>
+                            </label>
+                        );
+                    })}
                 </div>
             )}
         </div>

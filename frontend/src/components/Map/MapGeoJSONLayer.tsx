@@ -434,7 +434,7 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
             })}
 
             {/* Legend */}
-            <div className={`absolute bottom-20 md:bottom-6 right-2 md:right-6 z-[1000] bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-white/50 p-2 md:p-4 min-w-[150px] md:min-w-[180px] max-w-[min(200px,calc(100vw-1rem))] md:max-w-sm max-h-[35vh] md:max-h-[60vh] overflow-y-auto transition-all duration-300 origin-bottom-right ${isOverlaysHidden ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
+            <div className={`absolute bottom-20 md:bottom-6 right-2 md:right-6 z-[800] bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-white/50 p-2 md:p-4 min-w-[150px] md:min-w-[180px] max-w-[min(200px,calc(100vw-1rem))] md:max-w-sm max-h-[35vh] md:max-h-[60vh] overflow-y-auto transition-all duration-300 origin-bottom-right ${isOverlaysHidden ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
                 <div className="flex flex-col gap-1.5 md:gap-2">
                     <div className="border-l-4 border-brand-500 pl-2 md:pl-3 py-0.5 md:py-1 transition-all">
                         <h4 className="text-[10px] md:text-xs font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5 md:mb-1">{t('popup.variable')}</h4>

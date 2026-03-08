@@ -31,7 +31,7 @@ export function VariableDescriptionOverlay({
     return (
         <div className={`transition-all duration-300 ${isHidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
             {/* Desktop: full panel, pointer-events-none */}
-            <div className="hidden md:block absolute top-4 right-4 z-[1000] max-w-[400px] bg-spp-bgLight/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-white/50 text-[11px] text-spp-gray leading-relaxed pointer-events-none border-l-4 border-l-brand-500">
+            <div className="hidden md:block absolute top-4 right-4 z-[800] max-w-[400px] bg-spp-bgLight/90 backdrop-blur-md p-4 rounded-xl shadow-xl border border-white/50 text-[11px] text-spp-gray leading-relaxed pointer-events-none border-l-4 border-l-brand-500">
                 {descriptionEN}.
                 {addIndices && <span className="block mt-1 italic text-slate-400">{addIndices}</span>}
             </div>

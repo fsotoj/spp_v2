@@ -33,14 +33,14 @@ export function VariableTreeGroup({ group, activeVariable, onSelect, depth = 0, 
     return (
         <div className={`border-b border-slate-200 last:border-b-0 ${depth > 0 ? 'bg-spp-bgLight border-t' : ''}`}>
             <button
-                className={`w-full flex items-center justify-between py-2 pr-3 hover:bg-brand-50 transition-colors ${paddingClass} ${isActiveHere && depth === 0 ? 'font-semibold text-brand-700' : ''}`}
+                className={`w-full flex items-center justify-between py-2 pr-3 hover:bg-brand-50 transition-colors ${paddingClass} ${isActiveHere && depth === 0 ? 'font-semibold text-spp-purple' : ''}`}
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <div className="flex items-center gap-2 text-spp-textDark">
                     {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                     <span className="truncate">{displayName}</span>
                 </div>
-                <span className={`text-xs px-1.5 rounded-full ${isActiveHere ? 'bg-brand-100 text-brand-600' : 'bg-slate-200 text-spp-gray'}`}>{varCount}</span>
+                <span className={`text-xs px-1.5 rounded-full ${isActiveHere ? 'bg-spp-purple text-white' : 'bg-slate-200 text-spp-gray'}`}>{varCount}</span>
             </button>
 
             {isOpen && (
@@ -71,7 +71,7 @@ export function VariableTreeGroup({ group, activeVariable, onSelect, depth = 0, 
                                 key={v.variable}
                                 onClick={() => onSelect(v.variable)}
                                 className={`text-left px-3 py-1.5 text-xs truncate transition-colors border-l-2 ${varPad} ${active
-                                    ? 'border-brand-500 bg-brand-50 text-brand-700 font-bold'
+                                    ? 'border-spp-purple bg-spp-purple text-white font-bold'
                                     : 'border-transparent text-spp-gray hover:bg-brand-50/50 hover:text-spp-textDark'
                                     }`}
                                 title={label}

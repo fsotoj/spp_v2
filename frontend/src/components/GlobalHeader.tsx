@@ -79,7 +79,7 @@ export function GlobalHeader() {
 
     return (
         <>
-            <header className={`fixed top-0 left-0 w-full h-20 z-[100] flex items-center justify-between px-4 md:px-12 transition-all duration-300 ${headerVariantClass}`}>
+            <header className={`fixed top-0 left-0 w-full h-20 z-[1000] flex items-center justify-between px-4 md:px-12 transition-all duration-300 ${headerVariantClass}`}>
                 {/* Left: Branding */}
                 <div className="flex items-center gap-4">
                     <Link to="/" className="flex items-center group transition-transform hover:scale-105 active:scale-95">
@@ -249,30 +249,32 @@ function LanguageSwitcher({ i18n }: {
         >
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-2 text-sm font-bold px-3 py-2 rounded-lg transition-all duration-300 text-brand-500 hover:bg-white/10"
+                className="flex items-center gap-2 text-sm font-bold px-3 py-2 rounded-lg transition-all duration-300 text-brand-400 hover:bg-white/10"
             >
                 <span>{currentLangName}</span>
                 <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {isOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 w-32 bg-white border border-slate-200 rounded-xl shadow-xl p-1 z-[110] animate-in fade-in slide-in-from-top-1 duration-200">
-                    {Object.entries(langNames).map(([code, name]) => (
-                        <button
-                            key={code}
-                            onClick={() => {
-                                i18n.changeLanguage(code);
-                                setIsOpen(false);
-                            }}
-                            className={`w-full text-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                                lang === code
-                                    ? 'bg-brand-50 text-brand-600'
-                                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                            }`}
-                        >
-                            {name}
-                        </button>
-                    ))}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-1 z-[1100]">
+                    <div className="w-32 bg-white border border-slate-200 rounded-xl shadow-xl p-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                        {Object.entries(langNames).map(([code, name]) => (
+                            <button
+                                key={code}
+                                onClick={() => {
+                                    i18n.changeLanguage(code);
+                                    setIsOpen(false);
+                                }}
+                                className={`w-full text-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                                    lang === code
+                                        ? 'bg-brand-50 text-brand-600'
+                                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                }`}
+                            >
+                                {name}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

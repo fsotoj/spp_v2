@@ -1,6 +1,7 @@
 import { useState, useEffect, type ReactNode, createContext, useContext } from 'react';
 import { createPortal } from 'react-dom';
-import { Filter, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react';
+import { Settings, ChevronLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export const SidebarContext = createContext({ isMobile: false, isSidebarOpen: false });
 export function useSidebar() { return useContext(SidebarContext); }
@@ -26,6 +27,7 @@ export function SidebarPortal({ children }: { children: ReactNode }) {
  *           Starts closed. A bottom-left FAB toggles it.
  */
 export function Layout({ children }: LayoutProps) {
+    const { t } = useTranslation();
     const isMobileBreakpoint = () => typeof window !== 'undefined' && window.innerWidth < 768;
 
     // On mobile default to closed; on desktop default to open
@@ -69,9 +71,9 @@ export function Layout({ children }: LayoutProps) {
                         ${isSidebarOpen ? 'w-[min(320px,85vw)]' : 'w-0 overflow-hidden'}
                     `}
                     >
-                        <div className="h-14 shrink-0 flex items-center px-6 border-b border-slate-100 font-bold text-xs text-spp-gray uppercase tracking-widest whitespace-nowrap">
-                            <Filter size={14} className="mr-2" />
-                            Explorer Controls
+                        <div className="h-14 shrink-0 flex items-center px-6 border-b border-slate-100 font-bold text-[10px] text-brand-600 uppercase tracking-[0.15em] whitespace-nowrap">
+                            <Settings size={14} className="mr-2" />
+                            {t('map.visualizationSettings')}
                         </div>
                         <div id="sidebar-content" className="flex-1 overflow-y-auto overflow-x-hidden" />
                         <div className="p-4 border-t border-slate-100 bg-spp-bgMuted shrink-0">
@@ -86,9 +88,9 @@ export function Layout({ children }: LayoutProps) {
                     <aside
                         className={`bg-spp-bgLight border-r border-slate-200 flex flex-col shadow-sm z-20 transition-all duration-300 ease-in-out relative ${isSidebarOpen ? 'w-80' : 'w-0 overflow-hidden'}`}
                     >
-                        <div className="h-14 flex items-center px-6 border-b border-slate-100 font-bold text-xs text-spp-gray uppercase tracking-widest whitespace-nowrap">
-                            <Filter size={14} className="mr-2" />
-                            Explorer Controls
+                        <div className="h-14 flex items-center px-6 border-b border-slate-100 font-bold text-[10px] text-brand-600 uppercase tracking-[0.15em] whitespace-nowrap">
+                            <Settings size={14} className="mr-2 text-brand-500" />
+                            {t('map.visualizationSettings')}
                         </div>
                         <div id="sidebar-content" className="flex-1 overflow-y-auto overflow-x-hidden" />
                         <div className="p-4 border-t border-slate-100 bg-spp-bgMuted">
@@ -108,17 +110,17 @@ export function Layout({ children }: LayoutProps) {
                         onClick={toggleSidebar}
                         className={`absolute top-4 z-40 p-2 bg-spp-bgLight border border-slate-200 shadow-md rounded-lg text-spp-gray hover:text-brand-400 transition-all hidden md:flex ${isSidebarOpen ? 'left-4' : 'left-4'}`}
                     >
-                        {isSidebarOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
+                        {isSidebarOpen ? <ChevronLeft size={20} /> : <Settings size={20} />}
                     </button>
 
                     {/* Mobile FAB: bottom-left, thumb-reachable */}
                     <button
                         onClick={toggleSidebar}
                         className="md:hidden fixed bottom-6 left-4 z-50 flex items-center gap-2 px-4 py-3 bg-spp-textDark text-spp-textLight text-xs font-bold rounded-xl shadow-2xl hover:bg-brand-500 active:scale-95 transition-all"
-                        aria-label="Toggle explorer controls"
+                        aria-label="Toggle visualization settings"
                     >
-                        <SlidersHorizontal size={16} />
-                        <span>Controls</span>
+                        <Settings size={16} />
+                        <span>{t('map.visualizationSettings')}</span>
                     </button>
 
                     <div className="flex-1 relative overflow-hidden">
