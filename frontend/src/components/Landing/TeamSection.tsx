@@ -65,11 +65,11 @@ export function TeamSection() {
     return (
         <section className="py-24 px-6 md:px-12 bg-white border-t border-slate-100 relative overflow-hidden">
             {/* Background embellishment mirroring Solution Section */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-50/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 z-0 pointer-events-none" />
+            <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-50/50 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/3 z-0 pointer-events-none" />
 
-            <div className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row gap-16">
+            <div className="max-w-7xl mx-auto relative z-10 flex flex-col lg:flex-row-reverse gap-16">
 
-                {/* Left Side: Header Narrative */}
+                {/* Right Side (visually): Header Narrative */}
                 <div className="w-full lg:w-1/3 flex flex-col justify-center gap-6">
                     <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-brand-400 tracking-tight leading-tight">{t('team.title')}</h2>
                     <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed drop-shadow-sm">
@@ -77,7 +77,7 @@ export function TeamSection() {
                     </p>
                 </div>
 
-                {/* Right Side: The People Grid */}
+                {/* Left Side (visually): The People Grid */}
                 <div className="w-full lg:w-2/3">
                     <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 justify-items-center">
                         {PEOPLE.map(person => (

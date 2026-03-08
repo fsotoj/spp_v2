@@ -17,22 +17,22 @@ export function WhySPPSection() {
             <section className="py-24 px-6 md:px-12 bg-spp-bgLight relative overflow-hidden min-h-[500px] lg:min-h-[600px] flex items-center group">
 
                 {/* Partial-bleed Background Image */}
-                <div className="absolute right-0 top-0 bottom-0 w-full lg:w-[65%] z-0 overflow-hidden opacity-30 md:opacity-60 lg:opacity-100 transition-opacity duration-300">
+                <div className="absolute left-0 top-0 bottom-0 w-full lg:w-[65%] z-0 overflow-hidden opacity-30 md:opacity-60 lg:opacity-100 transition-opacity duration-300">
                     <img
                         src="/Gobernadores-y-Milei.webp"
                         alt="Gobernadores y Milei"
                         className="w-full h-full object-cover object-[60%_center] lg:object-[80%_center] transition-transform duration-1000 group-hover:scale-105 opacity-80 mix-blend-multiply"
                     />
-                    {/* Gradient Fade: Ensures text on left is visible by fading image into bg color */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-spp-bgLight via-spp-bgLight/90 lg:via-spp-bgLight/50 to-transparent"></div>
+                    {/* Gradient Fade: Ensures text on right is visible by fading image into bg color */}
+                    <div className="absolute inset-0 bg-gradient-to-l from-spp-bgLight via-spp-bgLight/90 lg:via-spp-bgLight/50 to-transparent"></div>
                     <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-spp-bgLight to-transparent"></div>
                     <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-spp-bgLight to-transparent"></div>
                 </div>
 
-                <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+                <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-16">
 
-                    {/* Left Column: Why SPP? */}
-                    <div className="w-full lg:w-3/5 space-y-8 lg:pr-12">
+                    {/* Right Column (visually): Why SPP? */}
+                    <div className="w-full lg:w-3/5 space-y-8 lg:pl-12">
                         <div>
                             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-brand-400 tracking-tight leading-tight">
                                 {t('whySPP.title')}
@@ -54,7 +54,7 @@ export function WhySPPSection() {
                         </div>
                     </div>
 
-                    {/* Right transparent column just to hold layout space if needed */}
+                    {/* Left transparent column (visually) just to hold layout space if needed */}
                     <div className="w-full lg:w-2/5 hidden lg:block"></div>
                 </div>
             </section>

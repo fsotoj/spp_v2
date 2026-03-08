@@ -6,7 +6,7 @@ export function SolutionSection() {
     const { t } = useTranslation();
 
     return (
-        <section className="py-24 lg:pr-6 xl:pr-12 bg-slate-900 relative overflow-hidden z-20 flex flex-col lg:flex-row items-center gap-0 lg:gap-12">
+        <section className="py-24 lg:pl-6 xl:pl-12 bg-slate-900 relative overflow-hidden z-20 flex flex-col lg:flex-row-reverse items-center gap-0 lg:gap-12">
             {/* Background SVG as cover */}
             <img
                 src="/background.svg"
@@ -15,21 +15,21 @@ export function SolutionSection() {
             />
 
             {/* Background embellishments */}
-            <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-3xl -translate-y-1/2 -translate-x-1/3 z-0 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 z-0 pointer-events-none" />
 
-            {/* Desktop Image: The Engine (Left Bleed) */}
-            <div className="hidden lg:flex w-1/2 relative z-10 items-center justify-start pr-12">
+            {/* Desktop Image: The Engine (Right Bleed) */}
+            <div className="hidden lg:flex w-1/2 relative z-10 items-center justify-end pl-12">
                 <div className="absolute inset-0 bg-brand-400/5 blur-[50px] transition-all duration-700 -z-10" />
                 <img
                     src="/spp_map_tool.webp"
                     alt="SPP Data Dashboard"
-                    className="w-full h-auto shadow-2xl border-y border-r border-slate-200 object-cover object-left transition-transform duration-1000 hover:scale-[1.01]"
+                    className="w-full h-auto shadow-2xl border-y border-l border-slate-200 object-cover object-right transition-transform duration-1000 hover:scale-[1.01]"
                     onError={(e) => { e.currentTarget.src = "/spp_map_tool.png" }}
                 />
             </div>
 
-            {/* Content Container */}
-            <div className="w-full lg:w-1/2 flex flex-col gap-10 relative z-10 pt-4 px-6 md:px-12 lg:px-0 lg:pl-10 max-w-3xl lg:mr-auto">
+            {/* Content Container (Left Side) */}
+            <div className="w-full lg:w-1/2 flex flex-col gap-10 relative z-10 pt-4 px-6 md:px-12 lg:px-0 lg:pr-10 max-w-3xl lg:ml-auto">
 
                 {/* Header Narrative */}
                 <div className="space-y-6">
