@@ -166,7 +166,7 @@
       "structure": "Estructura de las Bases de Datos",
       "structureDesc": "Todas las bases de datos están organizadas como paneles país-estado-año. Cada fila identifica de manera única una unidad subnacional en un año determinado. Las variables siguen una convención de nomenclatura consistente con sufijos (_sub_exe, _nat_exe, _sub_leg) para facilitar la fusión entre bases de datos.",
       "quality": "Garantía de Calidad",
-      "qualityDesc": "Todas las variables fueron codificadas por un equipo de asistentes de investigación capacitados con manuales estandarizados. Las discrepancias se resolvieron mediante triangulación de al menos dos fuentes independientes. Las decisiones de codificación para casos ambiguos están documentadas en los apéndices por base de datos."
+      "qualityDesc": "Todos los datos han sido sometidos a rigurosos procesos de verificación: (1) Verificación de fuentes primarias — todos los datos fueron contrastados con registros electorales oficiales; (2) Validación académica — los datos fueron comparados con conjuntos de datos académicos consolidados, cuando estuvieron disponibles; (3) Confirmación por múltiples fuentes — las variables clave fueron verificadas mediante fuentes independientes; (4) Revisión de consistencia temporal — los datos longitudinales fueron revisados en cuanto a consistencia y progresión lógica."
     },
     "coverage": {
       "p1": "El SPP cubre actualmente tres países latinoamericanos con elecciones subnacionales para el ejecutivo y el legislativo. La cobertura temporal comienza en la primera elección competitiva tras la democratización de cada país.",
@@ -181,7 +181,7 @@
       "note": "Nota: La cobertura de Argentina inicia en 1983 (retorno a la democracia), con Tierra del Fuego desde 1991 y CABA desde 1996. La cobertura sistemática de Brasil comienza en 1998, primer año con datos completamente verificados (fuente: TSE / ElectionsBR). El año de inicio en México varía por estado, generalmente entre 1985 y 1999."
     },
     "idVariables": {
-      "p1": "Todos los registros de las bases de datos del SPP incluyen variables identificadoras que permiten vincularlas entre sí y fusionarlas con fuentes externas como V-Dem, LAPOP y oficinas estadísticas nacionales."
+      "p1": "Todos los registros de las bases de datos del SPP incluyen variables identificadoras que permiten una vinculación y fusión consistente entre las seis bases de datos."
     },
     "execVariables": {
       "p1": "Las variables ejecutivas se distribuyen entre dos bases de datos: la Base de Datos del Ejecutivo Nacional (NED) para presidentes y la Base de Datos del Ejecutivo Subnacional (SED) para gobernadores. Ambas siguen las mismas convenciones de codificación.",
@@ -189,13 +189,13 @@
       "subnationalTitle": "Variables del Ejecutivo Subnacional"
     },
     "electoralExec": {
-      "p1": "La Base de Datos de Elecciones Ejecutivas Subnacionales (SEED) proporciona datos a nivel electoral para cada contienda gubernamental en el universo de cobertura del SPP. Cada fila representa una elección en un estado."
+      "p1": "La Base de Datos de Elecciones Ejecutivas Subnacionales (SEED) proporciona datos a nivel electoral para cada contienda gubernamental en el universo de cobertura del SPP. Cada fila representa un competidor en una elección."
     },
     "electoralLeg": {
       "p1": "La Base de Datos de Elecciones Legislativas Subnacionales (SLED) proporciona datos por partido para las elecciones legislativas subnacionales. Cada fila representa los resultados de un partido en una elección en una cámara."
     },
     "democracyIndices": {
-      "p1": "La Base de Datos de Índices de Democracia Subnacional (SDI) ofrece medidas compuestas de la calidad democrática subnacional basadas en la alternancia de gobernadores y la contestación electoral. El Índice SUR (Giraudy 2015) es la medida principal, con subcomponentes estandarizados disponibles para agregación personalizada."
+      "p1": "La Base de Datos de Índices de Democracia Subnacional (SDI) ofrece medidas compuestas de la calidad democrática subnacional basadas en la alternancia de gobernadores y la contestación electoral."
     },
     "dataSources": {
       "p1": "Las fuentes de datos primarias varían según el país y la base de datos. Todos los datos electorales fueron obtenidos de fuentes oficiales y validados con bases de datos académicas secundarias.",

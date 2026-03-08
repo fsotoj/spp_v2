@@ -166,7 +166,7 @@
       "structure": "Datenbankstruktur",
       "structureDesc": "Alle Datenbanken sind als Länder-Staat-Jahr-Paneldatensätze organisiert. Jede Zeile identifiziert eindeutig eine subnationale Einheit in einem bestimmten Jahr. Variablen folgen einer konsistenten Benennungskonvention mit Suffixen (_sub_exe, _nat_exe, _sub_leg), um das Zusammenführen zu erleichtern.",
       "quality": "Qualitätssicherung",
-      "qualityDesc": "Alle Variablen wurden von einem Team ausgebildeter Forschungsassistenten anhand standardisierter Kodierungshandbücher kodiert. Diskrepanzen wurden durch Triangulation aus mindestens zwei unabhängigen Quellen gelöst. Kodierungsentscheidungen für mehrdeutige Fälle sind in den datenbankspezifischen Anhängen dokumentiert."
+      "qualityDesc": "Alle Daten wurden strengen Verifizierungsprozessen unterzogen: (1) Primärquellenprüfung — alle Daten wurden mit offiziellen Wahlunterlagen abgeglichen; (2) Akademische Validierung — Daten wurden, sofern verfügbar, mit etablierten akademischen Datensätzen verglichen; (3) Mehrquellenbestätigung — Schlüsselvariablen wurden anhand mehrerer unabhängiger Quellen verifiziert; (4) Zeitliche Konsistenzprüfung — Längsschnittdaten wurden auf Konsistenz und logische Progression überprüft."
     },
     "coverage": {
       "p1": "Das SPP umfasst derzeit drei lateinamerikanische Länder mit subnationalen Wahlen für das Exekutiv- und Legislativamt. Die zeitliche Abdeckung beginnt bei der ersten kompetitiven subnationalen Wahl nach der Demokratisierung jedes Landes.",
@@ -181,7 +181,7 @@
       "note": "Hinweis: Die Abdeckung Argentiniens beginnt 1983 (Rückkehr zur Demokratie), Tierra del Fuego ab 1991 und CABA ab 1996. Brasiliens systematische Abdeckung beginnt 1998, dem ersten Jahr mit vollständig verifizierten Daten (Quelle: TSE / ElectionsBR). Mexikos Startjahr variiert je nach Bundesstaat, im Allgemeinen zwischen 1985 und 1999."
     },
     "idVariables": {
-      "p1": "Alle Datensätze der SPP-Datenbanken enthalten Identifikatorvariablen, die die Verknüpfung untereinander und die Zusammenführung mit externen Quellen wie V-Dem, LAPOP und nationalen Statistikämtern ermöglichen."
+      "p1": "Alle Datensätze der SPP-Datenbanken enthalten Identifikatorvariablen, die eine konsistente Verknüpfung und Zusammenführung zwischen den sechs Datenbanken ermöglichen."
     },
     "execVariables": {
       "p1": "Exekutive Variablen sind auf zwei Datenbanken aufgeteilt: die Nationale Exekutivdatenbank (NED) für Präsidenten und die Subnationale Exekutivdatenbank (SED) für Gouverneure. Beide folgen identischen Kodierungskonventionen.",
@@ -189,13 +189,13 @@
       "subnationalTitle": "Subnationale Exekutivvariablen"
     },
     "electoralExec": {
-      "p1": "Die Subnationale Exekutivwahlendatenbank (SEED) bietet wahlbezogene Daten für jeden Gouverneurswettbewerb im SPP-Abdeckungsuniversum. Jede Zeile repräsentiert eine Wahl in einem Bundesstaat."
+      "p1": "Die Subnationale Exekutivwahlendatenbank (SEED) bietet wahlbezogene Daten für jeden Gouverneurswettbewerb im SPP-Abdeckungsuniversum. Jede Zeile repräsentiert einen Wettbewerber in einer Wahl."
     },
     "electoralLeg": {
       "p1": "Die Subnationale Legislativwahlendatenbank (SLED) bietet parteiebene Daten für subnationale Legislativwahlen. Jede Zeile repräsentiert die Ergebnisse einer Partei bei einer Wahl in einer Kammer."
     },
     "democracyIndices": {
-      "p1": "Die Subnationale Demokratieindizes-Datenbank (SDI) bietet zusammengesetzte Maße der subnationalen Demokratiequalität basierend auf Gouverneurswechsel und Wahlwettbewerb. Der SUR-Index (Giraudy 2015) ist das Hauptmaß, mit standardisierten Teilkomponenten für individuelle Aggregation."
+      "p1": "Die Subnationale Demokratieindizes-Datenbank (SDI) bietet zusammengesetzte Maße der subnationalen Demokratiequalität basierend auf Gouverneurswechsel und Wahlwettbewerb."
     },
     "dataSources": {
       "p1": "Die primären Datenquellen variieren je nach Land und Datenbank. Alle Wahldaten wurden aus offiziellen Regierungsquellen bezogen und mit sekundären akademischen Datenbanken kreuzkontrolliert.",

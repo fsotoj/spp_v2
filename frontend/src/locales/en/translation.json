@@ -166,7 +166,7 @@
       "structure": "Database Structure",
       "structureDesc": "All databases are organized as country-state-year panel datasets. Each row uniquely identifies a subnational unit in a given year. Variables follow a consistent naming convention using suffixes (_sub_exe, _nat_exe, _sub_leg) to facilitate merging across databases.",
       "quality": "Quality Assurance",
-      "qualityDesc": "All variables were coded by a team of trained research assistants using standardized coding manuals. Discrepancies were resolved through triangulation across at least two independent sources. Coding decisions for ambiguous cases are documented in database-level appendices."
+      "qualityDesc": "All data have undergone rigorous verification processes: (1) Primary Source Verification — all data were cross-checked with official electoral records; (2) Academic Validation — data were compared to established academic datasets, when available; (3) Multiple Source Confirmation — key variables were verified through multiple independent sources; (4) Temporal Consistency Checks — longitudinal data were reviewed for consistency and logical progression."
     },
     "coverage": {
       "p1": "The SPP currently covers three Latin American countries with subnational elections for executive and legislative office. Temporal coverage begins at the first competitive subnational election following each country's democratization.",
@@ -181,7 +181,7 @@
       "note": "Note on coverage: Argentina's coverage begins in 1983 (return to democracy), with Tierra del Fuego from 1991 and CABA from 1996. Brazil's systematic coverage starts in 1998, the earliest year with fully verified data (source: TSE / ElectionsBR). Mexico's start year varies by state, generally between 1985 and 1999."
     },
     "idVariables": {
-      "p1": "Every record across all SPP databases includes a set of identifier variables that enable linking and merging with external data sources such as V-Dem, LAPOP, and national statistical offices."
+      "p1": "Every record across all SPP databases includes a set of identifier variables that enable consistent linking and merging across the six databases."
     },
     "execVariables": {
       "p1": "Executive variables are split across two databases: the National Executive Database (NED) for presidents, and the Subnational Executive Database (SED) for governors. Both follow identical coding conventions.",
@@ -189,13 +189,13 @@
       "subnationalTitle": "Subnational Executive Variables"
     },
     "electoralExec": {
-      "p1": "The Subnational Executive Elections Database (SEED) provides election-level data for each gubernatorial contest in the SPP coverage universe. Each row represents one election in one state."
+      "p1": "The Subnational Executive Elections Database (SEED) provides election-level data for each gubernatorial contest in the SPP coverage universe. Each row represents one competitor in an election."
     },
     "electoralLeg": {
       "p1": "The Subnational Legislative Elections Database (SLED) provides party-level data for subnational legislative elections. Each row represents one party's results in one election in one chamber."
     },
     "democracyIndices": {
-      "p1": "The Subnational Democracy Indices database (SDI) provides composite measures of subnational democratic quality based on gubernatorial turnover and electoral contestation. The SUR Index (Giraudy 2015) is the primary measure, with standardized sub-components available for custom aggregation."
+      "p1": "The Subnational Democracy Indices database (SDI) provides composite measures of subnational democratic quality based on gubernatorial turnover and electoral contestation."
     },
     "dataSources": {
       "p1": "Primary data sources vary by country and database. All electoral data was obtained from official government sources and cross-validated with secondary academic databases.",
