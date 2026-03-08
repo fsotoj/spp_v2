@@ -332,6 +332,86 @@ body {
   background-color: rgba(255, 255, 255, 0.25);
 }
 
+/* ── Print Map animated button ──────────────────────────────────────────── */
+.print-map-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  height: 4.8em;
+  padding-left: 4em;
+  padding-right: 1em;
+  background: var(--color-spp-orange);
+  color: white;
+  border-radius: 0.6em;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px -2px rgba(255, 169, 42, 0.45), 0 2px 6px -1px rgba(0, 0, 0, 0.15);
+}
+
+.print-map-btn:not(:disabled):hover {
+  background: var(--color-spp-purple);
+  box-shadow: 0 4px 16px -2px rgba(114, 36, 100, 0.45), 0 2px 6px -1px rgba(0, 0, 0, 0.18);
+}
+
+.print-map-btn:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+  border: 1px dashed #cbd5e1;
+  box-shadow: none;
+}
+
+.print-map-btn .pmb-icon {
+  background: var(--color-spp-orange);
+  height: calc(100% - 0.4em);
+  width: 3.2em;
+  border-radius: 0.4em;
+  position: absolute;
+  left: 0.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+              background 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.print-map-btn:not(:disabled):hover .pmb-icon {
+  width: calc(100% - 0.4em);
+  background: var(--color-spp-purple);
+}
+
+.print-map-btn .pmb-map-img {
+  width: 2.8em;
+  height: 2.8em;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+  display: none;
+}
+
+.print-map-btn:not(:disabled):hover .pmb-map-img {
+  display: block;
+}
+
+.print-map-btn .pmb-printer-icon {
+  display: flex;
+  color: white;
+  align-items: center;
+  justify-content: center;
+}
+
+.print-map-btn:not(:disabled):hover .pmb-printer-icon {
+  display: none;
+}
+
 .header--scrolled {
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);

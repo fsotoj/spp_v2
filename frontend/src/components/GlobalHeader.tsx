@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Map, BarChart3, Landmark, ChevronDown, Menu, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { ExploreToolsSwitcher } from './ExploreToolsSwitcher';
 
 /**
  * GlobalHeader: The "Navigation Spine" of the Research Portal.
@@ -10,10 +11,8 @@ import { useTranslation } from 'react-i18next';
 export function GlobalHeader() {
     const { t, i18n } = useTranslation();
     const location = useLocation();
-    const [isExploreOpen, setIsExploreOpen] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
 
     // Determine if we should use the transparent header logic (only on home page)
     const isHomePage = location.pathname === '/';
@@ -24,20 +23,7 @@ export function GlobalHeader() {
     // Close all menus on route change
     useEffect(() => {
         setIsMobileMenuOpen(false);
-        setIsExploreOpen(false);
     }, [location.pathname]);
-
-    // Handle clicking outside to close explore dropdown
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            const target = event.target as Node;
-            if (dropdownRef.current && !dropdownRef.current.contains(target)) {
-                setIsExploreOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
 
     // Intersection Observer for scroll morph effect on Home Page
     useEffect(() => {
@@ -92,55 +78,7 @@ export function GlobalHeader() {
                     <PortalNav path="/" label={t('nav.home')} active={location.pathname === '/'} />
 
                     {/* Advanced Tool Switcher */}
-                    <div className="relative mt-0.5" ref={dropdownRef}>
-                        <button
-                            onMouseEnter={() => setIsExploreOpen(true)}
-                            onClick={() => setIsExploreOpen(!isExploreOpen)}
-                            className={`header-link flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-300 text-sm font-bold border ${activeToolLabel
-                                ? 'text-brand-500 border-brand-200 bg-brand-50 shadow-sm'
-                                : isHomePage && !isScrolled
-                                    ? 'text-white border-white/25 hover:bg-white/10'
-                                    : 'text-slate-600 border-slate-200 hover:text-slate-900 hover:bg-slate-50 shadow-sm'
-                                }`}
-                        >
-                            {activeToolLabel === t('nav.mappingTool') && <Map size={16} />}
-                            <span>{t('nav.explore')}</span>
-                            <ChevronDown size={14} className={`transition-transform duration-300 ${isExploreOpen ? 'rotate-180' : ''}`} />
-                        </button>
-
-                        {/* Dropdown Menu */}
-                        {isExploreOpen && (
-                            <nav
-                                onMouseLeave={() => setIsExploreOpen(false)}
-                                className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 z-[110] animate-in fade-in slide-in-from-top-2 duration-200"
-                            >
-                                <ToolLink
-                                    to="/explore"
-                                    icon={<Map size={18} />}
-                                    label={t('nav.mappingTool')}
-                                    description={t('nav.mappingToolDesc')}
-                                    active={location.pathname === '/explore'}
-                                    onClick={() => setIsExploreOpen(false)}
-                                />
-                                <ToolLink
-                                    to="#"
-                                    icon={<BarChart3 size={18} />}
-                                    label={t('nav.graphTool')}
-                                    description={t('nav.graphToolDesc')}
-                                    disabled
-                                    soonLabel={t('nav.soon')}
-                                />
-                                <ToolLink
-                                    to="#"
-                                    icon={<Landmark size={18} />}
-                                    label={t('nav.chamberTool')}
-                                    description={t('nav.chamberToolDesc')}
-                                    disabled
-                                    soonLabel={t('nav.soon')}
-                                />
-                            </nav>
-                        )}
-                    </div>
+                    <ExploreToolsSwitcher activeToolLabel={activeToolLabel} isHomePage={isHomePage} isScrolled={isScrolled} />
 
                     <PortalNav path="/methodology" label={t('nav.methods')} active={location.pathname === '/methodology'} />
                     <PortalNav path="/data" label={t('nav.data')} active={location.pathname === '/data'} />
@@ -398,3 +336,4 @@ function ToolLink({ to, icon, label, description, active, disabled, onClick, soo
         </Link>
     );
 }
+
