@@ -1,10 +1,12 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, Landmark } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { Play, Pause, Landmark, ChevronUp, ChevronDown } from 'lucide-react';
 import { SidebarPortal } from '../components/Layout';
 import {
     useCountries, useStatesGeo, usePartyColors,
-    usePartyObservations, usePartyObservationYears
+    usePartyObservations, usePartyObservationYears,
+    useStateObservation
 } from '../api/hooks';
 import { HemicycleChart, type PartyRow } from '../components/Camera/HemicycleChart';
 import { GeographySingleGroup } from '../components/Camera/GeographySingleGroup';
@@ -63,12 +65,20 @@ const HemicycleIcon = ({ className = '', size = 24, stroke = 'currentColor', col
 export function CameraModule() {
     const { t } = useTranslation();
 
-    const [selectedStateId, setSelectedStateId] = useState<number | null>(null);
+    const [searchParams] = useSearchParams();
+    const searchStateId = searchParams.get('stateId');
+    const searchYear = searchParams.get('year');
+    const searchChamber = searchParams.get('chamber');
+
+    const [selectedStateId, setSelectedStateId] = useState<number | null>(searchStateId ? Number(searchStateId) : null);
     const [expandedCountries, setExpandedCountries] = useState<number[]>([]);
-    const [year, setYear] = useState<number | null>(2015);
-    const [chamber, setChamber] = useState<'1' | '2'>('1');
+    const [year, setYear] = useState<number | null>(searchYear ? Number(searchYear) : 2015);
+    const [chamber, setChamber] = useState<'1' | '2'>(searchChamber === '2' ? '2' : '1');
     const [isPlaying, setIsPlaying] = useState(false);
     const [highlightedParty, setHighlightedParty] = useState<string | null>(null);
+
+    const [isLegisExpanded, setIsLegisExpanded] = useState(true);
+    const [isGovExpanded, setIsGovExpanded] = useState(false);
 
     const { data: countries } = useCountries();
     const { data: allStates } = useStatesGeo();
@@ -83,10 +93,12 @@ export function CameraModule() {
         year ?? 0,
         chamber,
     );
+    const { data: stateObs } = useStateObservation(selectedStateId, year);
 
-    // Default: select Mexico -> Nuevo Leon, keep geography selector collapsed
+    // Default: select Mexico -> Nuevo Leon if no URL param was provided
     useEffect(() => {
         if (!countries || !allStates || selectedStateId !== null) return;
+        if (searchStateId) return; // Skip default logic if a state was passed in via URL
         const mexico = countries.find(c => c.name === 'MEXICO');
         if (!mexico) return;
         
@@ -153,8 +165,8 @@ export function CameraModule() {
     }, [isPlaying, availableYears]);
 
     const handleSelectState = (id: number) => {
+        // Only set expanded countries, but don't force year change here unless desired
         setSelectedStateId(id);
-        // Auto-expand the country that owns this state
         const state = allStates?.find(s => s.id === id);
         if (state && !expandedCountries.includes(state.country_id)) {
             setExpandedCountries(prev => [...prev, state.country_id]);
@@ -196,7 +208,7 @@ export function CameraModule() {
             return null;
         };
         return {
-            totalChamberSeats: getVal('total_chamber_seats_sub_leg'),
+            totalChamberSeats: getVal('total_chamber_seats_sub_leg') ?? getVal('total_chamber_seats_sub_leg_1'),
             seatsInContest: getVal('total_seats_in_contest_sub_leg'),
             renewalType: getVal('renewal_type_sub_leg'),
             electoralSystem: getVal('electoral_system_sub_leg'),
@@ -204,6 +216,15 @@ export function CameraModule() {
             enpl: getVal('enp_sub_leg'),
         };
     }, [rawPartyRows]);
+
+    const toTitleCase = (str: any) => {
+        if (!str || str === 'N/A') return 'N/A';
+        return String(str)
+            .toLowerCase()
+            .split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    };
 
     const selectedStateName = allStates?.find(s => s.id === selectedStateId)?.name ?? '';
     const chamberLabel = chamber === '1' ? t('map.lowerChamber') : t('map.upperChamber');
@@ -216,7 +237,7 @@ export function CameraModule() {
         : '';
 
     return (
-        <>
+        <div className="w-full h-full flex animate-in fade-in duration-500 ease-out fill-mode-forwards">
             {/* ── Sidebar ── */}
             <SidebarPortal>
                 <div className="flex flex-col gap-6 p-6 pb-20 bg-spp-bgMuted">
@@ -391,17 +412,12 @@ export function CameraModule() {
                     )}
                 </div>
 
-                {/* Legend panel */}
-                {parties.length > 0 && (
-                    <aside className="w-52 shrink-0 border-l border-slate-200 bg-spp-bgLight flex flex-col overflow-hidden">
-                        <div className="px-4 pt-4 pb-2 border-b border-slate-100">
-                            <div className="text-[10px] font-black text-brand-600 uppercase tracking-[0.12em]">
-                                {chamberLabel}
-                            </div>
-                            <div className="text-[11px] font-bold text-slate-700 mt-0.5 tabular-nums">
-                                {totalSeats} {t('camera.seats')}
-                            </div>
-                        </div>
+                {/* Legend panel / Info Panel */}
+                {Object.keys(parties).length > 0 && (
+                    <aside className="w-64 shrink-0 p-4 border-l border-slate-200 bg-slate-50 relative z-10 flex flex-col gap-4">
+                        
+                        {/* Information Panels Box */}
+                        <div className="flex flex-col bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden shrink-0">
 
                         {chamberMeta && (() => {
                             const RENEWAL: Record<string, string> = {
@@ -426,20 +442,75 @@ export function CameraModule() {
                                 [t('camera.enpl'), fmtNum(chamberMeta.enpl)],
                             ];
                             return (
-                                <div className="px-3 py-2 border-b border-slate-100 space-y-1">
-                                    {rows.map(([label, value]) => (
-                                        <div key={label} className="flex justify-between gap-1">
-                                            <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{label}</span>
-                                            <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight">{value}</span>
+                                <div className="border-b border-slate-100 flex flex-col">
+                                    {/* Legislative Toggle */}
+                                    <button
+                                        onClick={() => setIsLegisExpanded(p => !p)}
+                                        className="w-full flex justify-between items-center px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-spp-gray hover:bg-slate-50 transition-colors"
+                                    >
+                                        {t('popup.legislativeDetails')}
+                                        {isLegisExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                                    </button>
+                                    
+                                    {isLegisExpanded && (
+                                        <div className="px-3 py-2 bg-slate-50/50 space-y-1">
+                                            {rows.map(([label, value]) => (
+                                                <div key={label} className="flex justify-between gap-1">
+                                                    <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{label}</span>
+                                                    <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight">{value}</span>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
+                                    )}
+
+                                    {/* Governor Toggle */}
+                                    <button
+                                        onClick={() => setIsGovExpanded(p => !p)}
+                                        className="w-full flex justify-between items-center px-4 py-2 border-t border-slate-100 text-[10px] font-bold uppercase tracking-wider text-spp-gray hover:bg-slate-50 transition-colors"
+                                    >
+                                        {t('popup.governorDetails')}
+                                        {isGovExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                                    </button>
+                                    
+                                    {isGovExpanded && (
+                                        <div className="px-3 py-2 bg-slate-50/50 space-y-1">
+                                            <div className="flex justify-between gap-1">
+                                                <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{t('popup.governor')}</span>
+                                                <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight truncate max-w-[100px]" title={stateObs?.winner_candidate_sub_exe ?? stateObs?.name_head_sub_exe}>
+                                                    {toTitleCase(stateObs?.winner_candidate_sub_exe ?? stateObs?.name_head_sub_exe)}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between gap-1">
+                                                <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{t('popup.party')}</span>
+                                                <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight truncate max-w-[100px]" title={stateObs?.head_party_sub_exe}>
+                                                    {toTitleCase(stateObs?.head_party_sub_exe)}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between gap-1">
+                                                <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{t('popup.reelected')}</span>
+                                                <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight">
+                                                    {stateObs?.consecutive_reelection_sub_exe === 1 ? t('popup.yes') : t('popup.no')}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             );
                         })()}
+                        </div>
 
-                        <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2">
-                            {parties.map(party => {
-                                const isActive = highlightedParty === null || party.party_name === highlightedParty;
+                        {/* Legend Panel */}
+                        <div className="flex flex-col flex-1 bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden min-h-0">
+                            {/* Legend Header */}
+                            <div className="px-4 py-3 bg-slate-900 text-white flex items-center justify-between shrink-0">
+                                <h3 className="font-bold text-xs uppercase tracking-wider">
+                                    {chamberLabel.toUpperCase()}: {chamberMeta?.totalChamberSeats || '—'} {t('camera.seats', { defaultValue: 'SEATS' }).toUpperCase()}
+                                </h3>
+                            </div>
+
+                            <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2">
+                                {parties.map(party => {
+                                    const isActive = highlightedParty === null || party.party_name === highlightedParty;
                                 return (
                                     <div
                                         key={party.party_name}
@@ -463,16 +534,18 @@ export function CameraModule() {
                                     </div>
                                 );
                             })}
-                        </div>
-
-                        <div className="px-4 py-2 border-t border-slate-100 bg-spp-bgMuted">
-                            <div className="text-[9px] text-slate-300 font-bold uppercase tracking-wider">
-                                SLED
+                            </div>
+                            
+                            <div className="px-4 py-2 border-t border-slate-100 bg-spp-bgMuted">
+                                <div className="text-[9px] text-slate-300 font-bold uppercase tracking-wider">
+                                    SLED
+                                </div>
                             </div>
                         </div>
+
                     </aside>
                 )}
             </div>
-        </>
+        </div>
     );
 }

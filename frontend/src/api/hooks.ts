@@ -157,3 +157,50 @@ export function useObservations(dataset: string, yearMin: number, yearMax: numbe
         placeholderData: (previousData) => previousData,
     });
 }
+
+// ── State Observation (Governor, Meta, etc) ──────────────────────────────────
+
+export function useStateObservation(stateId: number | null, year: number | null) {
+    return useQuery({
+        queryKey: ['state-observation', stateId, year],
+        queryFn: async () => {
+            if (!stateId || !year) return null;
+            
+            // To properly resolve the "closest year", we must fetch SED and SLED separately.
+            // A legislative election year (SLED) may not perfectly align with the executive one (SED).
+            const [resSled, resSed, resSeed] = await Promise.all([
+                apiClient.get<any[]>(`/data/observations?dataset=SLED,SLED_SNAPSHOT&state_id=${stateId}`).catch(() => ({ data: [] })),
+                apiClient.get<any[]>(`/data/observations?dataset=SED&state_id=${stateId}`).catch(() => ({ data: [] })),
+                apiClient.get<any[]>(`/data/observations?dataset=SEED&state_id=${stateId}`).catch(() => ({ data: [] }))
+            ]);
+            
+            const sledData = resSled.data || [];
+            const sedData = [...(resSed.data || []), ...(resSeed.data || [])];
+            
+            console.log(`[useStateObservation] stateId: ${stateId}, year: ${year}`);
+            console.log(`[useStateObservation] Raw SLED Data length:`, sledData.length);
+            console.log(`[useStateObservation] Raw SED/SEED Data length:`, sedData.length, sedData);
+            
+            if (sledData.length === 0 && sedData.length === 0) return null;
+            
+            // Helper to find the exact or closest past year row
+            const findBestRow = (data: any[]) => {
+                if (!data.length) return {};
+                let row = data.find((r: any) => r.year === year);
+                if (row) return row;
+                const pastYears = data.filter((r: any) => r.year <= year).sort((a: any, b: any) => b.year - a.year);
+                if (pastYears.length > 0) return pastYears[0];
+                return data[0] || {};
+            };
+
+            const bestSled = findBestRow(sledData);
+            const bestSed = findBestRow(sedData);
+            
+            console.log(`[useStateObservation] Best SED Row selected:`, bestSed);
+
+            return { ...bestSled, ...bestSed };
+        },
+        enabled: stateId !== null && year !== null,
+        staleTime: 1000 * 60 * 60, // 1 hour
+    });
+}

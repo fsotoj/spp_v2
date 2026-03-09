@@ -8,6 +8,7 @@ import {
 import chroma from 'chroma-js';
 import { useSidebar } from '../Layout';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * Core Leaflet layer component for rendering data-bound polygons.
@@ -15,6 +16,7 @@ import { useTranslation } from 'react-i18next';
  */
 export function MapGeoJSONLayer({ features, obsData, year, variable, vType, palette, prettyName, partyColors, activeDataset, onFilterChange }: { features: any[], obsData: Record<number, any>, year: number, variable: string, vType: string, palette?: string | null, prettyName?: string | null, partyColors?: Record<string, string>, activeDataset: string, onFilterChange?: (hiddenIndices: number[], hiddenNA: boolean) => void }) {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const [expandedDetails, setExpandedDetails] = useState<Record<string, boolean>>({});
 
     const toggleDetails = (stateId: number, key: string) => {
@@ -341,8 +343,8 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                                     </div>
                                     <div className="popup-row">
                                         <span className="popup-label">{t('popup.governor')}:</span>
-                                        <span className="popup-value truncate max-w-[180px]" title={data.winner_candidate_sub_exe}>
-                                            {toTitleCase(data.winner_candidate_sub_exe)}
+                                        <span className="popup-value truncate max-w-[180px]" title={data.winner_candidate_sub_exe ?? data.name_head_sub_exe}>
+                                            {toTitleCase(data.winner_candidate_sub_exe ?? data.name_head_sub_exe)}
                                         </span>
                                     </div>
                                     <div className="popup-row">
@@ -422,11 +424,19 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
 
                                 {/* Buttons */}
                                 <div className="flex gap-2 mt-4 pt-3 border-t border-slate-100">
-                                    <button className="flex-1 flex items-center justify-center gap-2 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold hover:bg-slate-800 transition-colors">
+                                    <button 
+                                        className="flex-1 flex items-center justify-center gap-2 py-2 bg-spp-orange text-white rounded-lg text-xs font-bold hover:bg-spp-purple hover:shadow-md transition-all duration-300 transform active:scale-95"
+                                        onClick={() => {
+                                            navigate(`/camera?stateId=${stateId}&year=${year}&chamber=1`);
+                                        }}
+                                    >
                                         <Landmark size={14} />
                                         {t('popup.cameraBtn')}
                                     </button>
-                                    <button className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-50 transition-colors">
+                                    <button 
+                                        className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 bg-spp-bgMuted text-slate-400 rounded-lg text-xs font-bold opacity-50 cursor-not-allowed pointer-events-none"
+                                        disabled
+                                    >
                                         <BarChart3 size={14} />
                                         {t('popup.graphBtn')}
                                     </button>
