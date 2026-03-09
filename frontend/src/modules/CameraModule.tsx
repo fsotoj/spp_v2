@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, Landmark } from 'lucide-react';
 import { SidebarPortal } from '../components/Layout';
 import {
     useCountries, useStatesGeo, usePartyColors,
@@ -41,6 +41,22 @@ function toPartyTitleCase(name: string): string {
 
 const FALLBACK_COLOR = '#94a3b8';
 
+// A custom functional component wrapping the parliament SVG icon
+const HemicycleIcon = ({ className = '', size = 24, stroke = 'currentColor' }) => {
+    return (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={size}
+            height={size}
+            viewBox="0 0 50 50"
+            fill={stroke}
+            className={`lucide ${className}`}
+        >
+            <path d="M25 0L25 4.5C29 4.5 27.300781 6 31 6L33 6L33 2L31 2C27.300781 2 29 0 25 0 Z M 25 7C18.195313 7 12.585938 12.320313 12.0625 19L12 19C11.96875 19 11.9375 19 11.90625 19C11.875 19 11.84375 19 11.8125 19C11.261719 19.050781 10.855469 19.542969 10.90625 20.09375C10.957031 20.644531 11.449219 21.050781 12 21L12 26L14 26L14 21L16 21L16 26L18 26L18 21L20 21L20 26L22 26L22 21L24 21L24 26L26 26L26 21L28 21L28 26L30 26L30 21L32 21L32 26L34 26L34 21L36 21L36 26L38 26L38 21C38.359375 21.003906 38.695313 20.816406 38.878906 20.503906C39.058594 20.191406 39.058594 19.808594 38.878906 19.496094C38.695313 19.183594 38.359375 18.996094 38 19L37.9375 19C37.414063 12.320313 31.804688 7 25 7 Z M 25 9C30.699219 9 35.25 13.433594 35.78125 19L14.21875 19C14.75 13.433594 19.300781 9 25 9 Z M 0 27L0 50L50 50L50 27 Z M 2 29L48 29L48 48L2 48 Z M 5 32L5 35L9 35L9 32 Z M 12 32L12 35L16 35L16 32 Z M 19 32L19 35L23 35L23 32 Z M 26 32L26 35L30 35L30 32 Z M 33 32L33 35L37 35L37 32 Z M 40 32L40 35L44 35L44 32 Z M 5 37L5 40L9 40L9 37 Z M 12 37L12 40L16 40L16 37 Z M 19 37L19 40L23 40L23 37 Z M 26 37L26 40L30 40L30 37 Z M 33 37L33 40L37 40L37 37 Z M 40 37L40 40L44 40L44 37 Z M 5 42L5 45L9 45L9 42 Z M 12 42L12 45L16 45L16 42 Z M 19 42L19 45L23 45L23 42 Z M 26 42L26 45L30 45L30 42 Z M 33 42L33 45L37 45L37 42 Z M 40 42L40 45L44 45L44 42Z" />
+        </svg>
+    );
+};
+
 // ── Main Module ──────────────────────────────────────────────────────────────
 
 export function CameraModule() {
@@ -48,7 +64,7 @@ export function CameraModule() {
 
     const [selectedStateId, setSelectedStateId] = useState<number | null>(null);
     const [expandedCountries, setExpandedCountries] = useState<number[]>([]);
-    const [year, setYear] = useState<number | null>(null);
+    const [year, setYear] = useState<number | null>(2015);
     const [chamber, setChamber] = useState<'1' | '2'>('1');
     const [isPlaying, setIsPlaying] = useState(false);
     const [highlightedParty, setHighlightedParty] = useState<string | null>(null);
@@ -63,32 +79,47 @@ export function CameraModule() {
         chamber,
     );
 
-    // Default: expand Mexico, select its first state
+    // Default: select Mexico -> Nuevo Leon, keep geography selector collapsed
     useEffect(() => {
         if (!countries || !allStates || selectedStateId !== null) return;
         const mexico = countries.find(c => c.name === 'MEXICO');
         if (!mexico) return;
-        setExpandedCountries([mexico.id]);
-        const mexStates = allStates
-            .filter(s => s.country_id === mexico.id)
-            .sort((a, b) => a.name.localeCompare(b.name));
-        if (mexStates.length > 0) setSelectedStateId(mexStates[0].id);
+        
+        // Find Nuevo Leon
+        const nl = allStates.find(
+            s => s.country_id === mexico.id && 
+            (s.name.toUpperCase() === 'NUEVO LEÓN' || s.name.toUpperCase() === 'NUEVO LEON')
+        );
+        
+        if (nl) {
+            setSelectedStateId(nl.id);
+        } else {
+            // fallback
+            const mexStates = allStates
+                .filter(s => s.country_id === mexico.id)
+                .sort((a, b) => a.name.localeCompare(b.name));
+            if (mexStates.length > 0) setSelectedStateId(mexStates[0].id);
+        }
     }, [countries, allStates, selectedStateId]);
 
-    // When state or chamber changes, snap year to most recent available
+    // When state or chamber changes, snap year to the closest lower one
     useEffect(() => {
         if (!availableYears || availableYears.length === 0) return;
-        const mostRecent = availableYears[availableYears.length - 1];
         setYear(prev => {
-            if (prev !== null && availableYears.includes(prev)) return prev;
-            return mostRecent;
+            if (prev === null) return availableYears[availableYears.length - 1];
+            
+            let closestLower = availableYears[0];
+            for (const y of availableYears) {
+                if (y <= prev) closestLower = y;
+                else break;
+            }
+            return closestLower;
         });
     }, [availableYears]);
 
-    // When chamber or state changes, stop playback and reset year
+    // When chamber or state changes, stop playback
     useEffect(() => {
         setIsPlaying(false);
-        setYear(null);
     }, [chamber, selectedStateId]);
 
     // Playback: advance through available years, stop at the last one
@@ -183,19 +214,26 @@ export function CameraModule() {
                         <label className="block text-xs font-bold text-spp-gray uppercase tracking-wider mb-2">
                             {t('camera.chamber')}
                         </label>
-                        <div className="flex rounded-lg overflow-hidden border border-slate-200 shadow-inner">
-                            {(['1', '2'] as const).map(ch => (
-                                <button
-                                    key={ch}
-                                    onClick={() => setChamber(ch)}
-                                    className={`flex-1 py-2 text-xs font-bold transition-all ${chamber === ch
-                                            ? 'bg-brand-600 text-white shadow-sm'
-                                            : 'bg-spp-bgLight text-slate-500 hover:bg-slate-100'
-                                        }`}
-                                >
-                                    {ch === '1' ? t('map.lowerChamber') : t('map.upperChamber')}
-                                </button>
-                            ))}
+                        <div className="flex gap-2">
+                            {(['1', '2'] as const).map(ch => {
+                                const isSelected = chamber === ch;
+                                const Icon = ch === '1' ? Landmark : HemicycleIcon;
+                                return (
+                                    <button
+                                        key={ch}
+                                        onClick={() => setChamber(ch)}
+                                        className={`flex-1 flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all ${isSelected
+                                                ? 'border-brand-600 bg-brand-50 text-brand-700 shadow-sm'
+                                                : 'border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:bg-slate-50'
+                                            }`}
+                                    >
+                                        <Icon size={24} className="mb-1" strokeWidth={isSelected ? 2.5 : 2} />
+                                        <span className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? 'text-brand-700' : 'text-slate-500'}`}>
+                                            {ch === '1' ? 'Lower' : 'Upper'}
+                                        </span>
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
