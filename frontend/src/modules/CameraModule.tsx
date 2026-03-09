@@ -386,30 +386,32 @@ export function CameraModule() {
             <div className="w-full h-full flex overflow-hidden bg-spp-bgMuted">
 
                 {/* Chart */}
-                <div className="flex-1 flex items-start justify-center p-4 md:p-8 overflow-hidden min-w-0">
-                    {parties.length > 0 ? (
-                        <HemicycleChart
-                            parties={parties}
-                            highlightedParty={highlightedParty}
-                            onPartyHover={setHighlightedParty}
-                            title={chartTitle}
-                            subtitle={chartSubtitle}
-                        />
-                    ) : (
-                        <div className="text-center text-slate-400 space-y-2 px-8">
-                            {isFetching || isFetchingYears ? (
-                                <div className="text-sm font-medium animate-pulse text-brand-500">
-                                    {t('map.fetchingData')}
-                                </div>
-                            ) : (
-                                <>
-                                    <div className="text-4xl">🏛</div>
-                                    <div className="text-sm font-bold text-slate-500">{t('camera.noData')}</div>
-                                    <div className="text-xs text-slate-400 max-w-xs mx-auto">{t('camera.noDataHint')}</div>
-                                </>
-                            )}
-                        </div>
-                    )}
+                <div className="flex-1 relative overflow-hidden min-w-0">
+                    <div className="absolute inset-0 flex items-start justify-center pt-2 md:pt-4 pb-2 px-2 md:px-4">
+                        {parties.length > 0 ? (
+                            <HemicycleChart
+                                parties={parties}
+                                highlightedParty={highlightedParty}
+                                onPartyHover={setHighlightedParty}
+                                title={chartTitle}
+                                subtitle={chartSubtitle}
+                            />
+                        ) : (
+                            <div className="text-center text-slate-400 space-y-2 px-8">
+                                {isFetching || isFetchingYears ? (
+                                    <div className="text-sm font-medium animate-pulse text-brand-500">
+                                        {t('map.fetchingData')}
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div className="text-4xl">🏛</div>
+                                        <div className="text-sm font-bold text-slate-500">{t('camera.noData')}</div>
+                                        <div className="text-xs text-slate-400 max-w-xs mx-auto">{t('camera.noDataHint')}</div>
+                                    </>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Legend panel / Info Panel */}

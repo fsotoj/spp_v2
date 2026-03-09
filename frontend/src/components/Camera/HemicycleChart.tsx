@@ -57,10 +57,10 @@ function getLayoutParams(N: number): { radii: number[]; dotR: number; seatsPerRo
     let radii: number[];
     let maxDotR: number;
 
-    if (N <= 20)      { radii = [65];             maxDotR = 6.5; }
-    else if (N <= 50) { radii = [45, 85];         maxDotR = 5.0; }
-    else if (N <= 90) { radii = [38, 65, 92];     maxDotR = 3.2; }
-    else              { radii = [38, 57, 76, 92]; maxDotR = 2.5; }
+    if (N <= 20) { radii = [65]; maxDotR = 6.5; }
+    else if (N <= 50) { radii = [45, 85]; maxDotR = 5.0; }
+    else if (N <= 90) { radii = [38, 65, 92]; maxDotR = 3.2; }
+    else { radii = [38, 57, 76, 92]; maxDotR = 2.5; }
 
     const seatsPerRow = distributeSeats(N, radii);
 
@@ -150,9 +150,9 @@ export function HemicycleChart({
         circles.forEach((el, i) => {
             el.animate(
                 [
-                    { transform: 'scale(1)',              offset: 0    },
+                    { transform: 'scale(1)', offset: 0 },
                     { transform: 'scaleX(0) scaleY(1.4)', offset: 0.35 },
-                    { transform: 'scale(1)',              offset: 1    },
+                    { transform: 'scale(1)', offset: 1 },
                 ],
                 { duration: 320, delay: i * 12, easing: 'ease-in-out', fill: 'backwards' }
             );
@@ -173,11 +173,11 @@ export function HemicycleChart({
     const partyKey = parties.map(p => `${p.party_name}:${p.seats}`).join('|');
 
     return (
-        <div className="relative w-full flex items-start justify-center">
+        <div className="relative w-full h-full flex items-center justify-center">
             <svg
                 ref={svgRef}
-                viewBox="0 0 220 120"
-                className="w-full h-full"
+                viewBox="0 30 220 90"
+                className="w-full h-full max-h-[85vh] p-2"
                 preserveAspectRatio="xMidYMid meet"
                 onMouseLeave={() => { onPartyHover(null); setTooltip(null); }}
             >
