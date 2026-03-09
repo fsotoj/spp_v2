@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
-import { Play, Pause, Landmark, ChevronUp, ChevronDown } from 'lucide-react';
 import { SidebarPortal } from '../components/Layout';
 import {
     useCountries, useStatesGeo, usePartyColors,
@@ -9,56 +8,12 @@ import {
     useStateObservation
 } from '../api/hooks';
 import { HemicycleChart, type PartyRow } from '../components/Camera/HemicycleChart';
-import { GeographySingleGroup } from '../components/Camera/GeographySingleGroup';
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-
-function extractSeats(row: any): number {
-    const v = row['total_seats_party_sub_leg'];
-    if (v != null && !isNaN(Number(v))) return Math.round(Number(v));
-    return 0;
-}
-
-// Common Spanish/Portuguese short words (≤4 chars) that must NOT be treated as abbreviations.
-const SPA_POR_WORDS = new Set([
-    // Spanish articles, prepositions, conjunctions
-    'EL', 'LA', 'LOS', 'LAS', 'UN', 'UNA',
-    'DE', 'DEL', 'EN', 'AL', 'POR', 'CON', 'SIN',
-    'Y', 'O', 'E', 'NI', 'U', 'A',
-    // Portuguese articles, prepositions, conjunctions
-    'DO', 'DA', 'DOS', 'DAS', 'EM', 'NO', 'NA', 'NOS', 'NAS',
-    'OU', 'MAS', 'COM', 'PARA', 'NOVO'
-]);
-
-/** Title-cases a party name, preserving abbreviations (≤4 all-caps letters, not a common word)
- *  and hyphen-joined coalition codes (e.g. PAN-PRI-PRD). */
-function toPartyTitleCase(name: string): string {
-    if (/^[A-Z]{2,}(-[A-Z]{2,})+$/.test(name)) return name; // full coalition string
-    return name.split(' ').map(word => {
-        if (/^[A-Z]{2,}(-[A-Z]{2,})+$/.test(word)) return word;                         // inline coalition
-        if (/^[A-Z]{1,4}$/.test(word) && !SPA_POR_WORDS.has(word)) return word;          // abbreviation
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    }).join(' ');
-}
+import { extractSeats, toTitleCase } from '../components/Camera/CameraUtils';
+import { CameraSidebar } from '../components/Camera/CameraSidebar';
+import { CameraInfoPanel } from '../components/Camera/CameraInfoPanel';
+import { CameraLegendPanel } from '../components/Camera/CameraLegendPanel';
 
 const FALLBACK_COLOR = '#94a3b8';
-
-// A custom functional component wrapping the parliament SVG icon
-const HemicycleIcon = ({ className = '', size = 24, stroke = 'currentColor', color = 'currentColor' }) => {
-    // The SVG uses `fill`, so map both `color` and `stroke` props down
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={size}
-            height={size}
-            viewBox="0 0 50 50"
-            fill={color || stroke}
-            className={`lucide ${className}`}
-        >
-            <path d="M25 0L25 4.5C29 4.5 27.300781 6 31 6L33 6L33 2L31 2C27.300781 2 29 0 25 0 Z M 25 7C18.195313 7 12.585938 12.320313 12.0625 19L12 19C11.96875 19 11.9375 19 11.90625 19C11.875 19 11.84375 19 11.8125 19C11.261719 19.050781 10.855469 19.542969 10.90625 20.09375C10.957031 20.644531 11.449219 21.050781 12 21L12 26L14 26L14 21L16 21L16 26L18 26L18 21L20 21L20 26L22 26L22 21L24 21L24 26L26 26L26 21L28 21L28 26L30 26L30 21L32 21L32 26L34 26L34 21L36 21L36 26L38 26L38 21C38.359375 21.003906 38.695313 20.816406 38.878906 20.503906C39.058594 20.191406 39.058594 19.808594 38.878906 19.496094C38.695313 19.183594 38.359375 18.996094 38 19L37.9375 19C37.414063 12.320313 31.804688 7 25 7 Z M 25 9C30.699219 9 35.25 13.433594 35.78125 19L14.21875 19C14.75 13.433594 19.300781 9 25 9 Z M 0 27L0 50L50 50L50 27 Z M 2 29L48 29L48 48L2 48 Z M 5 32L5 35L9 35L9 32 Z M 12 32L12 35L16 35L16 32 Z M 19 32L19 35L23 35L23 32 Z M 26 32L26 35L30 35L30 32 Z M 33 32L33 35L37 35L37 32 Z M 40 32L40 35L44 35L44 32 Z M 5 37L5 40L9 40L9 37 Z M 12 37L12 40L16 40L16 37 Z M 19 37L19 40L23 40L23 37 Z M 26 37L26 40L30 40L30 37 Z M 33 37L33 40L37 40L37 37 Z M 40 37L40 40L44 40L44 37 Z M 5 42L5 45L9 45L9 42 Z M 12 42L12 45L16 45L16 42 Z M 19 42L19 45L23 45L23 42 Z M 26 42L26 45L30 45L30 42 Z M 33 42L33 45L37 45L37 42 Z M 40 42L40 45L44 45L44 42Z" />
-        </svg>
-    );
-};
 
 // ── Main Module ──────────────────────────────────────────────────────────────
 
@@ -76,9 +31,6 @@ export function CameraModule() {
     const [chamber, setChamber] = useState<'1' | '2'>(searchChamber === '2' ? '2' : '1');
     const [isPlaying, setIsPlaying] = useState(false);
     const [highlightedParty, setHighlightedParty] = useState<string | null>(null);
-
-    const [isLegisExpanded, setIsLegisExpanded] = useState(true);
-    const [isGovExpanded, setIsGovExpanded] = useState(false);
 
     const { data: countries } = useCountries();
     const { data: allStates } = useStatesGeo();
@@ -217,20 +169,11 @@ export function CameraModule() {
         };
     }, [rawPartyRows]);
 
-    const toTitleCase = (str: any) => {
-        if (!str || str === 'N/A') return 'N/A';
-        return String(str)
-            .toLowerCase()
-            .split(' ')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-    };
-
     const selectedStateName = allStates?.find(s => s.id === selectedStateId)?.name ?? '';
     const chamberLabel = chamber === '1' ? t('map.lowerChamber') : t('map.upperChamber');
 
     const chartTitle = selectedStateName
-        ? selectedStateName.charAt(0) + selectedStateName.slice(1).toLowerCase()
+        ? toTitleCase(selectedStateName)
         : '';
     const chartSubtitle = parties.length > 0
         ? `${year} · ${chamberLabel} · ${totalSeats} ${t('camera.seats')}`
@@ -238,154 +181,31 @@ export function CameraModule() {
 
     return (
         <div className="w-full h-full flex animate-in fade-in duration-500 ease-out fill-mode-forwards">
-            {/* ── Sidebar ── */}
             <SidebarPortal>
-                <div className="flex flex-col gap-6 p-6 pb-20 bg-spp-bgMuted">
-
-                    {/* Chamber toggle */}
-                    <div>
-                        <label className="block text-xs font-bold text-spp-gray uppercase tracking-wider mb-2">
-                            {t('camera.chamber')}
-                        </label>
-                        <div className="flex gap-2">
-                            {(['1', '2'] as const).map(ch => {
-                                const isSelected = chamber === ch;
-                                const isDisabled = isUnicameral && ch === '2';
-                                const Icon = ch === '1' ? Landmark : HemicycleIcon;
-                                
-                                return (
-                                    <button
-                                        key={ch}
-                                        onClick={() => setChamber(ch)}
-                                        disabled={isDisabled}
-                                        className={`flex-1 flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all
-                                            ${isSelected 
-                                                ? 'border-brand-600 bg-brand-50 text-brand-700 shadow-sm' 
-                                                : isDisabled
-                                                    ? 'border-slate-100 bg-spp-bgMuted text-slate-300 opacity-50 cursor-not-allowed'
-                                                    : 'border-slate-200 bg-white text-spp-gray hover:border-slate-300 hover:bg-slate-50'
-                                            }`}
-                                        title={isDisabled ? t('camera.unicameralOnly') : undefined}
-                                    >
-                                        <Icon 
-                                            size={24} 
-                                            className="mb-1" 
-                                            color={isSelected ? 'currentColor' : isDisabled ? '#cbd5e1' : '#4D4D4D'} 
-                                            stroke={isSelected ? 'currentColor' : isDisabled ? '#cbd5e1' : '#4D4D4D'} 
-                                            strokeWidth={isSelected ? 2.5 : 2} 
-                                        />
-                                        <span className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? 'text-brand-700' : isDisabled ? 'text-slate-300' : 'text-spp-gray'}`}>
-                                            {ch === '1' ? 'Lower' : 'Upper'}
-                                        </span>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* Year selector — slider over available years + play button */}
-                    <div>
-                        <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
-                            <div className="flex items-center gap-2">
-                                <span>{t('camera.year')}</span>
-                                {availableYears && availableYears.length > 1 && (
-                                    <button
-                                        onClick={() => setIsPlaying(p => !p)}
-                                        className={`flex items-center justify-center p-1 rounded-full transition-all ${isPlaying ? 'bg-brand-100 text-brand-600 shadow-sm' : 'hover:bg-slate-100 text-slate-400'}`}
-                                        title={isPlaying ? t('map.pauseAnimation') : t('map.playAnimation')}
-                                    >
-                                        {isPlaying
-                                            ? <Pause size={14} fill="currentColor" />
-                                            : <Play size={14} fill="currentColor" />}
-                                    </button>
-                                )}
-                            </div>
-                            <span className="text-spp-purple font-black text-sm tabular-nums">
-                                {year ?? '—'}
-                            </span>
-                        </div>
-                        {isFetchingYears ? (
-                            <div className="text-xs text-brand-500 animate-pulse">{t('map.fetchingData')}</div>
-                        ) : availableYears && availableYears.length > 0 ? (
-                            <>
-                                <input
-                                    type="range"
-                                    min={availableYears[0]}
-                                    max={availableYears[availableYears.length - 1]}
-                                    value={year ?? availableYears[availableYears.length - 1]}
-                                    onChange={e => {
-                                        setIsPlaying(false);
-                                        const v = Number(e.target.value);
-                                        const nearest = availableYears.reduce((a, b) =>
-                                            Math.abs(b - v) < Math.abs(a - v) ? b : a
-                                        );
-                                        setYear(nearest);
-                                    }}
-                                    onMouseDown={() => setIsPlaying(false)}
-                                    step={1}
-                                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600 focus:outline-none"
-                                />
-                                {/* Custom tick marks at each available year */}
-                                {availableYears.length > 1 && (
-                                    <div className="relative h-3 mt-0.5 mx-[7px]">
-                                        {availableYears.map(y => {
-                                            const pct = ((y - availableYears[0]) / (availableYears[availableYears.length - 1] - availableYears[0])) * 100;
-                                            const isActive = y === year;
-                                            return (
-                                                <div
-                                                    key={y}
-                                                    className={`absolute top-0.5 w-1.5 h-1.5 rounded-full -translate-x-1/2 transition-colors ${isActive ? 'bg-spp-purple' : 'bg-brand-400'}`}
-                                                    style={{ left: `${pct}%` }}
-                                                    title={String(y)}
-                                                />
-                                            );
-                                        })}
-                                    </div>
-                                )}
-                            </>
-                        ) : selectedStateId !== null ? (
-                            <div className="text-xs text-slate-400 italic">{t('camera.noData')}</div>
-                        ) : null}
-                    </div>
-
-                    {/* Geography tree — single select */}
-                    <div>
-                        <label className="block text-xs font-bold text-spp-gray uppercase tracking-wider mb-2">
-                            {t('map.geography')}
-                        </label>
-                        <div className="bg-spp-bgLight border border-slate-200 rounded-lg overflow-hidden shadow-inner flex flex-col">
-                            {countries?.map(country => (
-                                <GeographySingleGroup
-                                    key={country.id}
-                                    country={country}
-                                    allStates={allStates || []}
-                                    selectedStateId={selectedStateId}
-                                    onSelectState={handleSelectState}
-                                    isExpanded={expandedCountries.includes(country.id)}
-                                    onToggleExpand={() =>
-                                        setExpandedCountries(prev =>
-                                            prev.includes(country.id)
-                                                ? prev.filter(id => id !== country.id)
-                                                : [...prev, country.id]
-                                        )
-                                    }
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    {isFetching && (
-                        <div className="text-xs text-brand-600 font-medium animate-pulse">
-                            {t('map.fetchingData')}
-                        </div>
-                    )}
-                </div>
+                <CameraSidebar
+                    chamber={chamber}
+                    setChamber={setChamber}
+                    isUnicameral={isUnicameral}
+                    year={year}
+                    setYear={(y: number) => setYear(y)}
+                    isPlaying={isPlaying}
+                    setIsPlaying={setIsPlaying}
+                    availableYears={availableYears}
+                    isFetchingYears={isFetchingYears}
+                    countries={countries}
+                    allStates={allStates}
+                    selectedStateId={selectedStateId}
+                    onSelectState={handleSelectState}
+                    expandedCountries={expandedCountries}
+                    setExpandedCountries={setExpandedCountries}
+                    isFetching={isFetching}
+                />
             </SidebarPortal>
 
-            {/* ── Main area: chart (flex-1) + legend panel (fixed w-52) ── */}
+            {/* ── Main area: chart (flex-1) + legend panel ── */}
             <div className="w-full h-full flex flex-col md:flex-row overflow-hidden bg-spp-bgMuted">
 
-                {/* Chart */}
+                {/* Chart Area */}
                 <div className="flex-1 relative overflow-hidden min-w-0">
                     <div className="absolute inset-0 flex items-start justify-center pt-2 md:pt-4 pb-2 px-2 md:px-4">
                         {parties.length > 0 ? (
@@ -414,148 +234,23 @@ export function CameraModule() {
                     </div>
                 </div>
 
-                {/* Legend panel / Info Panel */}
+                {/* Right/Bottom Panel: Data / Legend */}
                 {Object.keys(parties).length > 0 && (
                     <aside className="w-full md:w-64 h-[45vh] md:h-full shrink-0 p-2 md:p-4 border-t md:border-t-0 md:border-l border-slate-200 bg-slate-50 relative z-10 flex flex-row md:flex-col gap-2 md:gap-4 overflow-hidden">
-                        
-                        {/* Information Panels Box */}
-                        <div className="flex-1 md:flex-none w-1/2 md:w-auto flex flex-col bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden md:min-h-0">
-                            {/* Info Header */}
-                            <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between shrink-0">
-                                <h3 className="font-black text-[10px] text-brand-600 uppercase tracking-[0.12em]">
-                                    {t('popup.details', { defaultValue: 'DETAILS' })}
-                                </h3>
-                            </div>
-                            <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col">
-
-                        {chamberMeta && (() => {
-                            const RENEWAL: Record<string, string> = {
-                                '1': t('popup.staggeredEvery2Years'),
-                                '2': t('popup.fullRenewal'),
-                            };
-                            const SYSTEM: Record<string, string> = {
-                                '1': t('popup.proportionalRepresentation'),
-                                '2': t('popup.simpleMajority'),
-                                '3': t('popup.mixedPRMajority'),
-                                '4': t('popup.mixedPRDistricts'),
-                            };
-                            const fmt = (v: any) => v != null ? String(v) : '—';
-                            const fmtNum = (v: any) => v != null && !isNaN(Number(v)) ? Number(v).toFixed(2) : '—';
-                            const fmtCode = (map: Record<string, string>, v: any) =>
-                                v != null ? (map[String(Math.round(Number(v)))] ?? fmt(v)) : '—';
-                            const rows: [string, string][] = [
-                                [t('camera.seatsInContest'), fmt(chamberMeta.seatsInContest)],
-                                [t('camera.renewalType'), fmtCode(RENEWAL, chamberMeta.renewalType)],
-                                [t('camera.electoralSystem'), fmtCode(SYSTEM, chamberMeta.electoralSystem)],
-                                [t('camera.partiesContesting'), fmt(chamberMeta.partiesContesting)],
-                                [t('camera.enpl'), fmtNum(chamberMeta.enpl)],
-                            ];
-                            return (
-                                <div className="flex flex-col">
-                                    {/* Legislative Toggle */}
-                                    <button
-                                        onClick={() => setIsLegisExpanded(p => !p)}
-                                        className="w-full flex justify-between items-center px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-spp-gray hover:bg-slate-50 transition-colors"
-                                    >
-                                        {t('popup.legislativeDetails')}
-                                        {isLegisExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                                    </button>
-                                    
-                                    {isLegisExpanded && (
-                                        <div className="px-3 py-2 bg-slate-50/50 space-y-1">
-                                            {rows.map(([label, value]) => (
-                                                <div key={label} className="flex justify-between gap-1">
-                                                    <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{label}</span>
-                                                    <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight">{value}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    {/* Governor Toggle */}
-                                    <button
-                                        onClick={() => setIsGovExpanded(p => !p)}
-                                        className="w-full flex justify-between items-center px-4 py-2 border-t border-slate-100 text-[10px] font-bold uppercase tracking-wider text-spp-gray hover:bg-slate-50 transition-colors"
-                                    >
-                                        {t('popup.governorDetails')}
-                                        {isGovExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                                    </button>
-                                    
-                                    {isGovExpanded && (
-                                        <div className="px-3 py-2 bg-slate-50/50 space-y-1">
-                                            <div className="flex justify-between gap-1">
-                                                <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{t('popup.governor')}</span>
-                                                <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight truncate max-w-[100px]" title={stateObs?.winner_candidate_sub_exe ?? stateObs?.name_head_sub_exe}>
-                                                    {toTitleCase(stateObs?.winner_candidate_sub_exe ?? stateObs?.name_head_sub_exe)}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between gap-1">
-                                                <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{t('popup.party')}</span>
-                                                <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight truncate max-w-[100px]" title={stateObs?.head_party_sub_exe}>
-                                                    {toTitleCase(stateObs?.head_party_sub_exe)}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between gap-1">
-                                                <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{t('popup.reelected')}</span>
-                                                <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight">
-                                                    {stateObs?.consecutive_reelection_sub_exe === 1 ? t('popup.yes') : t('popup.no')}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })()}
-                            </div>
-                        </div>
-
-                        {/* Legend Panel */}
-                        <div className="flex-1 w-1/2 md:w-auto flex flex-col bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden min-h-0">
-                            {/* Legend Header */}
-                            <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between shrink-0">
-                                <h3 className="font-black text-[10px] text-brand-600 uppercase tracking-[0.12em]">
-                                    {chamberLabel}
-                                </h3>
-                            </div>
-
-                            <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2">
-                                {parties.map(party => {
-                                    const isActive = highlightedParty === null || party.party_name === highlightedParty;
-                                return (
-                                    <div
-                                        key={party.party_name}
-                                        className={`flex items-center gap-2 px-1 py-1 rounded cursor-pointer hover:bg-slate-50 transition-all ${!isActive ? 'opacity-25' : ''}`}
-                                        onMouseEnter={() => setHighlightedParty(party.party_name)}
-                                        onMouseLeave={() => setHighlightedParty(null)}
-                                    >
-                                        <i
-                                            className="w-3 h-3 rounded-full shrink-0 border border-white/60 shadow-sm"
-                                            style={{ background: party.color }}
-                                        />
-                                        <span
-                                            className="text-[10px] font-semibold text-slate-700 truncate flex-1 leading-tight"
-                                            title={party.party_name}
-                                        >
-                                            {toPartyTitleCase(party.party_name)}
-                                        </span>
-                                        <span className="text-[10px] font-black text-brand-600 tabular-nums shrink-0">
-                                            {party.seats}
-                                        </span>
-                                    </div>
-                                );
-                            })}
-                            </div>
-                            
-                            <div className="hidden md:block px-4 py-2 border-t border-slate-100 bg-spp-bgMuted shrink-0">
-                                <div className="text-[9px] text-slate-300 font-bold uppercase tracking-wider">
-                                    SLED
-                                </div>
-                            </div>
-                        </div>
-
+                        <CameraInfoPanel
+                            chamberMeta={chamberMeta}
+                            stateObs={stateObs}
+                        />
+                        <CameraLegendPanel
+                            chamberLabel={chamberLabel}
+                            parties={parties}
+                            highlightedParty={highlightedParty}
+                            setHighlightedParty={setHighlightedParty}
+                        />
                     </aside>
                 )}
             </div>
         </div>
     );
 }
+
