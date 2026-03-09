@@ -135,7 +135,13 @@
     "chamber": "Chamber",
     "seats": "seats",
     "noData": "No legislative data available for this selection.",
-    "noDataHint": "SLED records data by election year — try adjusting the year slider to a year when an election was held."
+    "noDataHint": "SLED records data by election year — try adjusting the year slider to a year when an election was held.",
+    "chamberSeatsTotal": "Chamber seats (total)",
+    "seatsInContest": "Seats in contest",
+    "renewalType": "Renewal type",
+    "electoralSystem": "Electoral system",
+    "partiesContesting": "Parties contesting",
+    "enpl": "ENPL"
   },
   "team": {
     "title": "Team",

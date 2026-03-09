@@ -135,7 +135,13 @@
     "chamber": "Kammer",
     "seats": "Sitze",
     "noData": "Keine Legislativdaten für diese Auswahl verfügbar.",
-    "noDataHint": "SLED speichert Daten nach Wahljahr — passe den Schieberegler auf ein Jahr an, in dem Wahlen stattfanden."
+    "noDataHint": "SLED speichert Daten nach Wahljahr — passe den Schieberegler auf ein Jahr an, in dem Wahlen stattfanden.",
+    "chamberSeatsTotal": "Kammersitze (gesamt)",
+    "seatsInContest": "Sitze im Wettbewerb",
+    "renewalType": "Erneuerungstyp",
+    "electoralSystem": "Wahlsystem",
+    "partiesContesting": "Konkurrierende Parteien",
+    "enpl": "ENPL"
   },
   "team": {
     "title": "Team",

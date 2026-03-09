@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useRef, useEffect } from 'react';
 
 export interface PartyRow {
     party_name: string;
@@ -74,35 +74,44 @@ function getLayoutParams(N: number): { radii: number[]; dotR: number; seatsPerRo
 }
 
 /**
- * Computes hemicycle dot positions and assigns parties.
- * Returns dots and the computed dotR for rendering.
+ * Computes hemicycle dot positions using a sector layout:
+ * each party occupies a proportional arc wedge across ALL rows (left → right),
+ * so parties form contiguous colored blocks like the European Parliament chart.
  */
 function computeHemicycle(parties: PartyRow[]): { dots: SeatDot[]; dotR: number } {
     const totalSeats = parties.reduce((s, p) => s + p.seats, 0);
     if (totalSeats === 0) return { dots: [], dotR: 3 };
 
     const { radii, dotR, seatsPerRow } = getLayoutParams(totalSeats);
+    const K = radii.length;
 
-    // Build seat positions: inner → outer, left (π) → right (0) per row
-    const positions: { x: number; y: number }[] = [];
-    for (let k = 0; k < radii.length; k++) {
+    // For each row, distribute seats among parties (largest-remainder proportional)
+    const rowPartySeats: number[][] = seatsPerRow.map(n => {
+        const raw = parties.map(p => (p.seats / totalSeats) * n);
+        const floors = raw.map(v => Math.floor(v));
+        let rem = n - floors.reduce((a, b) => a + b, 0);
+        raw.map((v, i) => ({ i, frac: v - Math.floor(v) }))
+            .sort((a, b) => b.frac - a.frac)
+            .forEach(({ i }) => { if (rem-- > 0) floors[i]++; });
+        return floors;
+    });
+
+    // Place dots: per row, parties fill left (θ=π) → right (θ=0) contiguously
+    const dots: SeatDot[] = [];
+    for (let k = 0; k < K; k++) {
         const r = radii[k];
         const n = seatsPerRow[k];
-        for (let j = 0; j < n; j++) {
-            const theta = n === 1 ? Math.PI / 2 : Math.PI - (Math.PI * j) / (n - 1);
-            positions.push({
-                x: CX + r * Math.cos(theta),
-                y: CY - r * Math.sin(theta),
-            });
-        }
-    }
-
-    // Assign parties to positions in order
-    const dots: SeatDot[] = [];
-    let pos = 0;
-    for (const party of parties) {
-        for (let s = 0; s < party.seats && pos < positions.length; s++, pos++) {
-            dots.push({ ...positions[pos], party_name: party.party_name, color: party.color });
+        let seatIdx = 0;
+        for (let pi = 0; pi < parties.length; pi++) {
+            for (let s = 0; s < rowPartySeats[k][pi]; s++, seatIdx++) {
+                const theta = n === 1 ? Math.PI / 2 : Math.PI - (Math.PI * seatIdx) / (n - 1);
+                dots.push({
+                    x: CX + r * Math.cos(theta),
+                    y: CY - r * Math.sin(theta),
+                    party_name: parties[pi].party_name,
+                    color: parties[pi].color,
+                });
+            }
         }
     }
     return { dots, dotR };
@@ -125,6 +134,25 @@ export function HemicycleChart({
 }: HemicycleChartProps) {
     const { dots, dotR } = useMemo(() => computeHemicycle(parties), [parties]);
     const [tooltip, setTooltip] = useState<{ x: number; y: number; label: string } | null>(null);
+    const svgRef = useRef<SVGSVGElement>(null);
+
+    // Flip dots of the highlighted party whenever highlight changes
+    useEffect(() => {
+        if (!highlightedParty || !svgRef.current) return;
+        const circles = svgRef.current.querySelectorAll<SVGCircleElement>(
+            `[data-party="${CSS.escape(highlightedParty)}"]`
+        );
+        circles.forEach((el, i) => {
+            el.animate(
+                [
+                    { transform: 'scale(1)',              offset: 0    },
+                    { transform: 'scaleX(0) scaleY(1.4)', offset: 0.35 },
+                    { transform: 'scale(1)',              offset: 1    },
+                ],
+                { duration: 320, delay: i * 12, easing: 'ease-in-out', fill: 'backwards' }
+            );
+        });
+    }, [highlightedParty]);
 
     const handleMouseEnter = (dot: SeatDot, e: React.MouseEvent<SVGCircleElement>) => {
         onPartyHover(dot.party_name);
@@ -136,21 +164,25 @@ export function HemicycleChart({
         setTooltip({ x: px, y: py, label: dot.party_name });
     };
 
+    // Key changes when party composition changes → <g> remounts → appear animation replays
+    const partyKey = parties.map(p => `${p.party_name}:${p.seats}`).join('|');
+
     return (
-        <div className="relative w-full h-full flex items-center justify-center">
+        <div className="relative w-full flex items-start justify-center">
             <svg
+                ref={svgRef}
                 viewBox="0 0 220 120"
                 className="w-full h-full"
                 preserveAspectRatio="xMidYMid meet"
                 onMouseLeave={() => { onPartyHover(null); setTooltip(null); }}
             >
-                {/* Title and subtitle — rendered above all arcs */}
+                {/* Title and subtitle — inside the inner-circle bowl */}
                 {title && (
                     <text
                         x={CX}
-                        y={11}
+                        y={99}
                         textAnchor="middle"
-                        fontSize={7}
+                        fontSize={6}
                         fontWeight="800"
                         fill="#1e293b"
                         fontFamily="inherit"
@@ -161,9 +193,9 @@ export function HemicycleChart({
                 {subtitle && (
                     <text
                         x={CX}
-                        y={20}
+                        y={108}
                         textAnchor="middle"
-                        fontSize={5.5}
+                        fontSize={4}
                         fontWeight="600"
                         fill="#64748b"
                         fontFamily="inherit"
@@ -172,32 +204,28 @@ export function HemicycleChart({
                     </text>
                 )}
 
-                {/* Dots */}
-                {dots.map((dot, i) => {
-                    const active = highlightedParty === null || dot.party_name === highlightedParty;
-                    return (
-                        <circle
-                            key={i}
-                            cx={dot.x}
-                            cy={dot.y}
-                            r={dotR}
-                            fill={dot.color}
-                            opacity={active ? 1 : 0.12}
-                            stroke={dot.party_name === highlightedParty ? '#fff' : 'none'}
-                            strokeWidth={0.7}
-                            className="transition-opacity duration-150 cursor-pointer"
-                            onMouseEnter={e => handleMouseEnter(dot, e)}
-                        />
-                    );
-                })}
-
-                {/* Baseline */}
-                <path
-                    d={`M ${CX - R_MAX - 4} ${CY} L ${CX + R_MAX + 4} ${CY}`}
-                    stroke="#e2e8f0"
-                    strokeWidth="0.8"
-                    fill="none"
-                />
+                {/* Dots — keyed on composition so remount triggers appear animation */}
+                <g key={partyKey}>
+                    {dots.map((dot, i) => {
+                        const active = highlightedParty === null || dot.party_name === highlightedParty;
+                        return (
+                            <circle
+                                key={i}
+                                cx={dot.x}
+                                cy={dot.y}
+                                r={dotR}
+                                fill={dot.color}
+                                opacity={active ? 1 : 0.12}
+                                stroke={dot.party_name === highlightedParty ? '#fff' : 'none'}
+                                strokeWidth={0.7}
+                                data-party={dot.party_name}
+                                className="spp-dot transition-opacity duration-150 cursor-pointer"
+                                style={{ animationDelay: `${Math.min(i, 40) * 7}ms` }}
+                                onMouseEnter={e => handleMouseEnter(dot, e)}
+                            />
+                        );
+                    })}
+                </g>
             </svg>
 
             {/* Floating tooltip */}

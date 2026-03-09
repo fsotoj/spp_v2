@@ -17,6 +17,28 @@ function extractSeats(row: any): number {
     return 0;
 }
 
+// Common Spanish/Portuguese short words (≤4 chars) that must NOT be treated as abbreviations.
+const SPA_POR_WORDS = new Set([
+    // Spanish articles, prepositions, conjunctions
+    'EL', 'LA', 'LOS', 'LAS', 'UN', 'UNA',
+    'DE', 'DEL', 'EN', 'AL', 'POR', 'CON', 'SIN',
+    'Y', 'O', 'E', 'NI', 'U', 'A',
+    // Portuguese articles, prepositions, conjunctions
+    'DO', 'DA', 'DOS', 'DAS', 'EM', 'NO', 'NA', 'NOS', 'NAS',
+    'OU', 'MAS', 'COM', 'PARA', 'NOVO'
+]);
+
+/** Title-cases a party name, preserving abbreviations (≤4 all-caps letters, not a common word)
+ *  and hyphen-joined coalition codes (e.g. PAN-PRI-PRD). */
+function toPartyTitleCase(name: string): string {
+    if (/^[A-Z]{2,}(-[A-Z]{2,})+$/.test(name)) return name; // full coalition string
+    return name.split(' ').map(word => {
+        if (/^[A-Z]{2,}(-[A-Z]{2,})+$/.test(word)) return word;                         // inline coalition
+        if (/^[A-Z]{1,4}$/.test(word) && !SPA_POR_WORDS.has(word)) return word;          // abbreviation
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }).join(' ');
+}
+
 const FALLBACK_COLOR = '#94a3b8';
 
 // ── Main Module ──────────────────────────────────────────────────────────────
@@ -121,6 +143,25 @@ export function CameraModule() {
 
     const totalSeats = useMemo(() => parties.reduce((s, p) => s + p.seats, 0), [parties]);
 
+    const chamberMeta = useMemo(() => {
+        if (!rawPartyRows || rawPartyRows.length === 0) return null;
+        const getVal = (key: string) => {
+            for (const row of rawPartyRows) {
+                const v = row[key];
+                if (v != null && v !== '') return v;
+            }
+            return null;
+        };
+        return {
+            totalChamberSeats: getVal('total_chamber_seats_sub_leg'),
+            seatsInContest: getVal('total_seats_in_contest_sub_leg'),
+            renewalType: getVal('renewal_type_sub_leg'),
+            electoralSystem: getVal('electoral_system_sub_leg'),
+            partiesContesting: getVal('num_parties_election_contest_sub_leg'),
+            enpl: getVal('enp_sub_leg'),
+        };
+    }, [rawPartyRows]);
+
     const selectedStateName = allStates?.find(s => s.id === selectedStateId)?.name ?? '';
     const chamberLabel = chamber === '1' ? t('map.lowerChamber') : t('map.upperChamber');
 
@@ -147,11 +188,10 @@ export function CameraModule() {
                                 <button
                                     key={ch}
                                     onClick={() => setChamber(ch)}
-                                    className={`flex-1 py-2 text-xs font-bold transition-all ${
-                                        chamber === ch
+                                    className={`flex-1 py-2 text-xs font-bold transition-all ${chamber === ch
                                             ? 'bg-brand-600 text-white shadow-sm'
                                             : 'bg-spp-bgLight text-slate-500 hover:bg-slate-100'
-                                    }`}
+                                        }`}
                                 >
                                     {ch === '1' ? t('map.lowerChamber') : t('map.upperChamber')}
                                 </button>
@@ -262,7 +302,7 @@ export function CameraModule() {
             <div className="w-full h-full flex overflow-hidden bg-spp-bgMuted">
 
                 {/* Chart */}
-                <div className="flex-1 flex items-center justify-center p-4 md:p-8 overflow-hidden min-w-0">
+                <div className="flex-1 flex items-start justify-center p-4 md:p-8 overflow-hidden min-w-0">
                     {parties.length > 0 ? (
                         <HemicycleChart
                             parties={parties}
@@ -300,6 +340,40 @@ export function CameraModule() {
                             </div>
                         </div>
 
+                        {chamberMeta && (() => {
+                            const RENEWAL: Record<string, string> = {
+                                '1': t('popup.staggeredEvery2Years'),
+                                '2': t('popup.fullRenewal'),
+                            };
+                            const SYSTEM: Record<string, string> = {
+                                '1': t('popup.proportionalRepresentation'),
+                                '2': t('popup.simpleMajority'),
+                                '3': t('popup.mixedPRMajority'),
+                                '4': t('popup.mixedPRDistricts'),
+                            };
+                            const fmt = (v: any) => v != null ? String(v) : '—';
+                            const fmtNum = (v: any) => v != null && !isNaN(Number(v)) ? Number(v).toFixed(2) : '—';
+                            const fmtCode = (map: Record<string, string>, v: any) =>
+                                v != null ? (map[String(Math.round(Number(v)))] ?? fmt(v)) : '—';
+                            const rows: [string, string][] = [
+                                [t('camera.seatsInContest'), fmt(chamberMeta.seatsInContest)],
+                                [t('camera.renewalType'), fmtCode(RENEWAL, chamberMeta.renewalType)],
+                                [t('camera.electoralSystem'), fmtCode(SYSTEM, chamberMeta.electoralSystem)],
+                                [t('camera.partiesContesting'), fmt(chamberMeta.partiesContesting)],
+                                [t('camera.enpl'), fmtNum(chamberMeta.enpl)],
+                            ];
+                            return (
+                                <div className="px-3 py-2 border-b border-slate-100 space-y-1">
+                                    {rows.map(([label, value]) => (
+                                        <div key={label} className="flex justify-between gap-1">
+                                            <span className="text-[9px] font-bold text-spp-gray leading-tight shrink-0">{label}</span>
+                                            <span className="text-[9px] font-semibold text-spp-textDark text-right leading-tight">{value}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        })()}
+
                         <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2">
                             {parties.map(party => {
                                 const isActive = highlightedParty === null || party.party_name === highlightedParty;
@@ -318,7 +392,7 @@ export function CameraModule() {
                                             className="text-[10px] font-semibold text-slate-700 truncate flex-1 leading-tight"
                                             title={party.party_name}
                                         >
-                                            {party.party_name}
+                                            {toPartyTitleCase(party.party_name)}
                                         </span>
                                         <span className="text-[10px] font-black text-brand-600 tabular-nums shrink-0">
                                             {party.seats}

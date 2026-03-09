@@ -135,7 +135,13 @@
     "chamber": "Cámara",
     "seats": "escaños",
     "noData": "No hay datos legislativos disponibles para esta selección.",
-    "noDataHint": "SLED registra datos por año electoral — intenta ajustar el deslizador a un año en que se realizaron elecciones."
+    "noDataHint": "SLED registra datos por año electoral — intenta ajustar el deslizador a un año en que se realizaron elecciones.",
+    "chamberSeatsTotal": "Escaños de la cámara (total)",
+    "seatsInContest": "Escaños en disputa",
+    "renewalType": "Tipo de renovación",
+    "electoralSystem": "Sistema electoral",
+    "partiesContesting": "Partidos en contienda",
+    "enpl": "ENPL"
   },
   "team": {
     "title": "Equipo",

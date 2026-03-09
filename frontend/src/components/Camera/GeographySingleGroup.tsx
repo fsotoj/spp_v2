@@ -27,7 +27,7 @@ export function GeographySingleGroup({
         [allStates, country.id],
     );
 
-    const hasSelection = states.some(s => s.id === selectedStateId);
+    const selectedState = states.find(s => s.id === selectedStateId) ?? null;
 
     return (
         <div className="border-b border-slate-200 last:border-b-0">
@@ -46,8 +46,10 @@ export function GeographySingleGroup({
                     {country.name.charAt(0) + country.name.slice(1).toLowerCase()}
                 </button>
 
-                {hasSelection && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-500 mr-3 shrink-0" />
+                {selectedState && (
+                    <span className="text-[10px] font-semibold text-spp-purple mr-3 shrink-0 truncate max-w-[80px]">
+                        {selectedState.name.charAt(0) + selectedState.name.slice(1).toLowerCase()}
+                    </span>
                 )}
             </div>
 
@@ -58,7 +60,7 @@ export function GeographySingleGroup({
                         return (
                             <button
                                 key={state.id}
-                                onClick={() => onSelectState(state.id)}
+                                onClick={() => { onSelectState(state.id); if (isExpanded) onToggleExpand(); }}
                                 className={`w-full flex items-center gap-2 ml-9 pr-3 py-1.5 text-left transition-all duration-150 border-l-2 ${
                                     isSelected
                                         ? 'bg-spp-purple text-white border-spp-purple'
