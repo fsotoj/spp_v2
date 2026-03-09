@@ -28,14 +28,28 @@ def get_party_observation_years(
     Returns sorted list of distinct years that have SLED party observation data
     for the given state and chamber. Used to populate the Camera year selector.
     """
-    query = (
+    # Only return years where an election was actually held:
+    # join to the date_election_sub_leg variable and require a non-null value.
+    # Verified equivalent to is_carryover=0 for ARG across all 24 states,
+    # and works generically for BRA/MEX (which always have date populated).
+    date_var = (
+        select(VariableDictionary.id)
+        .where(VariableDictionary.variable == "date_election_sub_leg")
+        .scalar_subquery()
+    )
+    election_years = (
         select(PartyObservation.year)
         .where(PartyObservation.state_id == state_id)
         .where(PartyObservation.chamber == chamber)
         .where(PartyObservation.dataset == "SLED")
+        .where(PartyObservation.variable_id == date_var)
+        .where(
+            (PartyObservation.value_text != None)
+            | (PartyObservation.value_numeric != None)
+        )
         .distinct()
     )
-    results = session.exec(query).all()
+    results = session.exec(election_years).all()
     return sorted(results)
 
 @router.get("/observations", response_model=list[dict[str, Any]])

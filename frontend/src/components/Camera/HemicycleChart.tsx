@@ -73,9 +73,15 @@ function getLayoutParams(N: number): { radii: number[]; dotR: number; seatsPerRo
 }
 
 /**
- * Computes hemicycle dot positions using a sector layout:
- * each party occupies a proportional arc wedge across ALL rows (left → right),
- * so parties form contiguous colored blocks like the European Parliament chart.
+ * Computes hemicycle dot positions using the legacy flat-assignment approach:
+ * 1. Generate all N dot positions across every row.
+ * 2. Sort them by angle descending (left θ=π → right θ=0), then radius ascending
+ *    within the same angle, exactly mirroring the R legacy `arrange(desc(theta), r)`.
+ * 3. Expand parties to a flat sequential list (exactly party.seats entries each).
+ * 4. Zip positions with party labels 1-to-1.
+ *
+ * This guarantees every party gets exactly party.seats dots — no rounding errors,
+ * no small-party starvation — while forming contiguous left-to-right color wedges.
  */
 function computeHemicycle(parties: PartyRow[]): { dots: SeatDot[]; dotR: number } {
     const totalSeats = parties.reduce((s, p) => s + p.seats, 0);
@@ -84,33 +90,33 @@ function computeHemicycle(parties: PartyRow[]): { dots: SeatDot[]; dotR: number 
     const { radii, dotR, seatsPerRow } = getLayoutParams(totalSeats);
     const K = radii.length;
 
-    // For each row, distribute seats among parties (largest-remainder proportional)
-    const rowPartySeats: number[][] = seatsPerRow.map(n => {
-        const raw = parties.map(p => (p.seats / totalSeats) * n);
-        const floors = raw.map(v => Math.floor(v));
-        let rem = n - floors.reduce((a, b) => a + b, 0);
-        raw.map((v, i) => ({ i, frac: v - Math.floor(v) }))
-            .sort((a, b) => b.frac - a.frac)
-            .forEach(({ i }) => { if (rem-- > 0) floors[i]++; });
-        return floors;
-    });
-
-    // Place dots: per row, parties fill left (θ=π) → right (θ=0) contiguously
-    const dots: SeatDot[] = [];
+    // Step 1: generate all positions across all rows
+    interface Pos { theta: number; r: number }
+    const allPos: Pos[] = [];
     for (let k = 0; k < K; k++) {
         const r = radii[k];
         const n = seatsPerRow[k];
-        let seatIdx = 0;
-        for (let pi = 0; pi < parties.length; pi++) {
-            for (let s = 0; s < rowPartySeats[k][pi]; s++, seatIdx++) {
-                const theta = n === 1 ? Math.PI / 2 : Math.PI - (Math.PI * seatIdx) / (n - 1);
-                dots.push({
-                    x: CX + r * Math.cos(theta),
-                    y: CY - r * Math.sin(theta),
-                    party_name: parties[pi].party_name,
-                    color: parties[pi].color,
-                });
-            }
+        for (let j = 0; j < n; j++) {
+            const theta = n === 1 ? Math.PI / 2 : Math.PI - (Math.PI * j) / (n - 1);
+            allPos.push({ theta, r });
+        }
+    }
+
+    // Step 2: sort by angle desc (left→right), then radius asc (inner→outer)
+    allPos.sort((a, b) => b.theta - a.theta || a.r - b.r);
+
+    // Step 3 & 4: assign each position to the next party dot in sequence
+    const dots: SeatDot[] = [];
+    let posIdx = 0;
+    for (const party of parties) {
+        for (let s = 0; s < party.seats; s++) {
+            const { theta, r } = allPos[posIdx++];
+            dots.push({
+                x: CX + r * Math.cos(theta),
+                y: CY - r * Math.sin(theta),
+                party_name: party.party_name,
+                color: party.color,
+            });
         }
     }
     return { dots, dotR };
