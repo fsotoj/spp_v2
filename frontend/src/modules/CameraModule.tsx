@@ -383,7 +383,7 @@ export function CameraModule() {
             </SidebarPortal>
 
             {/* ── Main area: chart (flex-1) + legend panel (fixed w-52) ── */}
-            <div className="w-full h-full flex overflow-hidden bg-spp-bgMuted">
+            <div className="w-full h-full flex flex-col md:flex-row overflow-hidden bg-spp-bgMuted">
 
                 {/* Chart */}
                 <div className="flex-1 relative overflow-hidden min-w-0">
@@ -416,10 +416,17 @@ export function CameraModule() {
 
                 {/* Legend panel / Info Panel */}
                 {Object.keys(parties).length > 0 && (
-                    <aside className="w-64 shrink-0 p-4 border-l border-slate-200 bg-slate-50 relative z-10 flex flex-col gap-4">
+                    <aside className="w-full md:w-64 h-[45vh] md:h-full shrink-0 p-2 md:p-4 border-t md:border-t-0 md:border-l border-slate-200 bg-slate-50 relative z-10 flex flex-row md:flex-col gap-2 md:gap-4 overflow-hidden">
                         
                         {/* Information Panels Box */}
-                        <div className="flex flex-col bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden shrink-0">
+                        <div className="flex-1 md:flex-none w-1/2 md:w-auto flex flex-col bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden md:min-h-0">
+                            {/* Info Header */}
+                            <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between shrink-0">
+                                <h3 className="font-black text-[10px] text-brand-600 uppercase tracking-[0.12em]">
+                                    {t('popup.details', { defaultValue: 'DETAILS' })}
+                                </h3>
+                            </div>
+                            <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col">
 
                         {chamberMeta && (() => {
                             const RENEWAL: Record<string, string> = {
@@ -444,7 +451,7 @@ export function CameraModule() {
                                 [t('camera.enpl'), fmtNum(chamberMeta.enpl)],
                             ];
                             return (
-                                <div className="border-b border-slate-100 flex flex-col">
+                                <div className="flex flex-col">
                                     {/* Legislative Toggle */}
                                     <button
                                         onClick={() => setIsLegisExpanded(p => !p)}
@@ -499,14 +506,15 @@ export function CameraModule() {
                                 </div>
                             );
                         })()}
+                            </div>
                         </div>
 
                         {/* Legend Panel */}
-                        <div className="flex flex-col flex-1 bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden min-h-0">
+                        <div className="flex-1 w-1/2 md:w-auto flex flex-col bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden min-h-0">
                             {/* Legend Header */}
-                            <div className="px-4 py-3 bg-slate-900 text-white flex items-center justify-between shrink-0">
-                                <h3 className="font-bold text-xs uppercase tracking-wider">
-                                    {chamberLabel.toUpperCase()}: {chamberMeta?.totalChamberSeats || '—'} {t('camera.seats', { defaultValue: 'SEATS' }).toUpperCase()}
+                            <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between shrink-0">
+                                <h3 className="font-black text-[10px] text-brand-600 uppercase tracking-[0.12em]">
+                                    {chamberLabel}
                                 </h3>
                             </div>
 
@@ -538,7 +546,7 @@ export function CameraModule() {
                             })}
                             </div>
                             
-                            <div className="px-4 py-2 border-t border-slate-100 bg-spp-bgMuted">
+                            <div className="hidden md:block px-4 py-2 border-t border-slate-100 bg-spp-bgMuted shrink-0">
                                 <div className="text-[9px] text-slate-300 font-bold uppercase tracking-wider">
                                     SLED
                                 </div>
