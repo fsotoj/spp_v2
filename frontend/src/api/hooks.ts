@@ -98,6 +98,43 @@ export function usePartyColors() {
     });
 }
 
+// ── Party Observation Queries ────────────────────────────────────────────────
+
+export function usePartyObservations(
+    stateId: number | null,
+    year: number,
+    chamber: string,
+) {
+    return useQuery({
+        queryKey: ['party-observations', stateId, year, chamber],
+        queryFn: async () => {
+            const { data } = await apiClient.get<any[]>(
+                `/data/party-observations?dataset=SLED&state_id=${stateId}&year_min=${year}&year_max=${year}&chamber=${chamber}`
+            );
+            return data;
+        },
+        enabled: stateId !== null && !!year && !!chamber,
+        placeholderData: (prev) => prev,
+    });
+}
+
+export function usePartyObservationYears(
+    stateId: number | null,
+    chamber: string,
+) {
+    return useQuery({
+        queryKey: ['party-observation-years', stateId, chamber],
+        queryFn: async () => {
+            const { data } = await apiClient.get<number[]>(
+                `/data/party-observation-years?state_id=${stateId}&chamber=${chamber}`
+            );
+            return data; // sorted asc from backend
+        },
+        enabled: stateId !== null && !!chamber,
+        staleTime: 1000 * 60 * 60,
+    });
+}
+
 // ── Observation Queries ─────────────────────────────────────────────────────
 
 export function useObservations(dataset: string, yearMin: number, yearMax: number) {

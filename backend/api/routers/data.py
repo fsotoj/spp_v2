@@ -16,6 +16,28 @@ from db.models import Observation, PartyObservation, VariableDictionary
 
 router = APIRouter()
 
+
+@router.get("/party-observation-years", response_model=list[int])
+def get_party_observation_years(
+    session: DbSession,
+    api_key: SecureRoute,
+    state_id: int = Query(...),
+    chamber: str = Query(...),
+) -> Any:
+    """
+    Returns sorted list of distinct years that have SLED party observation data
+    for the given state and chamber. Used to populate the Camera year selector.
+    """
+    query = (
+        select(PartyObservation.year)
+        .where(PartyObservation.state_id == state_id)
+        .where(PartyObservation.chamber == chamber)
+        .where(PartyObservation.dataset == "SLED")
+        .distinct()
+    )
+    results = session.exec(query).all()
+    return sorted(results)
+
 @router.get("/observations", response_model=list[dict[str, Any]])
 def get_observations(
     session: DbSession,
@@ -73,7 +95,7 @@ def get_observations(
 def get_party_observations(
     session: DbSession,
     api_key: SecureRoute,
-    dataset: str = Query(..., description="SLED or SLED_ARG"),
+    dataset: str = Query(default="SLED", description="SLED (all countries)"),
     state_id: int | None = None,
     year_min: int | None = None,
     year_max: int | None = None,
@@ -81,13 +103,14 @@ def get_party_observations(
     party_name: str | None = None,
 ) -> Any:
     """
-    Fetch party-level EAV rows (SLED) and dynamically pivot them into
+    Fetch party-level EAV rows (SLED unified) and dynamically pivot them into
     wide-format dictionaries.
-    Returns: list of dicts with keys (state_id, year, chamber, party_name, var1...)
+    Returns: list of dicts with keys (state_id, year, chamber, party_name,
+             is_carryover, coalition_name, is_coalition, var1, var2...)
     """
     query = select(PartyObservation, VariableDictionary).join(VariableDictionary)
     query = query.where(PartyObservation.dataset == dataset)
-    
+
     if state_id is not None:
         query = query.where(PartyObservation.state_id == state_id)
     if year_min is not None:
@@ -101,19 +124,29 @@ def get_party_observations(
 
     results = session.exec(query).all()
 
-    # Pivot: group by (state_id, year, chamber, party_name)
+    # Pivot: group by (state_id, year, chamber, party_name, is_carryover)
+    # is_carryover must be part of the key because ARG election years have two
+    # cohorts for the same party: newly-elected (is_carryover=0) and seats held
+    # from a prior election (is_carryover=1). Collapsing them would overwrite
+    # the seat count of one cohort with the other.
     pivoted: dict[tuple, dict[str, Any]] = defaultdict(dict)
-    
+
     for obs, var in results:
-        key = (obs.state_id, obs.year, obs.chamber, obs.party_name)
+        key = (obs.state_id, obs.year, obs.chamber, obs.party_name, obs.is_carryover)
         if not pivoted[key]:
             pivoted[key] = {
-                "state_id": obs.state_id,
-                "year": obs.year,
-                "chamber": obs.chamber,
-                "party_name": obs.party_name,
+                "state_id":        obs.state_id,
+                "year":            obs.year,
+                "chamber":         obs.chamber,
+                "party_name":      obs.party_name,
+                # Structural metadata — always included for frontend use
+                "is_carryover":    obs.is_carryover,
+                "origin_year":     obs.origin_year,
+                "expire_year":     obs.expire_year,
+                "coalition_name":  obs.coalition_name,
+                "is_coalition":    obs.is_coalition,
             }
-        
+
         val = obs.value_numeric if obs.value_numeric is not None else obs.value_text
         pivoted[key][var.variable] = val
 

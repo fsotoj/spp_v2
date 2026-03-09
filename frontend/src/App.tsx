@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { GlobalHeader } from './components/GlobalHeader';
 import { Layout } from './components/Layout';
 import { MapModule } from './modules/MapModule';
+import { CameraModule } from './modules/CameraModule';
 import { LandingPage } from './modules/LandingPage';
 import { MethodologyPage } from './modules/MethodologyPage';
 
@@ -16,6 +17,14 @@ function App() {
           element={
             <Layout>
               <MapModule />
+            </Layout>
+          }
+        />
+        <Route
+          path="/camera"
+          element={
+            <Layout>
+              <CameraModule />
             </Layout>
           }
         />

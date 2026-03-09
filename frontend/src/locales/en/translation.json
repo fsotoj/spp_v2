@@ -128,6 +128,15 @@
     "staggeredEvery2Years": "Staggered every 2 years",
     "fullRenewal": "Full renewal"
   },
+  "camera": {
+    "country": "Country",
+    "state": "State",
+    "year": "Year",
+    "chamber": "Chamber",
+    "seats": "seats",
+    "noData": "No legislative data available for this selection.",
+    "noDataHint": "SLED records data by election year — try adjusting the year slider to a year when an election was held."
+  },
   "team": {
     "title": "Team",
     "body": "A collaborative network of Latin American scholars and researchers living abroad, bridging global academic standards with deep-rooted regional expertise.",

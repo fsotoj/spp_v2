@@ -128,6 +128,15 @@
     "staggeredEvery2Years": "Versetzt alle 2 Jahre",
     "fullRenewal": "Vollständige Erneuerung"
   },
+  "camera": {
+    "country": "Land",
+    "state": "Bundesstaat",
+    "year": "Jahr",
+    "chamber": "Kammer",
+    "seats": "Sitze",
+    "noData": "Keine Legislativdaten für diese Auswahl verfügbar.",
+    "noDataHint": "SLED speichert Daten nach Wahljahr — passe den Schieberegler auf ein Jahr an, in dem Wahlen stattfanden."
+  },
   "team": {
     "title": "Team",
     "body": "Ein kollaboratives Netzwerk lateinamerikanischer Wissenschaftler und Forscher im Ausland, das globale akademische Standards mit tiefgreifender regionaler Expertise verbindet.",

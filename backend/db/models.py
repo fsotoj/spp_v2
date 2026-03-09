@@ -156,8 +156,12 @@ class PartyObservation(SQLModel, table=True):
     """Party-level EAV: one row per (state × year × chamber × party × variable).
 
     Covers:
-    - SLED raw  (main legislative data, dataset='SLED')
-    - SLED_ARG  (Argentina live-tenure data, dataset='SLED_ARG')
+    - SLED unified  (all countries, dataset='SLED')
+      Source file: SLED_unified.xlsx (produced by backend/etl/ pipeline)
+
+    Structural metadata columns (not analytical variables):
+      ARG: origin_year, expire_year, is_carryover
+      MEX: coalition_name, is_coalition, seat_sum_mismatch
     """
 
     __tablename__ = "fact_party_observation"
@@ -170,7 +174,17 @@ class PartyObservation(SQLModel, table=True):
     variable_id: int = Field(foreign_key="dim_variable_dictionary.id", index=True)
     value_numeric: Optional[float] = None
     value_text: Optional[str] = None
-    dataset: str = Field(index=True, description="SLED | SLED_ARG")
+    dataset: str = Field(index=True, description="SLED")
+
+    # ARG tenure metadata — NULL for MEX/BRA rows
+    origin_year: Optional[int] = Field(default=None, description="Election year when seats were won (ARG)")
+    expire_year: Optional[int] = Field(default=None, description="Election year when seats expire (ARG)")
+    is_carryover: Optional[int] = Field(default=None, index=True, description="1=seats from prior election; 0=current election; NULL=non-ARG")
+
+    # MEX coalition metadata — NULL for ARG/BRA rows
+    coalition_name: Optional[str] = Field(default=None, index=True, description="Original coalition label e.g. PRI-PT-PVEM (MEX)")
+    is_coalition: Optional[int] = Field(default=None, description="1=party ran as coalition; 0=standalone; NULL=non-MEX")
+    seat_sum_mismatch: Optional[int] = Field(default=None, description="1=disagg seats don't match original total; data quality flag (MEX)")
 
 
 # ═══════════════════════════════════════════════════════════════════════

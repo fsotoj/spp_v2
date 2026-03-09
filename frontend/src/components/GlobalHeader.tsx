@@ -18,7 +18,11 @@ export function GlobalHeader() {
     const isHomePage = location.pathname === '/';
 
     // Determine active tool text
-    const activeToolLabel = location.pathname.includes('/explore') ? t('nav.mappingTool') : null;
+    const activeToolLabel = location.pathname === '/explore'
+        ? t('nav.mappingTool')
+        : location.pathname === '/camera'
+            ? t('nav.chamberTool')
+            : null;
 
     // Close all menus on route change
     useEffect(() => {
@@ -146,11 +150,11 @@ export function GlobalHeader() {
                                         soonLabel={t('nav.soon')}
                                     />
                                     <ToolLink
-                                        to="#"
+                                        to="/camera"
                                         icon={<Landmark size={20} />}
                                         label={t('nav.chamberTool')}
-                                        disabled
-                                        soonLabel={t('nav.soon')}
+                                        active={location.pathname === '/camera'}
+                                        onClick={() => setIsMobileMenuOpen(false)}
                                     />
                                 </div>
                             </div>

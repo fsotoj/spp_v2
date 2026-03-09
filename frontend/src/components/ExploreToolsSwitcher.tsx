@@ -67,6 +67,7 @@ export function ExploreToolsSwitcher({ activeToolLabel, isHomePage, isScrolled }
                     {!isExploreOpen ? (
                         <>
                             {activeToolLabel === t('nav.mappingTool') && <Map size={16} className="absolute left-3" />}
+                            {activeToolLabel === t('nav.chamberTool') && <Landmark size={16} className="absolute left-3" />}
                             <span className="whitespace-nowrap overflow-hidden text-sm">{t('nav.explore')}</span>
                             <ChevronRight size={16} strokeWidth={3} className="absolute right-3" />
                         </>
@@ -105,12 +106,12 @@ export function ExploreToolsSwitcher({ activeToolLabel, isHomePage, isScrolled }
                     delay="delay-[75ms]"
                 />
                 <ToolChildLink
-                    to="#"
+                    to="/camera"
                     icon={<Landmark size={18} />}
                     label={t('nav.chamberTool')}
                     description={t('nav.chamberToolDesc')}
-                    disabled
-                    soonLabel={t('nav.soon')}
+                    active={location.pathname === '/camera'}
+                    onClick={() => setIsExploreOpen(false)}
                     isOpen={isExploreOpen}
                     delay="delay-[150ms]"
                 />

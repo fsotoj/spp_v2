@@ -49,8 +49,15 @@ KEY_COLUMNS = {
 }
 
 # SLED-specific key columns (identity at party-level grain)
+# Includes structural metadata added by the etl/ pipeline — not analytical variables.
 SLED_KEY_COLUMNS = KEY_COLUMNS | {
     "chamber_election_sub_leg", "party_name_sub_leg",
+    # ARG tenure metadata
+    "origin_year", "expire_year", "is_carryover",
+    # ARG name audit trail (not used for DB loading — party_name_sub_leg is the source of truth)
+    "party_name_sled_arg", "legacy_party_name_sub_leg",
+    # MEX coalition metadata
+    "coalition_name", "is_coalition", "seat_sum_mismatch",
 }
 
 # Dataset file mapping: logical name → (filename, grain, entity_key_column)
@@ -102,6 +109,22 @@ def _safe_str(v: Any) -> str | None:
     if v is None:
         return None
     return str(v).strip()
+
+
+def _safe_csc(v: Any) -> str | None:
+    """Normalize country_state_code to a 5-digit zero-padded string.
+
+    Excel reads numeric codes (e.g. 3206, 7612) as integers, but the DB stores
+    them as zero-padded strings (e.g. '03206', '07612').  This helper normalises
+    both representations to the canonical DB format.
+    """
+    raw = _safe_str(v)
+    if raw is None:
+        return None
+    # Strip any decimal part that openpyxl/pandas may add (e.g. "3206.0")
+    if "." in raw:
+        raw = raw.split(".")[0]
+    return raw.zfill(5)
 
 
 def _is_numeric(v: Any) -> bool:
@@ -189,9 +212,8 @@ class SPPProcessor:
             for ds_name, (fname, grain, key) in DATASETS.items():
                 self._insert_observations(session, ds_name, fname, grain, key)
 
-            # 4. Party-level EAV (SLED raw + SLED_ARG)
+            # 4. Party-level EAV (SLED unified: ARG + BRA + MEX)
             self._insert_sled_party_observations(session)
-            self._insert_sled_arg_party_observations(session)
 
             # 5. SLED snapshot → Observation EAV with suffixed var names
             self._insert_sled_snapshot(session)
@@ -292,7 +314,7 @@ class SPPProcessor:
                         "name_geom": _safe_str(props.get("state_name_geom")),
                     }
         for r in rows:
-            csc = _safe_str(r.get("country_state_code"))
+            csc = _safe_csc(r.get("country_state_code"))
             if not csc or csc in seen:
                 continue
             seen.add(csc)
@@ -409,38 +431,68 @@ class SPPProcessor:
         session.flush()
         logger.info("Inserted %d observations from %s (%s)", count, dataset_name, filename)
 
-    # ── 4. Party-level EAV (SLED) ────────────────────────────────
+    # ── 4. Party-level EAV (SLED unified) ────────────────────────
 
     def _bind_sled(self) -> list[dict]:
-        sled = _read_xlsx(self.data_dir / "SLED (v.0.1).xlsx") if (self.data_dir / "SLED (v.0.1).xlsx").exists() else []
-        mex = _read_xlsx(self.data_dir / "SLED_mex.xlsx") if (self.data_dir / "SLED_mex.xlsx").exists() else []
-        stats: dict[tuple, dict] = defaultdict(lambda: {"ch": 0, "ps": 0})
-        for r in mex:
-            k = (_safe_str(r.get("state_name")), _safe_int(r.get("year")))
-            stats[k]["ch"] = _safe_int(r.get("total_chamber_seats_sub_leg")) or 0
-            stats[k]["ps"] += _safe_int(r.get("total_seats_party_sub_leg")) or 0
-        dbl = {k for k, v in stats.items() if v["ch"] > 0 and v["ch"] * 2 == v["ps"]}
-        clean = [r for r in mex if not (
-            (_safe_str(r.get("state_name")), _safe_int(r.get("year"))) in dbl
-            and (_safe_int(r.get("total_votes_party_sub_leg")) or 0) == 0
-        )]
-        combined = sled + clean
-        logger.info("SLED bind: %d + %d (clean) = %d", len(sled), len(clean), len(combined))
-        return combined
+        """Read SLED_unified.xlsx — single source of truth for all SLED data.
+
+        Produced by backend/etl/sled_final_merge.py which combines:
+          - SLED mother (ARG + BRA election rows, ARG carryover rows)
+          - SLED_mex_expanded (MEX party-level, coalition-expanded)
+        """
+        path = self.data_dir / "SLED_unified.xlsx"
+        if not path.exists():
+            logger.warning("SLED_unified.xlsx not found, skipping SLED pipeline")
+            return []
+        rows = _read_xlsx(path)
+        logger.info("SLED unified: %d rows loaded", len(rows))
+        return rows
 
     def _insert_sled_party_observations(self, session: Session) -> None:
-        """Insert SLED raw as party-level EAV rows."""
+        """Insert SLED_unified as party-level EAV rows.
+
+        ARG carryover rows (is_carryover=1) are aggregated by
+        (country_state_code, year, chamber, party) before insertion to
+        correctly sum seats from multiple overlapping tenure windows.
+        """
         rows = self._bind_sled()
         if not rows:
             return
 
         metric_cols = sorted(set(rows[0].keys()) - SLED_KEY_COLUMNS)
-        var_ids = {col: self._get_or_create_variable(session, col, "SLED*.xlsx")
+        var_ids = {col: self._get_or_create_variable(session, col, "SLED_unified.xlsx")
                    for col in metric_cols}
 
-        count = 0
+        # Separate carryover rows and aggregate their seats to handle overlapping
+        # tenure windows for the same party in the same year (ARG bicameral renewal).
+        carryover_agg: dict[tuple, dict] = {}
+        election_rows: list[dict] = []
+
         for r in rows:
-            csc = _safe_str(r.get("country_state_code"))
+            if _safe_int(r.get("is_carryover")) == 1:
+                csc = _safe_csc(r.get("country_state_code"))
+                yr  = _safe_int(r.get("year"))
+                ch  = _safe_str(r.get("chamber_election_sub_leg"))
+                pty = _safe_str(r.get("party_name_sub_leg"))
+                if not csc or yr is None:
+                    continue
+                key = (csc, yr, ch, pty)
+                if key not in carryover_agg:
+                    carryover_agg[key] = dict(r)
+                    carryover_agg[key]["_seats_sum"] = _safe_int(r.get("total_seats_party_sub_leg")) or 0
+                else:
+                    carryover_agg[key]["_seats_sum"] += _safe_int(r.get("total_seats_party_sub_leg")) or 0
+            else:
+                election_rows.append(r)
+
+        # Rebuild aggregated carryover rows with summed seats
+        for agg_row in carryover_agg.values():
+            agg_row["total_seats_party_sub_leg"] = agg_row.pop("_seats_sum")
+            election_rows.append(agg_row)
+
+        count = 0
+        for r in election_rows:
+            csc = _safe_csc(r.get("country_state_code"))
             sid = self._state_map.get(csc)
             if sid is None:
                 continue
@@ -448,7 +500,18 @@ class SPPProcessor:
             if year is None:
                 continue
             chamber = _safe_str(r.get("chamber_election_sub_leg"))
+            # Prefer the canonical SLED_ARG name (no ALIANZA prefix, no diacritics
+            # party_name_sub_leg is the single source of truth — resolved to the
+            # canonical SLED_ARG name by sled_arg_merge.py before DB loading.
             party = _safe_str(r.get("party_name_sub_leg"))
+
+            # Structural metadata — stored directly on the row, not as EAV variables
+            origin_year       = _safe_int(r.get("origin_year"))
+            expire_year       = _safe_int(r.get("expire_year"))
+            is_carryover      = _safe_int(r.get("is_carryover"))
+            coalition_name    = _safe_str(r.get("coalition_name"))
+            is_coalition      = _safe_int(r.get("is_coalition"))
+            seat_sum_mismatch = _safe_int(r.get("seat_sum_mismatch"))
 
             for col in metric_cols:
                 raw = r.get(col)
@@ -462,64 +525,25 @@ class SPPProcessor:
                     state_id=sid, year=year, chamber=chamber,
                     party_name=party, variable_id=vid,
                     value_numeric=vn, value_text=vt, dataset="SLED",
+                    origin_year=origin_year, expire_year=expire_year,
+                    is_carryover=is_carryover, coalition_name=coalition_name,
+                    is_coalition=is_coalition, seat_sum_mismatch=seat_sum_mismatch,
                 ))
                 count += 1
         session.flush()
-        logger.info("Inserted %d party observations from SLED", count)
-
-    def _insert_sled_arg_party_observations(self, session: Session) -> None:
-        """Insert SLED_ARG as party-level EAV rows."""
-        path = self.data_dir / "SLED_ARG.xlsx"
-        if not path.exists():
-            logger.warning("SLED_ARG.xlsx not found, skipping")
-            return
-        arg_cid = self._country_map.get("ARGENTINA")
-        if arg_cid is None:
-            return
-        arg_map = {s.name: s.id for s in
-                   session.exec(select(State).where(State.country_id == arg_cid)).all()}
-
-        rows = _read_xlsx(path)
-        # SLED_ARG key columns
-        arg_key = {"state_name", "year", "chamber_election_sub_leg", "party_name_sub_leg"}
-        metric_cols = sorted(set(rows[0].keys()) - arg_key)
-        var_ids = {col: self._get_or_create_variable(session, col, "SLED_ARG.xlsx")
-                   for col in metric_cols}
-
-        count = 0
-        for r in rows:
-            sid = arg_map.get(_safe_str(r.get("state_name")))
-            if sid is None:
-                continue
-            year = _safe_int(r.get("year"))
-            if year is None:
-                continue
-            chamber = _safe_str(r.get("chamber_election_sub_leg"))
-            party = _safe_str(r.get("party_name_sub_leg"))
-
-            for col in metric_cols:
-                raw = r.get(col)
-                if raw is None:
-                    continue
-                vid = var_ids.get(col)
-                if vid is None:
-                    continue
-                vn, vt = _coerce_value(raw, self._variable_types.get(col, "continuous"))
-                session.add(PartyObservation(
-                    state_id=sid, year=year, chamber=chamber,
-                    party_name=party, variable_id=vid,
-                    value_numeric=vn, value_text=vt, dataset="SLED_ARG",
-                ))
-                count += 1
-        session.flush()
-        logger.info("Inserted %d party observations from SLED_ARG", count)
+        logger.info("Inserted %d party observations from SLED_unified", count)
 
     # ── 5. SLED Snapshot → Observation EAV ────────────────────────
 
     def _insert_sled_snapshot(self, session: Session) -> None:
         """Pivot + complete + fill SLED data, then store as Observation EAV
-        with suffixed variable names (e.g., enp_sub_leg_1, enp_sub_leg_2)."""
-        raw = self._bind_sled()
+        with suffixed variable names (e.g., enp_sub_leg_1, enp_sub_leg_2).
+
+        ARG carryover rows (is_carryover=1) are excluded — they represent
+        inter-election year compositions and lack the election-level metrics
+        (ENP, turnover, etc.) needed for the snapshot.
+        """
+        raw = [r for r in self._bind_sled() if _safe_int(r.get("is_carryover")) != 1]
         pvars = self._sled_pivot_vars
         if not pvars:
             logger.warning("No SLED pivot vars from dictionary, skipping snapshot")
@@ -530,7 +554,7 @@ class SPPProcessor:
         # Aggregate to (csc, year, chamber)
         agg: dict[tuple, dict] = {}
         for r in raw:
-            csc = _safe_str(r.get("country_state_code"))
+            csc = _safe_csc(r.get("country_state_code"))
             yr = _safe_int(r.get("year"))
             ch = _safe_str(r.get("chamber_election_sub_leg"))
             if not csc or yr is None or not ch:

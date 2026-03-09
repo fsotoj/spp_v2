@@ -128,6 +128,15 @@
     "staggeredEvery2Years": "Escalonada cada 2 años",
     "fullRenewal": "Renovación total"
   },
+  "camera": {
+    "country": "País",
+    "state": "Estado",
+    "year": "Año",
+    "chamber": "Cámara",
+    "seats": "escaños",
+    "noData": "No hay datos legislativos disponibles para esta selección.",
+    "noDataHint": "SLED registra datos por año electoral — intenta ajustar el deslizador a un año en que se realizaron elecciones."
+  },
   "team": {
     "title": "Equipo",
     "body": "Una red colaborativa de académicos e investigadores latinoamericanos en el extranjero, que une estándares académicos globales con profunda experiencia regional.",
