@@ -16,7 +16,6 @@ interface SeatDot {
 // SVG viewport constants
 const CX = 110;   // centre x
 const CY = 115;   // centre y (base of semicircle)
-const R_MAX = 92; // outermost row radius
 
 /**
  * Distributes `total` seats across `K` concentric rows using a
