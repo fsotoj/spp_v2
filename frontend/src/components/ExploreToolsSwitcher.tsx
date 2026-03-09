@@ -83,7 +83,7 @@ export function ExploreToolsSwitcher({ activeToolLabel, isHomePage, isScrolled }
 
             {/* Roll out Menu */}
             <div 
-                className="absolute left-0 top-12 flex flex-col items-start gap-2"
+                className={`absolute left-0 top-full pt-2 flex flex-col items-start gap-2 ${!isExploreOpen ? 'pointer-events-none' : ''}`}
             >
                 <ToolChildLink
                     to="/explore"
@@ -96,22 +96,22 @@ export function ExploreToolsSwitcher({ activeToolLabel, isHomePage, isScrolled }
                     delay="delay-[0ms]"
                 />
                 <ToolChildLink
-                    to="#"
-                    icon={<BarChart3 size={18} />}
-                    label={t('nav.graphTool')}
-                    description={t('nav.graphToolDesc')}
-                    disabled
-                    soonLabel={t('nav.soon')}
-                    isOpen={isExploreOpen}
-                    delay="delay-[75ms]"
-                />
-                <ToolChildLink
                     to="/camera"
                     icon={<Landmark size={18} />}
                     label={t('nav.chamberTool')}
                     description={t('nav.chamberToolDesc')}
                     active={location.pathname === '/camera'}
                     onClick={() => setIsExploreOpen(false)}
+                    isOpen={isExploreOpen}
+                    delay="delay-[75ms]"
+                />
+                <ToolChildLink
+                    to="#"
+                    icon={<BarChart3 size={18} />}
+                    label={t('nav.graphTool')}
+                    description={t('nav.graphToolDesc')}
+                    disabled
+                    soonLabel={t('nav.soon')}
                     isOpen={isExploreOpen}
                     delay="delay-[150ms]"
                 />
