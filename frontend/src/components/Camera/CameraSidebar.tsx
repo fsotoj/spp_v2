@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, Landmark } from 'lucide-react';
+import { Play, Pause, Landmark, Armchair, Handshake } from 'lucide-react';
 import { GeographySingleGroup } from './GeographySingleGroup';
 import type { CountryGeo, StateGeo } from '../../api/hooks';
 
@@ -21,6 +21,12 @@ interface CameraSidebarProps {
     expandedCountries: number[];
     setExpandedCountries: React.Dispatch<React.SetStateAction<number[]>>;
     isFetching: boolean;
+    isArgentina: boolean;
+    isMexico: boolean;
+    showCarryover: boolean;
+    onToggleCarryover: () => void;
+    groupCoalitions: boolean;
+    onToggleGroupCoalitions: () => void;
 }
 
 // A custom functional component wrapping the parliament SVG icon
@@ -56,6 +62,12 @@ export const CameraSidebar: React.FC<CameraSidebarProps> = ({
     expandedCountries,
     setExpandedCountries,
     isFetching,
+    isArgentina,
+    isMexico,
+    showCarryover,
+    onToggleCarryover,
+    groupCoalitions,
+    onToggleGroupCoalitions,
 }) => {
     const { t } = useTranslation();
 
@@ -193,6 +205,53 @@ export const CameraSidebar: React.FC<CameraSidebarProps> = ({
                     ))}
                 </div>
             </div>
+
+            {/* Filters — shown only for ARG (carryover) and MEX (coalitions) */}
+            {(isArgentina || isMexico) && (
+                <div>
+                    <label className="block text-xs font-bold text-spp-gray uppercase tracking-wider mb-2">
+                        {t('camera.filters', 'Filters')}
+                    </label>
+                    <div className="flex flex-col gap-2">
+                        {isArgentina && (
+                            <button
+                                onClick={onToggleCarryover}
+                                className={`flex items-center gap-2 w-full px-3 py-2 rounded-xl border-2 text-left transition-all ${
+                                    showCarryover
+                                        ? 'border-brand-600 bg-brand-50 text-brand-700'
+                                        : 'border-slate-200 bg-white text-spp-gray hover:border-slate-300 hover:bg-slate-50'
+                                }`}
+                            >
+                                <Armchair size={14} className="shrink-0" />
+                                <span className="text-[11px] font-bold uppercase tracking-wider flex-1">
+                                    {t('camera.showCarryover', 'Carryover seats')}
+                                </span>
+                                <span className={`w-8 h-4 rounded-full flex items-center transition-colors shrink-0 ${showCarryover ? 'bg-brand-500' : 'bg-slate-300'}`}>
+                                    <span className={`w-3 h-3 rounded-full bg-white shadow-sm mx-0.5 transition-transform ${showCarryover ? 'translate-x-4' : 'translate-x-0'}`} />
+                                </span>
+                            </button>
+                        )}
+                        {isMexico && (
+                            <button
+                                onClick={onToggleGroupCoalitions}
+                                className={`flex items-center gap-2 w-full px-3 py-2 rounded-xl border-2 text-left transition-all ${
+                                    groupCoalitions
+                                        ? 'border-brand-600 bg-brand-50 text-brand-700'
+                                        : 'border-slate-200 bg-white text-spp-gray hover:border-slate-300 hover:bg-slate-50'
+                                }`}
+                            >
+                                <Handshake size={14} className="shrink-0" />
+                                <span className="text-[11px] font-bold uppercase tracking-wider flex-1">
+                                    {t('camera.groupCoalitions', 'Group coalitions')}
+                                </span>
+                                <span className={`w-8 h-4 rounded-full flex items-center transition-colors shrink-0 ${groupCoalitions ? 'bg-brand-500' : 'bg-slate-300'}`}>
+                                    <span className={`w-3 h-3 rounded-full bg-white shadow-sm mx-0.5 transition-transform ${groupCoalitions ? 'translate-x-4' : 'translate-x-0'}`} />
+                                </span>
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {isFetching && (
                 <div className="text-xs text-brand-600 font-medium animate-pulse">

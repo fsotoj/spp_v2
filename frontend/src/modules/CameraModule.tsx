@@ -31,6 +31,8 @@ export function CameraModule() {
     const [chamber, setChamber] = useState<'1' | '2'>(searchChamber === '2' ? '2' : '1');
     const [isPlaying, setIsPlaying] = useState(false);
     const [highlightedParty, setHighlightedParty] = useState<string | null>(null);
+    const [showCarryover, setShowCarryover] = useState(false);
+    const [groupCoalitions, setGroupCoalitions] = useState(false);
 
     const { data: countries } = useCountries();
     const { data: allStates } = useStatesGeo();
@@ -116,6 +118,23 @@ export function CameraModule() {
         return () => clearInterval(interval);
     }, [isPlaying, availableYears]);
 
+    // Detect the country of the selected state
+    const selectedCountryName = useMemo(() => {
+        if (!selectedStateId || !allStates || !countries) return null;
+        const state = allStates.find(s => s.id === selectedStateId);
+        const country = countries.find(c => c.id === state?.country_id);
+        return country?.name?.toUpperCase() ?? null;
+    }, [selectedStateId, allStates, countries]);
+
+    const isArgentina = selectedCountryName === 'ARGENTINA';
+    const isMexico = selectedCountryName === 'MEXICO';
+
+    // Reset filters when country changes
+    useEffect(() => {
+        setShowCarryover(false);
+        setGroupCoalitions(false);
+    }, [selectedCountryName]);
+
     const handleSelectState = (id: number) => {
         // Only set expanded countries, but don't force year change here unless desired
         setSelectedStateId(id);
@@ -127,28 +146,137 @@ export function CameraModule() {
 
     // ── Derived data ────────────────────────────────────────────────────────
 
-    const parties: PartyRow[] = useMemo(() => {
+    // Cohort-split party rows used for the hemicycle.
+    // ARG: one entry per (party, is_carryover, origin_year) cohort — same color, contiguous dots.
+    // MEX/BRA: one entry per party (no cohort splitting needed).
+    const partyRows: PartyRow[] = useMemo(() => {
         if (!rawPartyRows || rawPartyRows.length === 0) return [];
-        // Aggregate seats per party — ARG election years have two cohorts for the
-        // same party (is_carryover=0 and is_carryover=1); we sum them for the full
-        // chamber composition. BRA/MEX only ever have one row per party.
-        const partyMap = new Map<string, { seats: number; color: string }>();
+
+        type CohortEntry = {
+            seats: number; color: string;
+            votes: number | null;
+            is_carryover: 0 | 1 | null; origin_year: number | null;
+            is_coalition: 0 | 1 | null; coalition_name: string | null;
+        };
+        const cohortMap = new Map<string, CohortEntry>();
+
         for (const row of rawPartyRows) {
             const name: string = row.party_name ?? '';
             if (!name) continue;
             const seats = extractSeats(row);
             if (seats <= 0) continue;
+
+            const isCarryover: 0 | 1 | null = row.is_carryover != null
+                ? (Number(row.is_carryover) as 0 | 1) : null;
+            const originYear: number | null = row.origin_year != null
+                ? Number(row.origin_year) : null;
+
+            // ARG rows have is_carryover set; split by cohort. BRA/MEX key by name only.
+            const key = isCarryover != null
+                ? `${name}|${isCarryover}|${originYear ?? ''}`
+                : name;
+
+            const rawVotes = row['total_votes_party_sub_leg'];
+            const votes: number | null = (isCarryover !== 1 && rawVotes != null && !isNaN(Number(rawVotes)))
+                ? Number(rawVotes) : null;
+
             const color = (partyColorMap?.[name]) ?? FALLBACK_COLOR;
-            const existing = partyMap.get(name);
-            if (existing) existing.seats += seats;
-            else partyMap.set(name, { seats, color });
+            const existing = cohortMap.get(key);
+            if (existing) {
+                existing.seats += seats;
+            } else {
+                cohortMap.set(key, {
+                    seats, color, votes,
+                    is_carryover: isCarryover,
+                    origin_year: originYear,
+                    is_coalition: row.is_coalition != null ? (Number(row.is_coalition) as 0 | 1) : null,
+                    coalition_name: row.coalition_name ?? null,
+                });
+            }
         }
-        return Array.from(partyMap.entries())
-            .map(([party_name, { seats, color }]) => ({ party_name, seats, color }))
-            .sort((a, b) => b.seats - a.seats);
+
+        // Compute total seats per canonical party name for sorting
+        const partyTotals = new Map<string, number>();
+        for (const [key, entry] of cohortMap) {
+            const canonName = key.split('|')[0];
+            partyTotals.set(canonName, (partyTotals.get(canonName) ?? 0) + entry.seats);
+        }
+
+        return Array.from(cohortMap.entries())
+            .map(([key, entry]) => ({ party_name: key.split('|')[0], ...entry }))
+            .sort((a, b) => {
+                const totalDiff = (partyTotals.get(b.party_name) ?? 0) - (partyTotals.get(a.party_name) ?? 0);
+                if (totalDiff !== 0) return totalDiff;
+                // Within same party: new seats (0) before carryover (1)
+                return (a.is_carryover ?? 0) - (b.is_carryover ?? 0);
+            });
     }, [rawPartyRows, partyColorMap]);
 
-    const totalSeats = useMemo(() => parties.reduce((s, p) => s + p.seats, 0), [parties]);
+    // Apply active filters to produce the final rows passed to the chart
+    const filteredRows: PartyRow[] = useMemo(() => {
+        let rows = partyRows;
+
+        // ARG: merge ALL cohorts (new + carryover) per party when carryover display is off,
+        // so we see the full chamber composition without cohort distinction
+        if (isArgentina && !showCarryover) {
+            const merged = new Map<string, PartyRow>();
+            for (const p of rows) {
+                const ex = merged.get(p.party_name);
+                if (ex) ex.seats += p.seats;
+                else merged.set(p.party_name, { ...p, is_carryover: null });
+            }
+            rows = Array.from(merged.values()).sort((a, b) => b.seats - a.seats);
+        }
+
+        // MEX: merge coalition parties under the coalition name
+        if (isMexico && groupCoalitions) {
+            const merged = new Map<string, PartyRow>();
+            for (const p of rows) {
+                if (p.is_coalition === 1 && p.coalition_name) {
+                    const existing = merged.get(p.coalition_name);
+                    if (existing) {
+                        existing.seats += p.seats;
+                    } else {
+                        merged.set(p.coalition_name, { ...p, party_name: p.coalition_name });
+                    }
+                } else {
+                    merged.set(p.party_name, { ...p });
+                }
+            }
+            rows = Array.from(merged.values()).sort((a, b) => b.seats - a.seats);
+        }
+
+        // ARG with carryover visible: group all new-seat cohorts before all carryover cohorts
+        // so the hemicycle renders new seats on the left and carryover on the right
+        if (isArgentina && showCarryover) {
+            const hasAnyCarryover = rows.some(p => p.is_carryover === 1);
+            if (hasAnyCarryover) {
+                const totals = new Map<string, number>();
+                for (const p of rows) totals.set(p.party_name, (totals.get(p.party_name) ?? 0) + p.seats);
+                const byTotal = (a: PartyRow, b: PartyRow) =>
+                    (totals.get(b.party_name) ?? 0) - (totals.get(a.party_name) ?? 0);
+                rows = [
+                    ...rows.filter(p => p.is_carryover !== 1).sort(byTotal),
+                    ...rows.filter(p => p.is_carryover === 1).sort(byTotal),
+                ];
+            }
+        }
+
+        return rows;
+    }, [partyRows, isArgentina, isMexico, showCarryover, groupCoalitions]);
+
+    // Legend rows: aggregated by party_name (one entry per party, total seats)
+    const legendRows: PartyRow[] = useMemo(() => {
+        const map = new Map<string, PartyRow>();
+        for (const p of filteredRows) {
+            const ex = map.get(p.party_name);
+            if (ex) ex.seats += p.seats;
+            else map.set(p.party_name, { ...p });
+        }
+        return Array.from(map.values()).sort((a, b) => b.seats - a.seats);
+    }, [filteredRows]);
+
+    const totalSeats = useMemo(() => filteredRows.reduce((s, p) => s + p.seats, 0), [filteredRows]);
 
     const chamberMeta = useMemo(() => {
         if (!rawPartyRows || rawPartyRows.length === 0) return null;
@@ -175,7 +303,7 @@ export function CameraModule() {
     const chartTitle = selectedStateName
         ? toTitleCase(selectedStateName)
         : '';
-    const chartSubtitle = parties.length > 0
+    const chartSubtitle = filteredRows.length > 0
         ? `${year} · ${chamberLabel} · ${totalSeats} ${t('camera.seats')}`
         : '';
 
@@ -199,6 +327,12 @@ export function CameraModule() {
                     expandedCountries={expandedCountries}
                     setExpandedCountries={setExpandedCountries}
                     isFetching={isFetching}
+                    isArgentina={isArgentina}
+                    isMexico={isMexico}
+                    showCarryover={showCarryover}
+                    onToggleCarryover={() => setShowCarryover(v => !v)}
+                    groupCoalitions={groupCoalitions}
+                    onToggleGroupCoalitions={() => setGroupCoalitions(v => !v)}
                 />
             </SidebarPortal>
 
@@ -208,13 +342,14 @@ export function CameraModule() {
                 {/* Chart Area */}
                 <div className="flex-1 relative overflow-hidden min-w-0">
                     <div className="absolute inset-0 flex items-start justify-center pt-2 md:pt-4 pb-2 px-2 md:px-4">
-                        {parties.length > 0 ? (
+                        {filteredRows.length > 0 ? (
                             <HemicycleChart
-                                parties={parties}
+                                parties={filteredRows}
                                 highlightedParty={highlightedParty}
                                 onPartyHover={setHighlightedParty}
                                 title={chartTitle}
                                 subtitle={chartSubtitle}
+                                coalitionsGrouped={groupCoalitions}
                             />
                         ) : (
                             <div className="text-center text-slate-400 space-y-2 px-8">
@@ -235,7 +370,7 @@ export function CameraModule() {
                 </div>
 
                 {/* Right/Bottom Panel: Data / Legend */}
-                {Object.keys(parties).length > 0 && (
+                {filteredRows.length > 0 && (
                     <aside className="w-full md:w-64 h-[45vh] md:h-full shrink-0 p-2 md:p-4 border-t md:border-t-0 md:border-l border-slate-200 bg-slate-50 relative z-10 flex flex-row md:flex-col gap-2 md:gap-4 overflow-hidden">
                         <CameraInfoPanel
                             chamberMeta={chamberMeta}
@@ -243,9 +378,10 @@ export function CameraModule() {
                         />
                         <CameraLegendPanel
                             chamberLabel={chamberLabel}
-                            parties={parties}
+                            parties={legendRows}
                             highlightedParty={highlightedParty}
                             setHighlightedParty={setHighlightedParty}
+                            coalitionsGrouped={groupCoalitions}
                         />
                     </aside>
                 )}

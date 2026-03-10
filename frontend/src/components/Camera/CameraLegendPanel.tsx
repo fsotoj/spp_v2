@@ -7,6 +7,7 @@ interface CameraLegendPanelProps {
     parties: PartyRow[];
     highlightedParty: string | null;
     setHighlightedParty: (name: string | null) => void;
+    coalitionsGrouped?: boolean;
 }
 
 export const CameraLegendPanel: React.FC<CameraLegendPanelProps> = ({
@@ -14,6 +15,7 @@ export const CameraLegendPanel: React.FC<CameraLegendPanelProps> = ({
     parties,
     highlightedParty,
     setHighlightedParty,
+    coalitionsGrouped = false,
 }) => {
     return (
         <div className="flex-1 w-1/2 md:w-auto flex flex-col bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden min-h-0">
@@ -23,6 +25,12 @@ export const CameraLegendPanel: React.FC<CameraLegendPanelProps> = ({
                     {chamberLabel}
                 </h3>
             </div>
+            {coalitionsGrouped && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 border-b border-slate-100 bg-brand-50 shrink-0">
+                    <i className="w-2.5 h-2.5 rounded-full shrink-0 ring-2 ring-brand-400 ring-offset-1 bg-brand-200" />
+                    <span className="text-[9px] text-brand-700 font-bold uppercase tracking-wider">= Coalition</span>
+                </div>
+            )}
 
             <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2">
                 {parties.map(party => {
@@ -35,7 +43,7 @@ export const CameraLegendPanel: React.FC<CameraLegendPanelProps> = ({
                             onMouseLeave={() => setHighlightedParty(null)}
                         >
                             <i
-                                className="w-3 h-3 rounded-full shrink-0 border border-white/60 shadow-sm"
+                                className={`w-3 h-3 rounded-full shrink-0 shadow-sm ${coalitionsGrouped && party.is_coalition === 1 ? 'ring-2 ring-brand-400 ring-offset-1' : 'border border-white/60'}`}
                                 style={{ background: party.color }}
                             />
                             <span
