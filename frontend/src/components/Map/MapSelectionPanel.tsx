@@ -85,7 +85,7 @@ export function MapSelectionPanel({
         const entries: SelectionEntry[] = selectionStateIds.map(id => ({
             id,
             stateName: allStates.find(s => s.id === id)?.name ?? String(id),
-            val: obsData[id]?.[cleanVar] ?? null,
+            val: obsData[id]?.[variable] ?? null,
         }));
 
         const withData = entries.filter(e => e.val != null && e.val !== '');
