@@ -283,10 +283,11 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
             if (!dragging) return;
             const sw = map.containerPointToLatLng(L.point(Math.min(startPt.x, cp.x), Math.max(startPt.y, cp.y)));
             const ne = map.containerPointToLatLng(L.point(Math.max(startPt.x, cp.x), Math.min(startPt.y, cp.y)));
+            const bounds = L.latLngBounds(sw, ne);
             if (!rubberRect) {
-                rubberRect = L.rectangle([sw, ne], { color: '#FFA92A', weight: 2, fillColor: '#FFA92A', fillOpacity: 0.08, dashArray: '5 4' }).addTo(map);
+                rubberRect = L.rectangle(bounds, { color: '#FFA92A', weight: 2, fillColor: '#FFA92A', fillOpacity: 0.08, dashArray: '5 4' }).addTo(map);
             } else {
-                rubberRect.setBounds([sw, ne]);
+                rubberRect.setBounds(bounds);
             }
         };
 
