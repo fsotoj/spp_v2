@@ -53,39 +53,6 @@ export function buildColorMap(
     return map;
 }
 
-// ── Tooltip ───────────────────────────────────────────────────────────────────
-
-interface TooltipPayloadItem {
-    name: string;
-    value: number | null;
-    color: string;
-    payload: { year: number };
-}
-
-function SharedTooltip({
-    active, payload, label, varType,
-}: {
-    active?: boolean;
-    payload?: TooltipPayloadItem[];
-    label?: number;
-    varType: string | null;
-}) {
-    if (!active || !payload?.length) return null;
-    const sorted = [...payload].sort((a, b) => (b.value ?? -Infinity) - (a.value ?? -Infinity));
-    return (
-        <div className="bg-spp-bgLight border border-brand-100 rounded-xl shadow-xl px-3 py-2 text-[11px] space-y-0.5 max-h-64 overflow-y-auto">
-            <div className="font-black text-spp-textDark mb-1">{label}</div>
-            {sorted.map(p => (
-                <div key={p.name} className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: p.color }} />
-                    <span className="text-spp-gray font-medium truncate max-w-[120px]">{p.name}</span>
-                    <span className="font-black text-spp-textDark ml-auto pl-2 tabular-nums">{formatValue(p.value, varType)}</span>
-                </div>
-            ))}
-        </div>
-    );
-}
-
 // ── Y-axis formatter ──────────────────────────────────────────────────────────
 function makeYFormatter(type: string | null) {
     return (v: number) => {
@@ -111,6 +78,7 @@ interface LineChartPanelProps {
     varType: string | null;
     series: ChartSeries[];
     highlightedStateId: number | null;
+    soloStateId: number | null;
     forceYZero: boolean;
     prettyName: string;
     activeYear?: number | null;
@@ -127,6 +95,7 @@ export function LineChartPanel({
     varType,
     series,
     highlightedStateId,
+    soloStateId,
     forceYZero,
     prettyName,
     activeYear,
@@ -147,7 +116,6 @@ export function LineChartPanel({
     }, [rows, variable]);
 
     const activeSeries = series.filter(s => s.hasData);
-    const useSharedTooltip = activeSeries.length <= 10;
 
     const yDomain: [number | string, number | string] = forceYZero
         ? [0, 'auto']
@@ -177,7 +145,7 @@ export function LineChartPanel({
                         data={chartData}
                         margin={{ top: 8, right: 24, bottom: 8, left: 8 }}
                         onMouseMove={(state: any) => {
-                            if (!onActiveDataChange || useSharedTooltip) return;
+                            if (!onActiveDataChange) return;
                             if (state.isTooltipActive && state.activeLabel != null) {
                                 const values: Record<number, number | null> = {};
                                 state.activePayload?.forEach((p: any) => {
@@ -186,11 +154,9 @@ export function LineChartPanel({
                                 onActiveDataChange(Number(state.activeLabel), values);
                             }
                         }}
-                        onMouseLeave={() => {
-                            if (!useSharedTooltip) onActiveDataChange?.(null, {});
-                        }}
+                        onMouseLeave={() => onActiveDataChange?.(null, {})}
                         onClick={(state: any) => {
-                            if (!onChartClick || useSharedTooltip) return;
+                            if (!onChartClick) return;
                             if (state.activeLabel != null && state.activePayload?.length) {
                                 const values: Record<number, number | null> = {};
                                 state.activePayload.forEach((p: any) => {
@@ -217,21 +183,16 @@ export function LineChartPanel({
                         />
                         {forceYZero && <ReferenceLine y={0} stroke="#cbd5e1" strokeWidth={1} />}
 
-                        {useSharedTooltip ? (
-                            <Tooltip
-                                content={(props: any) => <SharedTooltip {...props} varType={varType} />}
-                                shared={true}
-                            />
-                        ) : (
-                            /* Invisible tooltip — required for Recharts to populate activePayload on onMouseMove */
-                            <Tooltip content={() => null} />
-                        )}
-                        {!useSharedTooltip && activeYear != null && (
+                        {/* Invisible tooltip — required for Recharts to populate activePayload on onMouseMove */}
+                        <Tooltip content={() => null} />
+                        {activeYear != null && (
                             <ReferenceLine x={activeYear} stroke="#94a3b8" strokeWidth={1} strokeDasharray="3 3" />
                         )}
 
                         {activeSeries.map(s => {
-                            const isHighlighted = highlightedStateId === null || s.stateId === highlightedStateId;
+                            const isHighlighted = soloStateId != null
+                                ? s.stateId === soloStateId
+                                : highlightedStateId === null || s.stateId === highlightedStateId;
                             return (
                                 <Line
                                     key={s.stateId}

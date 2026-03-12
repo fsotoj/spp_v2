@@ -42,6 +42,7 @@ export function GraphModule() {
     const [colorBy, setColorBy] = useState<'state' | 'country'>('country');
     const [forceYZero, setForceYZero] = useState(false);
     const [highlightedStateId, setHighlightedStateId] = useState<number | null>(null);
+    const [soloStateId, setSoloStateId] = useState<number | null>(null);
     const [hoverYear, setHoverYear] = useState<number | null>(null);
     const [hoverValues, setHoverValues] = useState<Record<number, number | null>>({});
     const [pinnedYear, setPinnedYear] = useState<number | null>(null);
@@ -220,11 +221,12 @@ export function GraphModule() {
                     countries={countries}
                     allStates={allStates}
                     selectedStateIds={selectedStateIds}
-                    onToggleState={(id) =>
+                    onToggleState={(id) => {
                         setSelectedStateIds(prev =>
                             prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
-                        )
-                    }
+                        );
+                        if (soloStateId === id) setSoloStateId(null);
+                    }}
                     onToggleCountry={(ids, force) => {
                         if (force) {
                             setSelectedStateIds(prev => Array.from(new Set([...prev, ...ids])));
@@ -268,6 +270,7 @@ export function GraphModule() {
                             varType={activeVarMeta?.type ?? null}
                             series={series}
                             highlightedStateId={highlightedStateId}
+                            soloStateId={soloStateId}
                             forceYZero={forceYZero}
                             prettyName={prettyName}
                             activeYear={displayYear}
@@ -296,6 +299,9 @@ export function GraphModule() {
                             series={series}
                             highlightedStateId={highlightedStateId}
                             onHoverState={setHighlightedStateId}
+                            soloStateId={soloStateId}
+                            onSoloState={setSoloStateId}
+                            colorBy={colorBy}
                             activeYear={displayYear}
                             activeValues={displayValues}
                             varType={activeVarMeta?.type ?? null}

@@ -7,6 +7,9 @@ interface GraphLegendPanelProps {
     series: ChartSeries[];
     highlightedStateId: number | null;
     onHoverState: (id: number | null) => void;
+    soloStateId: number | null;
+    onSoloState: (id: number | null) => void;
+    colorBy: 'state' | 'country';
     activeYear?: number | null;
     activeValues?: Record<number, number | null>;
     varType?: string | null;
@@ -14,67 +17,49 @@ interface GraphLegendPanelProps {
     onUnpin?: () => void;
 }
 
-export function GraphLegendPanel({ series, highlightedStateId, onHoverState, activeYear, activeValues, varType, isPinned, onUnpin }: GraphLegendPanelProps) {
+export function GraphLegendPanel({
+    series,
+    highlightedStateId,
+    onHoverState,
+    soloStateId,
+    onSoloState,
+    colorBy,
+    activeYear,
+    activeValues,
+    varType,
+    isPinned,
+    onUnpin,
+}: GraphLegendPanelProps) {
     const hasLiveData = activeYear != null && activeValues != null && Object.keys(activeValues).length > 0;
 
-    // Group series by country, preserving insertion order; sort by active value when live
-    const groups = useMemo(() => {
-        const map = new Map<string, ChartSeries[]>();
-        for (const s of series) {
-            const key = s.countryName || 'Other';
-            if (!map.has(key)) map.set(key, []);
-            map.get(key)!.push(s);
-        }
-        const entries = Array.from(map.entries());
+    // Flat sorted list: by value desc when live, alphabetically otherwise; no-data rows always last
+    const sortedSeries = useMemo(() => {
+        const withData = series.filter(s => s.hasData);
+        const noData = series.filter(s => !s.hasData);
         if (hasLiveData && activeValues) {
-            entries.forEach(([, states]) => {
-                states.sort((a, b) => {
-                    const av = activeValues[a.stateId] ?? -Infinity;
-                    const bv = activeValues[b.stateId] ?? -Infinity;
-                    return bv - av;
-                });
+            withData.sort((a, b) => {
+                const av = activeValues[a.stateId] ?? -Infinity;
+                const bv = activeValues[b.stateId] ?? -Infinity;
+                return bv - av;
             });
+        } else {
+            withData.sort((a, b) => a.stateName.localeCompare(b.stateName));
         }
-        return entries;
+        return [...withData, ...noData];
     }, [series, hasLiveData, activeValues]);
 
-    const withData = (s: ChartSeries) => s.hasData;
-    const noData = (s: ChartSeries) => !s.hasData;
+    // Country color strip — only meaningful in country color mode
+    const countryColors = useMemo(() => {
+        const seen = new Map<string, string>();
+        for (const s of series) {
+            if (s.hasData && !seen.has(s.countryName)) {
+                seen.set(s.countryName, s.color);
+            }
+        }
+        return Array.from(seen.entries());
+    }, [series]);
 
-    const LegendRow = ({ s }: { s: ChartSeries }) => {
-        const isActive = highlightedStateId === null || s.stateId === highlightedStateId;
-        const hasD = withData(s);
-        const liveVal = hasLiveData && activeValues ? activeValues[s.stateId] : undefined;
-        return (
-            <div
-                className={`flex items-center gap-2 px-1 py-1 rounded transition-all ${hasD ? 'cursor-pointer hover:bg-slate-50' : 'opacity-30'} ${!isActive ? 'opacity-25' : ''}`}
-                onMouseEnter={() => hasD && onHoverState(s.stateId)}
-                onMouseLeave={() => hasD && onHoverState(null)}
-            >
-                <svg width="18" height="10" className="shrink-0">
-                    {hasD ? (
-                        <>
-                            <line x1="0" y1="5" x2="18" y2="5" stroke={s.color} strokeWidth="2.5" strokeLinecap="round" />
-                            <circle cx="9" cy="5" r="2.5" fill={s.color} />
-                        </>
-                    ) : (
-                        <line x1="0" y1="5" x2="18" y2="5" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 2" />
-                    )}
-                </svg>
-                <span
-                    className={`text-[10px] font-semibold truncate flex-1 leading-tight ${hasD ? 'text-slate-700' : 'text-slate-400'}`}
-                    title={s.stateName}
-                >
-                    {s.stateName.charAt(0) + s.stateName.slice(1).toLowerCase()}
-                </span>
-                {hasLiveData && liveVal !== undefined && (
-                    <span className="text-[10px] font-black text-spp-textDark tabular-nums shrink-0 ml-1">
-                        {formatValue(liveVal, varType ?? null)}
-                    </span>
-                )}
-            </div>
-        );
-    };
+    const isSoloActive = soloStateId != null;
 
     return (
         <div className="flex-1 w-full flex flex-col bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden min-h-0">
@@ -86,7 +71,7 @@ export function GraphLegendPanel({ series, highlightedStateId, onHoverState, act
                 {hasLiveData && (
                     <div className="flex items-center gap-1.5">
                         <span className="text-[10px] font-black text-spp-purple tabular-nums">{activeYear}</span>
-                        {isPinned && (
+                        {isPinned ? (
                             <button
                                 onClick={onUnpin}
                                 className="text-brand-400 hover:text-brand-600 transition-colors"
@@ -94,24 +79,68 @@ export function GraphLegendPanel({ series, highlightedStateId, onHoverState, act
                             >
                                 <PinOff size={11} />
                             </button>
+                        ) : (
+                            <Pin size={11} className="text-slate-300" />
                         )}
-                        {!isPinned && <Pin size={11} className="text-slate-300" />}
                     </div>
                 )}
             </div>
 
-            <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2 space-y-3">
-                {groups.map(([country, states]) => {
-                    const active = states.filter(withData);
-                    const inactive = states.filter(noData);
-                    return (
-                        <div key={country}>
-                            {/* Country label */}
-                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-wider px-1 mb-0.5">
+            {/* Country color strip */}
+            {colorBy === 'country' && countryColors.length > 1 && (
+                <div className="px-3 pt-2 pb-1 flex flex-wrap gap-x-3 gap-y-1 shrink-0">
+                    {countryColors.map(([country, color]) => (
+                        <div key={country} className="flex items-center gap-1">
+                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: color }} />
+                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">
                                 {country.charAt(0) + country.slice(1).toLowerCase()}
-                            </p>
-                            {active.map(s => <LegendRow key={s.stateId} s={s} />)}
-                            {inactive.map(s => <LegendRow key={s.stateId} s={s} />)}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {/* Flat state list */}
+            <div className="flex-1 overflow-y-auto overflow-x-hidden px-3 py-2 space-y-0.5">
+                {sortedSeries.map(s => {
+                    const hasD = s.hasData;
+                    const liveVal = hasLiveData && activeValues ? activeValues[s.stateId] : undefined;
+                    const isSolo = soloStateId === s.stateId;
+                    const faded = !hasD || (isSoloActive && !isSolo) || (!isSoloActive && highlightedStateId !== null && highlightedStateId !== s.stateId);
+
+                    return (
+                        <div
+                            key={s.stateId}
+                            className={`flex items-center gap-2 px-1 py-1 rounded transition-all
+                                ${hasD ? 'cursor-pointer hover:bg-slate-50' : 'cursor-default'}
+                                ${isSolo ? 'bg-brand-50' : ''}
+                                ${faded ? 'opacity-25' : 'opacity-100'}
+                            `}
+                            onMouseEnter={() => hasD && onHoverState(s.stateId)}
+                            onMouseLeave={() => hasD && onHoverState(null)}
+                            onClick={() => hasD && onSoloState(isSolo ? null : s.stateId)}
+                        >
+                            <svg width="18" height="10" className="shrink-0">
+                                {hasD ? (
+                                    <>
+                                        <line x1="0" y1="5" x2="18" y2="5" stroke={s.color} strokeWidth="2.5" strokeLinecap="round" />
+                                        <circle cx="9" cy="5" r="2.5" fill={s.color} />
+                                    </>
+                                ) : (
+                                    <line x1="0" y1="5" x2="18" y2="5" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 2" />
+                                )}
+                            </svg>
+                            <span
+                                className={`text-[10px] font-semibold truncate flex-1 leading-tight ${hasD ? 'text-slate-700' : 'text-slate-400'}`}
+                                title={s.stateName}
+                            >
+                                {s.stateName.charAt(0) + s.stateName.slice(1).toLowerCase()}
+                            </span>
+                            {hasLiveData && liveVal !== undefined && (
+                                <span className="text-[10px] font-black text-spp-textDark tabular-nums shrink-0 ml-1">
+                                    {formatValue(liveVal, varType ?? null)}
+                                </span>
+                            )}
                         </div>
                     );
                 })}
