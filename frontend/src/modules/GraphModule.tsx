@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 import { SidebarPortal } from '../components/Layout';
 import {
     useCountries, useStatesGeo, useVariables, useObservationsTimeSeries,
@@ -32,12 +33,21 @@ function deriveDataset(datasetLabel: string | null | undefined): string {
 export function GraphModule() {
     const { t, i18n } = useTranslation();
     const lang = i18n.language.slice(0, 2);
+    const [searchParams] = useSearchParams();
+
+    // ── URL params (from map popup deep-link; stateId is comma-separated for multi-state) ──
+    const urlStateIds = useMemo(
+        () => (searchParams.get('stateId') ?? '').split(',').map(Number).filter(Boolean),
+        [],
+    );
+    const urlVariable = searchParams.get('variable') ?? null;
+    const urlYear = searchParams.get('year') ? Number(searchParams.get('year')) : null;
 
     // ── Selector state ──
-    const [variable, setVariable] = useState('perc_voter_sub_exe');
+    const [variable, setVariable] = useState(urlVariable ?? 'perc_voter_sub_exe');
     const [selectedStateIds, setSelectedStateIds] = useState<number[]>([]);
     const [expandedCountries, setExpandedCountries] = useState<number[]>([]);
-    const [yearMin, setYearMin] = useState(2000);
+    const [yearMin, setYearMin] = useState(GLOBAL_YEAR_MIN);
     const [yearMax, setYearMax] = useState(GLOBAL_YEAR_MAX);
     const [colorBy, setColorBy] = useState<'state' | 'country'>('country');
     const [forceYZero, setForceYZero] = useState(false);
@@ -45,7 +55,7 @@ export function GraphModule() {
     const [soloStateId, setSoloStateId] = useState<number | null>(null);
     const [hoverYear, setHoverYear] = useState<number | null>(null);
     const [hoverValues, setHoverValues] = useState<Record<number, number | null>>({});
-    const [pinnedYear, setPinnedYear] = useState<number | null>(null);
+    const [pinnedYear, setPinnedYear] = useState<number | null>(urlYear);
     const [pinnedValues, setPinnedValues] = useState<Record<number, number | null>>({});
 
     const displayYear = pinnedYear ?? hoverYear;
@@ -56,9 +66,16 @@ export function GraphModule() {
     const { data: allStates } = useStatesGeo();
     const { data: allVariables } = useVariables();
 
-    // Default: pre-select CAPITAL FEDERAL, DISTRITO FEDERAL, CDMX on first load
+    // On first load: use URL stateIds if present, otherwise fall back to named defaults
     useEffect(() => {
         if (!allStates || !countries || selectedStateIds.length > 0) return;
+        if (urlStateIds.length > 0) {
+            const valid = urlStateIds.filter(id => allStates.find(s => s.id === id));
+            if (valid.length > 0) {
+                setSelectedStateIds(valid);
+                return;
+            }
+        }
         const defaults = allStates.filter(s =>
             DEFAULT_STATE_NAMES.includes(s.name.toUpperCase())
         );
@@ -153,6 +170,22 @@ export function GraphModule() {
         yearMax,
     );
 
+    // Populate pinnedValues from loaded data whenever pinned year changes or data arrives
+    // (covers URL deep-links and variable changes while a year is pinned)
+    useEffect(() => {
+        if (pinnedYear == null || tsRows.length === 0) return;
+        const cleanVar = variable.replace(/_[12]$/, '');
+        const values: Record<number, number | null> = {};
+        for (const row of tsRows) {
+            if (row.year === pinnedYear) {
+                values[row.state_id] = (row[cleanVar as keyof typeof row] as number | null) ?? null;
+            }
+        }
+        if (Object.keys(values).length > 0) {
+            setPinnedValues(values);
+        }
+    }, [tsRows, pinnedYear, variable]);
+
     // ── Series (one entry per selected state) ──
     const stateColorEntries = useMemo(() => {
         if (!allStates || !countries) return [];
@@ -232,6 +265,7 @@ export function GraphModule() {
                             setSelectedStateIds(prev => Array.from(new Set([...prev, ...ids])));
                         } else {
                             setSelectedStateIds(prev => prev.filter(id => !ids.includes(id)));
+                            if (soloStateId !== null && ids.includes(soloStateId)) setSoloStateId(null);
                         }
                     }}
                     expandedCountries={expandedCountries}

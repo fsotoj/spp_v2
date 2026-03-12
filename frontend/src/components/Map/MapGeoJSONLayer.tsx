@@ -433,9 +433,11 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                                         <Landmark size={14} />
                                         {t('popup.cameraBtn')}
                                     </button>
-                                    <button 
-                                        className="flex-1 flex items-center justify-center gap-2 py-2 border border-slate-200 bg-spp-bgMuted text-slate-400 rounded-lg text-xs font-bold opacity-50 cursor-not-allowed pointer-events-none"
-                                        disabled
+                                    <button
+                                        className="flex-1 flex items-center justify-center gap-2 py-2 bg-spp-orange text-white rounded-lg text-xs font-bold hover:bg-spp-purple hover:shadow-md transition-all duration-300 transform active:scale-95"
+                                        onClick={() => {
+                                            navigate(`/graph?stateId=${stateId}&variable=${variable}&year=${year}`);
+                                        }}
                                     >
                                         <BarChart3 size={14} />
                                         {t('popup.graphBtn')}

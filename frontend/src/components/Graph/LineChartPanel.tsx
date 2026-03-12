@@ -143,7 +143,7 @@ export function LineChartPanel({
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                         data={chartData}
-                        margin={{ top: 8, right: 24, bottom: 8, left: 8 }}
+                        margin={{ top: 8, right: 24, bottom: 32, left: 40 }}
                         onMouseMove={(state: any) => {
                             if (!onActiveDataChange) return;
                             if (state.isTooltipActive && state.activeLabel != null) {
