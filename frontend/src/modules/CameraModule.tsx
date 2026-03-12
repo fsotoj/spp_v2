@@ -12,6 +12,8 @@ import { extractSeats, toTitleCase } from '../components/Camera/CameraUtils';
 import { CameraSidebar } from '../components/Camera/CameraSidebar';
 import { CameraInfoPanel } from '../components/Camera/CameraInfoPanel';
 import { CameraLegendPanel } from '../components/Camera/CameraLegendPanel';
+import { CameraPrintView, type LegendLayout } from '../components/Camera/CameraPrintView';
+
 
 const FALLBACK_COLOR = '#94a3b8';
 
@@ -33,6 +35,8 @@ export function CameraModule() {
     const [highlightedParty, setHighlightedParty] = useState<string | null>(null);
     const [showCarryover, setShowCarryover] = useState(false);
     const [groupCoalitions, setGroupCoalitions] = useState(false);
+    const [printMode, setPrintMode] = useState(false);
+    const [legendPrintPos, setLegendPrintPos] = useState<LegendLayout>('corner');
 
     const { data: countries } = useCountries();
     const { data: allStates } = useStatesGeo();
@@ -308,6 +312,7 @@ export function CameraModule() {
         : '';
 
     return (
+        <>
         <div className="w-full h-full flex animate-in fade-in duration-500 ease-out fill-mode-forwards">
             <SidebarPortal>
                 <CameraSidebar
@@ -333,6 +338,7 @@ export function CameraModule() {
                     onToggleCarryover={() => setShowCarryover(v => !v)}
                     groupCoalitions={groupCoalitions}
                     onToggleGroupCoalitions={() => setGroupCoalitions(v => !v)}
+                    onPrint={() => setPrintMode(true)}
                 />
             </SidebarPortal>
 
@@ -387,6 +393,21 @@ export function CameraModule() {
                 )}
             </div>
         </div>
+
+        {printMode && (
+            <CameraPrintView
+                chartParties={filteredRows}
+                legendParties={legendRows}
+                title={chartTitle}
+                subtitle={chartSubtitle}
+                chamberLabel={chamberLabel}
+                coalitionsGrouped={groupCoalitions}
+                layout={legendPrintPos}
+                onChangeLayout={setLegendPrintPos}
+                onClose={() => setPrintMode(false)}
+            />
+        )}
+    </>
     );
 }
 

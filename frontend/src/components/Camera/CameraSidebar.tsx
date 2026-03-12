@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Play, Pause, Landmark, Armchair, Handshake } from 'lucide-react';
+import { Play, Pause, Landmark, Armchair, Handshake, Printer } from 'lucide-react';
 import { GeographySingleGroup } from './GeographySingleGroup';
 import type { CountryGeo, StateGeo } from '../../api/hooks';
 
@@ -27,6 +27,7 @@ interface CameraSidebarProps {
     onToggleCarryover: () => void;
     groupCoalitions: boolean;
     onToggleGroupCoalitions: () => void;
+    onPrint: () => void;
 }
 
 // A custom functional component wrapping the parliament SVG icon
@@ -68,6 +69,7 @@ export const CameraSidebar: React.FC<CameraSidebarProps> = ({
     onToggleCarryover,
     groupCoalitions,
     onToggleGroupCoalitions,
+    onPrint,
 }) => {
     const { t } = useTranslation();
 
@@ -258,6 +260,18 @@ export const CameraSidebar: React.FC<CameraSidebarProps> = ({
                     {t('map.fetchingData')}
                 </div>
             )}
+
+            <div className="flex justify-center">
+                <button onClick={onPrint} className="print-map-btn w-full">
+                    <span className="pmb-icon">
+                        <HemicycleIcon size={28} className="pmb-map-img" color="currentColor" />
+                        <span className="pmb-printer-icon">
+                            <Printer size={20} />
+                        </span>
+                    </span>
+                    {t('camera.print', 'Print chamber')}
+                </button>
+            </div>
         </div>
     );
 };
