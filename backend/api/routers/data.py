@@ -58,7 +58,7 @@ def get_observations(
     api_key: SecureRoute,
     dataset: str = Query(..., description="NED, SED, SEED, SDI, or SLED_SNAPSHOT"),
     country_id: int | None = None,
-    state_id: int | None = None,
+    state_id: list[int] | None = Query(default=None),
     year_min: int | None = None,
     year_max: int | None = None,
 ) -> Any:
@@ -68,17 +68,20 @@ def get_observations(
     Returns: list of dicts with keys (state_id, country_id, year, var1, var2...)
     """
     query = select(Observation, VariableDictionary).join(VariableDictionary)
-    
+
     datasets = [d.strip() for d in dataset.split(',')]
     if len(datasets) > 1:
         query = query.where(Observation.dataset.in_(datasets))
     else:
         query = query.where(Observation.dataset == datasets[0])
-    
+
     if country_id is not None:
         query = query.where(Observation.country_id == country_id)
     if state_id is not None:
-        query = query.where(Observation.state_id == state_id)
+        if len(state_id) == 1:
+            query = query.where(Observation.state_id == state_id[0])
+        else:
+            query = query.where(Observation.state_id.in_(state_id))
     if year_min is not None:
         query = query.where(Observation.year >= year_min)
     if year_max is not None:

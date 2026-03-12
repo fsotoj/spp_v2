@@ -149,11 +149,7 @@ export function MapModule() {
             : lang === 'es'
                 ? (activeVarMeta.description_for_ui_es || activeVarMeta.pretty_name_es || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
                 : (activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable);
-        const datasetLabel = lang === 'de'
-            ? (activeVarMeta.dataset_de || activeVarMeta.dataset || '')
-            : lang === 'es'
-                ? (activeVarMeta.dataset_es || activeVarMeta.dataset || '')
-                : (activeVarMeta.dataset || '');
+        const datasetLabel = activeVarMeta.dataset || '';
         const addIndices = lang === 'de'
             ? (activeVarMeta.add_indices_de || activeVarMeta.add_indices)
             : lang === 'es'

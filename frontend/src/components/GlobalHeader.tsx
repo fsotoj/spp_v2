@@ -22,7 +22,9 @@ export function GlobalHeader() {
         ? t('nav.mappingTool')
         : location.pathname === '/camera'
             ? t('nav.chamberTool')
-            : null;
+            : location.pathname === '/graph'
+                ? t('nav.graphTool')
+                : null;
 
     // Close all menus on route change
     useEffect(() => {
@@ -143,11 +145,11 @@ export function GlobalHeader() {
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     />
                                     <ToolLink
-                                        to="#"
+                                        to="/graph"
                                         icon={<BarChart3 size={20} />}
                                         label={t('nav.graphTool')}
-                                        disabled
-                                        soonLabel={t('nav.soon')}
+                                        active={location.pathname === '/graph'}
+                                        onClick={() => setIsMobileMenuOpen(false)}
                                     />
                                     <ToolLink
                                         to="/camera"

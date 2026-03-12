@@ -3,6 +3,7 @@ import { GlobalHeader } from './components/GlobalHeader';
 import { Layout } from './components/Layout';
 import { MapModule } from './modules/MapModule';
 import { CameraModule } from './modules/CameraModule';
+import { GraphModule } from './modules/GraphModule';
 import { LandingPage } from './modules/LandingPage';
 import { MethodologyPage } from './modules/MethodologyPage';
 
@@ -25,6 +26,14 @@ function App() {
           element={
             <Layout>
               <CameraModule />
+            </Layout>
+          }
+        />
+        <Route
+          path="/graph"
+          element={
+            <Layout>
+              <GraphModule />
             </Layout>
           }
         />

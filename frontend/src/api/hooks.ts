@@ -20,6 +20,7 @@ export interface VariableDict {
     dataset_de: string | null;
     description_for_ui_de: string | null;
     add_indices_de: string | null;
+    viewable_graph: number | null;
 }
 
 export interface StateGeo {
@@ -202,5 +203,33 @@ export function useStateObservation(stateId: number | null, year: number | null)
         },
         enabled: stateId !== null && year !== null,
         staleTime: 1000 * 60 * 60, // 1 hour
+    });
+}
+
+// ── Time-series Observations (Graph tool) ────────────────────────────────────
+
+export interface TimeSeriesRow {
+    state_id: number;
+    year: number;
+    [variable: string]: number | null;
+}
+
+export function useObservationsTimeSeries(
+    dataset: string,
+    stateIds: number[],
+    yearMin: number,
+    yearMax: number,
+) {
+    const stateParam = stateIds.map(id => `state_id=${id}`).join('&');
+    return useQuery({
+        queryKey: ['observations-ts', dataset, stateIds.slice().sort().join(','), yearMin, yearMax],
+        queryFn: async () => {
+            const url = `/data/observations?dataset=${dataset}&${stateParam}&year_min=${yearMin}&year_max=${yearMax}`;
+            const { data } = await apiClient.get<any[]>(url);
+            return data as TimeSeriesRow[];
+        },
+        enabled: !!dataset && stateIds.length > 0 && !!yearMin && !!yearMax,
+        placeholderData: (prev) => prev,
+        staleTime: 1000 * 60 * 5,
     });
 }

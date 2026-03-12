@@ -68,6 +68,7 @@ export function ExploreToolsSwitcher({ activeToolLabel, isHomePage, isScrolled }
                         <>
                             {activeToolLabel === t('nav.mappingTool') && <Map size={16} className="absolute left-3" />}
                             {activeToolLabel === t('nav.chamberTool') && <Landmark size={16} className="absolute left-3" />}
+                            {activeToolLabel === t('nav.graphTool') && <BarChart3 size={16} className="absolute left-3" />}
                             <span className="whitespace-nowrap overflow-hidden text-sm">{t('nav.explore')}</span>
                             <ChevronRight size={16} strokeWidth={3} className="absolute right-3" />
                         </>
@@ -106,12 +107,12 @@ export function ExploreToolsSwitcher({ activeToolLabel, isHomePage, isScrolled }
                     delay="delay-[75ms]"
                 />
                 <ToolChildLink
-                    to="#"
+                    to="/graph"
                     icon={<BarChart3 size={18} />}
                     label={t('nav.graphTool')}
                     description={t('nav.graphToolDesc')}
-                    disabled
-                    soonLabel={t('nav.soon')}
+                    active={location.pathname === '/graph'}
+                    onClick={() => setIsExploreOpen(false)}
                     isOpen={isExploreOpen}
                     delay="delay-[150ms]"
                 />
