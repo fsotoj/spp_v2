@@ -86,27 +86,6 @@ function SharedTooltip({
     );
 }
 
-function IndividualTooltip({
-    active, payload, varType,
-}: {
-    active?: boolean;
-    payload?: TooltipPayloadItem[];
-    varType: string | null;
-}) {
-    if (!active || !payload?.length) return null;
-    const p = payload[0];
-    return (
-        <div className="bg-spp-bgLight border border-brand-100 rounded-xl shadow-xl px-3 py-2 text-[11px]">
-            <div className="font-black text-spp-textDark mb-0.5">{p.payload.year}</div>
-            <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full shrink-0" style={{ background: p.color }} />
-                <span className="text-spp-gray font-medium">{p.name}</span>
-                <span className="font-black text-spp-textDark ml-2 tabular-nums">{formatValue(p.value, varType)}</span>
-            </div>
-        </div>
-    );
-}
-
 // ── Y-axis formatter ──────────────────────────────────────────────────────────
 function makeYFormatter(type: string | null) {
     return (v: number) => {
