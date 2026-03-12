@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
-import { GeoJSON, Popup } from 'react-leaflet';
+import { GeoJSON, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import { MapSelectionPanel } from './MapSelectionPanel';
 import {
     ChevronUp, ChevronDown as ChevronDownIcon,
     Landmark, BarChart3
@@ -14,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
  * Core Leaflet layer component for rendering data-bound polygons.
  * Handles the heavy lifting of color scaling, interactive filtering, and performance synchronization.
  */
-export function MapGeoJSONLayer({ features, obsData, year, variable, vType, palette, prettyName, partyColors, activeDataset, onFilterChange }: { features: any[], obsData: Record<number, any>, year: number, variable: string, vType: string, palette?: string | null, prettyName?: string | null, partyColors?: Record<string, string>, activeDataset: string, onFilterChange?: (hiddenIndices: number[], hiddenNA: boolean) => void }) {
+export function MapGeoJSONLayer({ features, obsData, year, variable, vType, palette, prettyName, partyColors, activeDataset, onFilterChange, isSelecting, selectionStateIds, onToggleSelectionState, onClearSelection, activeVarMeta, onFilterToSelection }: { features: any[], obsData: Record<number, any>, year: number, variable: string, vType: string, palette?: string | null, prettyName?: string | null, partyColors?: Record<string, string>, activeDataset: string, onFilterChange?: (hiddenIndices: number[], hiddenNA: boolean) => void, isSelecting?: boolean, selectionStateIds?: number[], onToggleSelectionState?: (stateId: number) => void, onClearSelection?: () => void, activeVarMeta?: any, onFilterToSelection?: (ids: number[]) => void }) {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const [expandedDetails, setExpandedDetails] = useState<Record<string, boolean>>({});
@@ -194,10 +195,16 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
             .join(' ');
     };
 
+    const map = useMap();
     const geoJsonInstanceRef = useRef<L.GeoJSON>(null);
+    const isSelectingRef = useRef(isSelecting ?? false);
+    const onToggleSelectionStateRef = useRef(onToggleSelectionState);
+    const featuresRef = useRef(features);
+    const justRubberBandedRef = useRef(false);
 
     const geoJsonStyle = (feature: any) => {
         const stateId = feature.properties.state_id;
+        const isSelected = selectionStateIds?.includes(stateId) ?? false;
         const currentData = obsData[stateId];
         const val = currentData ? currentData[variable] : null;
         const visible = isFeatureVisible(val);
@@ -205,9 +212,9 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
 
         return {
             fillColor: color,
-            weight: visible ? 1.2 : 0,
-            opacity: visible ? 1 : 0,
-            color: '#111111',
+            weight: isSelected ? 3 : (visible ? 1.2 : 0),
+            opacity: isSelected || visible ? 1 : 0,
+            color: isSelected ? '#FFA92A' : '#111111',
             fillOpacity: visible ? 0.9 : 0,
         };
     };
@@ -220,18 +227,126 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
         visibleRef.current = isFeatureVisible;
     }, [geoJsonStyle, isFeatureVisible]);
 
+    useEffect(() => {
+        isSelectingRef.current = isSelecting ?? false;
+        onToggleSelectionStateRef.current = onToggleSelectionState;
+    }, [isSelecting, onToggleSelectionState]);
+
+    useEffect(() => {
+        featuresRef.current = features;
+    }, [features]);
+
+    // ── Geometry centroid helper ──────────────────────────────────────────────
+    const getGeometryCentroid = (geometry: any): L.LatLng | null => {
+        if (!geometry?.coordinates) return null;
+        const coords: number[][] = [];
+        const collect = (arr: any) => {
+            if (!Array.isArray(arr)) return;
+            if (typeof arr[0] === 'number') { coords.push(arr); } else { arr.forEach(collect); }
+        };
+        collect(geometry.coordinates);
+        if (coords.length === 0) return null;
+        const lng = coords.reduce((s, c) => s + c[0], 0) / coords.length;
+        const lat = coords.reduce((s, c) => s + c[1], 0) / coords.length;
+        return L.latLng(lat, lng);
+    };
+
+    // ── Rubber-band selection + map interaction lock ──────────────────────────
+    useEffect(() => {
+        if (!isSelecting) {
+            map.dragging.enable();
+            map.scrollWheelZoom.enable();
+            map.doubleClickZoom.enable();
+            return;
+        }
+
+        map.dragging.disable();
+        map.scrollWheelZoom.disable();
+        map.doubleClickZoom.disable();
+
+        let startPt: L.Point | null = null;
+        let rubberRect: L.Rectangle | null = null;
+        let dragging = false;
+
+        const onMouseDown = (e: any) => {
+            startPt = map.mouseEventToContainerPoint(e.originalEvent);
+            dragging = false;
+        };
+
+        const onMouseMove = (e: any) => {
+            if (!startPt) return;
+            const cp = map.mouseEventToContainerPoint(e.originalEvent);
+            if (!dragging && (Math.abs(cp.x - startPt.x) > 8 || Math.abs(cp.y - startPt.y) > 8)) {
+                dragging = true;
+                document.body.style.userSelect = 'none';
+            }
+            if (!dragging) return;
+            const sw = map.containerPointToLatLng(L.point(Math.min(startPt.x, cp.x), Math.max(startPt.y, cp.y)));
+            const ne = map.containerPointToLatLng(L.point(Math.max(startPt.x, cp.x), Math.min(startPt.y, cp.y)));
+            if (!rubberRect) {
+                rubberRect = L.rectangle([sw, ne], { color: '#FFA92A', weight: 2, fillColor: '#FFA92A', fillOpacity: 0.08, dashArray: '5 4' }).addTo(map);
+            } else {
+                rubberRect.setBounds([sw, ne]);
+            }
+        };
+
+        const onMouseUp = () => {
+            if (dragging && rubberRect) {
+                const bounds = rubberRect.getBounds();
+                for (const f of featuresRef.current) {
+                    const c = getGeometryCentroid(f.geometry);
+                    if (c && bounds.contains(c)) {
+                        onToggleSelectionStateRef.current?.(f.properties.state_id);
+                    }
+                }
+                justRubberBandedRef.current = true;
+                setTimeout(() => { justRubberBandedRef.current = false; }, 100);
+            }
+            if (rubberRect) { map.removeLayer(rubberRect); rubberRect = null; }
+            startPt = null;
+            dragging = false;
+            document.body.style.userSelect = '';
+        };
+
+        map.on('mousedown', onMouseDown);
+        map.on('mousemove', onMouseMove);
+        map.on('mouseup', onMouseUp);
+
+        return () => {
+            map.off('mousedown', onMouseDown);
+            map.off('mousemove', onMouseMove);
+            map.off('mouseup', onMouseUp);
+            map.dragging.enable();
+            map.scrollWheelZoom.enable();
+            map.doubleClickZoom.enable();
+            if (rubberRect) map.removeLayer(rubberRect);
+        };
+    }, [isSelecting, map]);
+
     const onEachFeature = (feature: any, layer: L.Layer) => {
         if (feature.properties.state_id === features[0]?.properties.state_id || feature.properties.state_id === features[features.length - 1]?.properties.state_id) {
             console.log(`[LayerDebug] Initializing feature layer for ${feature.properties.name} (ID: ${feature.properties.state_id})`);
         }
 
         layer.on({
+            click: (e: any) => {
+                if (!isSelectingRef.current) return;
+                if (justRubberBandedRef.current) return;
+                L.DomEvent.stopPropagation(e);
+                onToggleSelectionStateRef.current?.(feature.properties.state_id);
+            },
             mouseover: (e) => {
                 const l = e.target;
                 const stateId = feature.properties.state_id;
                 const currentData = obsData[stateId];
                 const val = currentData ? currentData[variable] : null;
 
+                if (isSelectingRef.current) {
+                    // In selection mode: show a lighter hover cue without clobbering the orange ring
+                    l.setStyle({ weight: 4, fillOpacity: 1 });
+                    l.bringToFront();
+                    return;
+                }
                 if (!visibleRef.current(val)) return;
                 l.setStyle({ weight: 4, color: '#FFA92A', fillOpacity: 1 });
                 l.bringToFront();
@@ -299,7 +414,7 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
             });
             console.log(`[SyncDebug] Year ${year} complete. ${updateCount} layers updated. ${sampleLog}`);
         }
-    }, [features, obsData, variable, breaks, hiddenIndices, hiddenNA]);
+    }, [features, obsData, variable, breaks, hiddenIndices, hiddenNA, selectionStateIds]);
 
     const { isMobile, isSidebarOpen } = useSidebar();
     const isOverlaysHidden = isMobile && isSidebarOpen;
@@ -323,7 +438,7 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                         onEachFeature={(feat, layer) => onEachFeature(feat, layer)}
                         ref={geoJsonInstanceRef as any}
                     >
-                        <Popup className="legacy-popup">
+                        {!isSelecting && <Popup className="legacy-popup">
                             <div className="w-[280px] font-sans text-slate-700">
                                 {/* Header */}
                                 <div className="popup-header">
@@ -444,13 +559,34 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                                     </button>
                                 </div>
                             </div>
-                        </Popup>
+                        </Popup>}
                     </GeoJSON>
                 );
             })}
 
+            {/* Bottom-right stack: selection panel (when active) + legend */}
+            <div className={`absolute bottom-20 md:bottom-6 right-2 md:right-6 z-[800] flex flex-col gap-2 items-stretch w-[min(200px,calc(100vw-1rem))] md:w-[220px] transition-all duration-300 origin-bottom-right ${isOverlaysHidden ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
+
+                {isSelecting && selectionStateIds && selectionStateIds.length > 0 && activeVarMeta && (
+                    <MapSelectionPanel
+                        selectionStateIds={selectionStateIds}
+                        obsData={obsData}
+                        variable={variable}
+                        vType={vType}
+                        activeVarMeta={activeVarMeta}
+                        year={year}
+                        allStates={features.map(f => ({ id: f.properties.state_id, name: f.properties.name }))}
+                        prettyName={prettyName ?? null}
+                        onClear={() => onClearSelection?.()}
+                        onFilterToSelection={onFilterToSelection
+                            ? () => onFilterToSelection(selectionStateIds)
+                            : undefined
+                        }
+                    />
+                )}
+
             {/* Legend */}
-            <div className={`absolute bottom-20 md:bottom-6 right-2 md:right-6 z-[800] bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-white/50 p-2 md:p-4 min-w-[150px] md:min-w-[180px] max-w-[min(200px,calc(100vw-1rem))] md:max-w-sm max-h-[35vh] md:max-h-[60vh] overflow-y-auto transition-all duration-300 origin-bottom-right ${isOverlaysHidden ? 'opacity-0 pointer-events-none translate-y-4' : 'opacity-100 translate-y-0'}`}>
+            <div className="bg-white/95 backdrop-blur-md rounded-xl shadow-2xl border border-white/50 p-2 md:p-4 max-h-[35vh] md:max-h-[60vh] overflow-y-auto">
                 <div className="flex flex-col gap-1.5 md:gap-2">
                     <div className="py-0.5 md:py-1">
                         <div className="text-[11px] md:text-sm font-bold text-slate-800 leading-tight">{prettyName || variable}</div>
@@ -493,6 +629,7 @@ export function MapGeoJSONLayer({ features, obsData, year, variable, vType, pale
                         )}
                     </div>
                 </div>
+            </div>
             </div>
         </>
     );

@@ -128,6 +128,18 @@
     "staggeredEvery2Years": "Staggered every 2 years",
     "fullRenewal": "Full renewal"
   },
+  "selection": {
+    "statesSelected": "states selected",
+    "clearSelection": "Clear selection",
+    "average": "Average",
+    "max": "Max",
+    "min": "Min",
+    "mode": "Mode",
+    "noDataStates": "states with no data",
+    "openInGraph": "Open in Graph",
+    "selectingTool": "Selection Tool",
+    "filterToSelection": "Filter map to selection"
+  },
   "camera": {
     "country": "Country",
     "state": "State",

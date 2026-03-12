@@ -1,14 +1,13 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Play, Pause, Printer } from 'lucide-react';
+import { Play, Pause, Printer, Lasso } from 'lucide-react';
 import { useStatesGeo, useVariables, usePartyColors, useObservations, useCountries } from '../api/hooks';
 import { SidebarPortal } from '../components/Layout';
 import { useTranslation } from 'react-i18next';
 
 import { VariableTreeGroup } from '../components/Map/VariableTreeGroup';
 import { GeographyTreeGroup } from '../components/Map/GeographyTreeGroup';
-import { VariableDescriptionOverlay } from '../components/Map/VariableDescriptionOverlay';
 import { MapBoundsController } from '../components/Map/MapBoundsController';
 import { MapGeoJSONLayer } from '../components/Map/MapGeoJSONLayer';
 import { MapPlotModal } from '../components/Map/MapPlotModal';
@@ -42,6 +41,8 @@ export function MapModule() {
     const [showPlotModal, setShowPlotModal] = useState(false);
     const [legendHiddenIndices, setLegendHiddenIndices] = useState<number[]>([]);
     const [legendHiddenNA, setLegendHiddenNA] = useState(false);
+    const [isSelecting, setIsSelecting] = useState(false);
+    const [selectionStateIds, setSelectionStateIds] = useState<number[]>([]);
     const dashboardRef = useRef<HTMLDivElement>(null);
 
     /**
@@ -132,39 +133,33 @@ export function MapModule() {
         return allVariables?.find(v => v.variable === cleanVar);
     }, [allVariables, variable]);
 
-    /**
-     * Variable Description Overlay (mimics R server logic)
-     */
-    const variableDescription = useMemo(() => {
+    const mapPrettyName = useMemo(() => {
         if (!activeVarMeta) return null;
+        return lang === 'de' ? (activeVarMeta.pretty_name_de || activeVarMeta.pretty_name)
+            : lang === 'es' ? (activeVarMeta.pretty_name_es || activeVarMeta.pretty_name)
+                : activeVarMeta.pretty_name || variable;
+    }, [activeVarMeta, lang, variable]);
 
-        let chamberText = "";
-        if (activeVarMeta.dataset === "Legislative Elections") {
+    const varDescriptionText = useMemo(() => {
+        if (!activeVarMeta) return null;
+        let chamberText = '';
+        if (activeVarMeta.dataset === 'Legislative Elections') {
             if (variable.endsWith('_1')) chamberText = ` (${t('map.lowerChamber')})`;
             else if (variable.endsWith('_2')) chamberText = ` (${t('map.upperChamber')})`;
         }
-
         const label = lang === 'de'
             ? (activeVarMeta.description_for_ui_de || activeVarMeta.pretty_name_de || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
             : lang === 'es'
                 ? (activeVarMeta.description_for_ui_es || activeVarMeta.pretty_name_es || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
                 : (activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable);
-        const datasetLabel = activeVarMeta.dataset || '';
-        const addIndices = lang === 'de'
-            ? (activeVarMeta.add_indices_de || activeVarMeta.add_indices)
-            : lang === 'es'
-                ? (activeVarMeta.add_indices_es || activeVarMeta.add_indices)
-                : activeVarMeta.add_indices;
-
-        return (
-            <VariableDescriptionOverlay
-                label={label}
-                dataset={datasetLabel}
-                chamberText={chamberText}
-                addIndices={addIndices}
-            />
-        );
-    }, [activeVarMeta, variable, lang]);
+        const dataset = activeVarMeta.dataset || '';
+        const suffix = lang === 'es'
+            ? `de la base de datos Subnational ${dataset}`
+            : lang === 'de'
+                ? `aus der Subnational ${dataset} Datenbank`
+                : `from the Subnational ${dataset} database`;
+        return `${t('map.youAreSeeing')} ${label}${chamberText}; ${suffix}`;
+    }, [activeVarMeta, variable, lang, t]);
 
     const activeDataset = useMemo(() => {
         if (!activeVarMeta) return dataset;
@@ -308,7 +303,22 @@ export function MapModule() {
                                 ))}
                             </div>
                         </div>
-                        <div className="flex justify-center">
+                        <div className="flex justify-center items-center gap-3">
+                            <button
+                                onClick={() => {
+                                    if (isSelecting) setSelectionStateIds([]);
+                                    setIsSelecting(p => !p);
+                                }}
+                                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl border text-[10px] font-bold uppercase tracking-wider transition-all ${
+                                    isSelecting
+                                        ? 'bg-brand-100 text-brand-600 border-brand-400 ring-1 ring-brand-400 shadow-sm'
+                                        : 'bg-spp-bgLight text-slate-500 border-slate-200 hover:bg-slate-100'
+                                }`}
+                                title={t('selection.selectingTool')}
+                            >
+                                <Lasso size={18} />
+                                {t('selection.selectingTool')}
+                            </button>
                             <button
                                 onClick={() => setShowPlotModal(true)}
                                 disabled={!mergedGeoJSON || !activeVarMeta}
@@ -333,8 +343,17 @@ export function MapModule() {
                     </div>
                 </SidebarPortal>
 
-                {/* Variable Description Overlay */}
-                {variableDescription}
+                {/* Map title bar */}
+                {activeVarMeta && (
+                    <div className="absolute top-0 left-0 right-0 z-[900] pointer-events-none px-4 md:px-12 pt-2 pb-5 text-center">
+                        <p className="text-xs font-bold text-spp-gray uppercase tracking-wider leading-tight" style={{ textShadow: '-1px -1px 3px white, 1px -1px 3px white, -1px 1px 3px white, 1px 1px 3px white, 0 0 6px white' }}>
+                            {mapPrettyName} — {year}
+                        </p>
+                        {varDescriptionText && (
+                            <p className="text-[10px] text-slate-400 mt-0.5 leading-snug" style={{ textShadow: '-1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white, 1px 1px 2px white, 0 0 5px white' }}>{varDescriptionText}</p>
+                        )}
+                    </div>
+                )}
 
                 <MapContainer
                     center={[-34.6, -58.4]}
@@ -367,6 +386,20 @@ export function MapModule() {
                             onFilterChange={(indices, na) => {
                                 setLegendHiddenIndices(indices);
                                 setLegendHiddenNA(na);
+                            }}
+                            isSelecting={isSelecting}
+                            selectionStateIds={selectionStateIds}
+                            onToggleSelectionState={(id) =>
+                                setSelectionStateIds(prev =>
+                                    prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
+                                )
+                            }
+                            onClearSelection={() => setSelectionStateIds([])}
+                            activeVarMeta={activeVarMeta}
+                            onFilterToSelection={(ids) => {
+                                setSelectedStateIds(ids);
+                                setSelectionStateIds([]);
+                                setIsSelecting(false);
                             }}
                         />
                     )}

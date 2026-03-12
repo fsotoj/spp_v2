@@ -128,6 +128,18 @@
     "staggeredEvery2Years": "Versetzt alle 2 Jahre",
     "fullRenewal": "Vollständige Erneuerung"
   },
+  "selection": {
+    "statesSelected": "Staaten ausgewählt",
+    "clearSelection": "Auswahl löschen",
+    "average": "Durchschnitt",
+    "max": "Max.",
+    "min": "Min.",
+    "mode": "Modus",
+    "noDataStates": "Staaten ohne Daten",
+    "openInGraph": "Im Diagramm öffnen",
+    "selectingTool": "Auswahlwerkzeug",
+    "filterToSelection": "Karte auf Auswahl filtern"
+  },
   "camera": {
     "country": "Land",
     "state": "Bundesstaat",

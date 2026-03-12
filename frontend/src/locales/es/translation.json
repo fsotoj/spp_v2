@@ -128,6 +128,18 @@
     "staggeredEvery2Years": "Escalonada cada 2 años",
     "fullRenewal": "Renovación total"
   },
+  "selection": {
+    "statesSelected": "estados seleccionados",
+    "clearSelection": "Limpiar selección",
+    "average": "Promedio",
+    "max": "Máx.",
+    "min": "Mín.",
+    "mode": "Moda",
+    "noDataStates": "estados sin datos",
+    "openInGraph": "Abrir en Gráfico",
+    "selectingTool": "Herramienta de selección",
+    "filterToSelection": "Filtrar mapa a selección"
+  },
   "camera": {
     "country": "País",
     "state": "Estado",
