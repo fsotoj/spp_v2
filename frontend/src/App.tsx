@@ -7,6 +7,7 @@ import { GraphModule } from './modules/GraphModule';
 import { LandingPage } from './modules/LandingPage';
 import { MethodologyPage } from './modules/MethodologyPage';
 import { DataPage } from './modules/DataPage';
+import { AboutPage } from './modules/AboutPage';
 
 function App() {
   return (
@@ -40,20 +41,9 @@ function App() {
         />
         <Route path="/methodology" element={<MethodologyPage />} />
         <Route path="/data" element={<DataPage />} />
-        <Route path="/about" element={<PlaceholderPage title="About SPP" />} />
+        <Route path="/about" element={<AboutPage />} />
       </Routes>
     </BrowserRouter>
-  );
-}
-
-function PlaceholderPage({ title }: { title: string }) {
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50 pt-20">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-slate-900 mb-4">{title}</h1>
-        <p className="text-slate-500">This section is currently being modernized. Check back soon!</p>
-      </div>
-    </div>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Download, ExternalLink, Database, Code, BookOpen, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
+import { Download, Database, Code, BookOpen, AlertCircle, Loader2, ArrowRight } from 'lucide-react';
 import { useDataverse } from '../hooks/useDataverse';
 import { Link } from 'react-router-dom';
 
@@ -13,7 +13,7 @@ const DB_METHODOLOGY_LINKS: Record<string, string> = {
 };
 
 export function DataPage() {
-    const { t } = useTranslation();
+    const { t } = useTranslation(['translation']);
     const { datasets, loading, isFallback } = useDataverse();
 
     return (
@@ -78,7 +78,7 @@ export function DataPage() {
                                                 <span className="text-xs font-black text-brand-500 bg-brand-50 px-2 py-0.5 rounded uppercase tracking-widest">{db.abbr}</span>
                                             </div>
                                             <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-brand-600 transition-colors">
-                                                {t(db.nameKey)}
+                                                {t(db.nameKey, { defaultValue: db.nameKey.split('.').pop()?.toUpperCase() })}
                                             </h3>
                                             <p className="text-sm text-slate-500 mb-4 leading-relaxed max-w-xl">
                                                 {t(db.descKey)}

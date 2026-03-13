@@ -264,5 +264,37 @@
       "fullCodebookDesc": "Para el inventario completo de variables, notas por país y mapas de cobertura, descargue el manual oficial.",
       "keyRefsTitle": "Apéndice C: Referencias Clave"
     }
+  },
+  "dataHub": {
+    "title": "Centro de Datos",
+    "heading": "Descargar Bases de Datos SPP",
+    "subheading": "Acceda a nuestros conjuntos de datos completos alojados en Harvard Dataverse, o explore nuestra futura API para desarrolladores.",
+    "downloadAll": "Ver en Dataverse",
+    "downloadDataverse": "Dataset",
+    "viewMethodology": "Metodología",
+    "fetching": "Conectando a Harvard Dataverse...",
+    "fallbackMsg": "Los enlaces a Harvard Dataverse no están disponibles temporalmente. Mostrando enlaces DOI directos y citas sugeridas.",
+    "futureApi": "API para Desarrolladores",
+    "comingSoon": "Próximamente",
+    "futureApiDesc": "Estamos construyendo una API REST programática para consultar datos a nivel de unidad dinámicamente. Contáctenos para obtener acceso anticipado e integrar los datos del SPP directamente en sus aplicaciones y flujos de investigación.",
+    "requestAccessBtn": "Contáctenos"
+  },
+  "aboutPage": {
+    "title": "Acerca de SPP",
+    "heading": "El Subnational Politics Project",
+    "p1": "El Subnational Politics Project (SPP) es una iniciativa colaborativa dedicada a recopilar, generar y difundir datos sistemáticos, transparentes y de acceso público sobre instituciones políticas subnacionales, procesos y resultados electorales en América Latina.",
+    "p2": "El objetivo central del SPP es construir una infraestructura de datos exhaustiva y estandarizada que permita tanto un análisis detallado al interior de los países como comparaciones transnacionales robustas de las dinámicas políticas subnacionales.",
+    "p3": "Al proporcionar datos longitudinales consistentes, de alta calidad y espacialmente desagregados, el SPP busca avanzar en la investigación académica y orientada a políticas sobre los fundamentos y las consecuencias políticas de la desigualdad territorial en América Latina.",
+    "p4": "Esta infraestructura de datos apoyará el trabajo empírico en una amplia gama de temas, incluyendo el federalismo, la descentralización, la democracia y el autoritarismo subnacional, la competencia partidaria, la rendición de cuentas electoral, la gobernanza territorial, entre otros.",
+    "cards": {
+      "scopeTitle": "Alcance Transnacional",
+      "scopeDesc": "Estructurado para permitir comparaciones profundas a través de múltiples sistemas federales latinoamericanos.",
+      "timeTitle": "Análisis Longitudinal",
+      "timeDesc": "Más de 40 años de elecciones democráticas, lo que permite una investigación integral de series temporales.",
+      "institutionsTitle": "Seguimiento Institucional",
+      "institutionsDesc": "Registros detallados de la composición legislativa, alternancia ejecutiva y reglas electorales.",
+      "openTitle": "Metodología Abierta",
+      "openDesc": "Reglas de codificación totalmente documentadas y disponibilidad de código abierto mapeadas en Harvard Dataverse."
+    }
   }
 }
