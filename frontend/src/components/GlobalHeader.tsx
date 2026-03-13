@@ -89,6 +89,12 @@ export function GlobalHeader() {
                     <PortalNav path="/methodology" label={t('nav.methods')} active={location.pathname === '/methodology'} />
                     <PortalNav path="/data" label={t('nav.data')} active={location.pathname === '/data'} />
                     <PortalNav path="/about" label={t('nav.about')} active={location.pathname === '/about'} />
+                    <a
+                        href="mailto:subnationalpoliticsproject@gmail.com"
+                        className="header-link text-sm font-bold px-3 py-2 rounded-lg transition-all duration-300 text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                    >
+                        {t('nav.contact')}
+                    </a>
 
                     <div className="h-6 w-px bg-slate-200 mx-2 transition-colors duration-300" />
 
@@ -164,6 +170,13 @@ export function GlobalHeader() {
                             <MobileNavLink path="/methodology" label={t('nav.methods')} active={location.pathname === '/methodology'} onClick={() => setIsMobileMenuOpen(false)} />
                             <MobileNavLink path="/data" label={t('nav.data')} active={location.pathname === '/data'} onClick={() => setIsMobileMenuOpen(false)} />
                             <MobileNavLink path="/about" label={t('nav.about')} active={location.pathname === '/about'} onClick={() => setIsMobileMenuOpen(false)} />
+                            <a
+                                href="mailto:subnationalpoliticsproject@gmail.com"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="text-sm font-bold px-4 py-2.5 rounded-xl transition-all text-slate-700 hover:bg-slate-50 hover:text-slate-900"
+                            >
+                                {t('nav.contact')}
+                            </a>
                         </div>
 
                         {/* Language & Footer */}

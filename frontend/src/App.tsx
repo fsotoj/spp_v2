@@ -6,6 +6,7 @@ import { CameraModule } from './modules/CameraModule';
 import { GraphModule } from './modules/GraphModule';
 import { LandingPage } from './modules/LandingPage';
 import { MethodologyPage } from './modules/MethodologyPage';
+import { DataPage } from './modules/DataPage';
 
 function App() {
   return (
@@ -38,7 +39,7 @@ function App() {
           }
         />
         <Route path="/methodology" element={<MethodologyPage />} />
-        <Route path="/data" element={<PlaceholderPage title="Data Portal" />} />
+        <Route path="/data" element={<DataPage />} />
         <Route path="/about" element={<PlaceholderPage title="About SPP" />} />
       </Routes>
     </BrowserRouter>

@@ -5,6 +5,7 @@
     "methods": "Methods",
     "data": "Data",
     "about": "About",
+    "contact": "Contact",
     "mappingTool": "Mapping Tool",
     "graphTool": "Graph Tool",
     "chamberTool": "Chamber Tool",
@@ -264,5 +265,19 @@
       "fullCodebookDesc": "For the complete variable inventory, country notes, and coverage maps, download the official codebook.",
       "keyRefsTitle": "Appendix C: Key References"
     }
+  },
+  "dataHub": {
+    "title": "Data Hub",
+    "heading": "Download SPP Databases",
+    "subheading": "Access our comprehensive datasets hosted on Harvard Dataverse, or explore our upcoming developer API.",
+    "downloadAll": "View on Dataverse",
+    "downloadDataverse": "Dataset",
+    "viewMethodology": "Methodology",
+    "fetching": "Connecting to Harvard Dataverse...",
+    "fallbackMsg": "Harvard Dataverse links are temporarily unavailable. Showing direct DOI links and suggested citations.",
+    "futureApi": "Developer API",
+    "comingSoon": "Coming Soon",
+    "futureApiDesc": "We are building a programmatic REST API to query unit-level data dynamically. Contact us for early access to integrate SPP data directly into your applications and research pipelines.",
+    "requestAccessBtn": "Contact Us"
   }
 }
