@@ -59,7 +59,7 @@ export function ClusterResultsTable({
                 sv?.stateName ?? a.stateId,
                 sv?.countryName ?? '',
                 a.cluster ?? 'excluded',
-                ...variables.map((v, vi) => sv?.rawMeans[vi] ?? ''),
+                ...variables.map((_v, vi) => sv?.rawMeans[vi] ?? ''),
             ].join(',');
         });
         const csv = [header.join(','), ...rows].join('\n');

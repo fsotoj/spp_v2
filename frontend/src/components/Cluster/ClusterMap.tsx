@@ -1,7 +1,6 @@
 import { useMemo, useEffect } from 'react';
 import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 import { CLUSTER_COLORS, CLUSTER_LABELS, type ClusterAssignment } from '../../services/clusterService';
 import type { StateGeo, CountryGeo } from '../../api/hooks';
 import { useTranslation } from 'react-i18next';

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CLUSTER_COLORS, CLUSTER_LABELS, type DendrogramNode, type DendrogramLeaf } from '../../services/clusterService';
 
@@ -72,13 +73,12 @@ function getMaxDistance(node: HNode): number {
 
 // ─── Render helpers ───────────────────────────────────────────────────────────
 
-function renderEdges(layout: Layout, W: number, H: number, padTop: number, padBottom: number, acc: JSX.Element[]): void {
+function renderEdges(layout: Layout, W: number, H: number, padTop: number, padBottom: number, acc: ReactElement[]): void {
     if (layout.type === 'leaf') return;
 
     const toPixelX = (x: number) => x * W;
     const toPixelY = (y: number) => padTop + (1 - y) * (H - padTop - padBottom);
 
-    const px = toPixelX(layout.x);
     const py = toPixelY(layout.y);
     const lx = toPixelX(layout.left.x);
     const ly = toPixelY(layout.left.type === 'node' ? layout.left.y : 0);
@@ -131,7 +131,7 @@ export function Dendrogram({ root, assignments, stateNames }: DendrogramProps) {
     const padBottom = 60;
 
     const leaves = collectLeaves(layout);
-    const edges: JSX.Element[] = [];
+    const edges: ReactElement[] = [];
     renderEdges(layout, W, H, padTop, padBottom, edges);
 
     const toPixelX = (x: number) => x * W;
