@@ -97,8 +97,8 @@ export function GraphModule() {
     }, [allVariables]);
 
     const groupedVariables = useMemo(() => {
-        const lowerLabel = lang === 'es' ? 'Cámara Baja' : lang === 'de' ? 'Unterhaus' : 'Lower Chamber';
-        const upperLabel = lang === 'es' ? 'Cámara Alta' : lang === 'de' ? 'Oberhaus' : 'Upper Chamber';
+        const lowerLabel = lang === 'es' ? 'Cámara Baja' : lang === 'de' ? 'Unterhaus' : lang === 'pt' ? 'Câmara Baixa' : 'Lower Chamber';
+        const upperLabel = lang === 'es' ? 'Cámara Alta' : lang === 'de' ? 'Oberhaus' : lang === 'pt' ? 'Câmara Alta' : 'Upper Chamber';
 
         const groups: Record<string, TreeGroup> = {};
 
@@ -109,7 +109,8 @@ export function GraphModule() {
             const displayDataset =
                 lang === 'de' ? (v.dataset_de || db)
                     : lang === 'es' ? (v.dataset_es || db)
-                        : db;
+                        : lang === 'pt' ? (v.dataset_pt || db)
+                            : db;
 
             if (db === 'Legislative Elections') {
                 if (!groups[db]) {
@@ -159,7 +160,9 @@ export function GraphModule() {
             ? (activeVarMeta.pretty_name_de || activeVarMeta.pretty_name || variable)
             : lang === 'es'
                 ? (activeVarMeta.pretty_name_es || activeVarMeta.pretty_name || variable)
-                : (activeVarMeta.pretty_name || variable);
+                : lang === 'pt'
+                    ? (activeVarMeta.pretty_name_pt || activeVarMeta.pretty_name || variable)
+                    : (activeVarMeta.pretty_name || variable);
     }, [activeVarMeta, variable, lang]);
 
     // ── Data fetch ──
@@ -228,7 +231,9 @@ export function GraphModule() {
             ? (activeVarMeta.description_for_ui_de || activeVarMeta.pretty_name_de || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
             : lang === 'es'
                 ? (activeVarMeta.description_for_ui_es || activeVarMeta.pretty_name_es || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
-                : (activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable);
+                : lang === 'pt'
+                    ? (activeVarMeta.description_for_ui_pt || activeVarMeta.pretty_name_pt || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
+                    : (activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable);
         const dataset = activeVarMeta.dataset || '';
         let chamberText = '';
         if (activeVarMeta.dataset === 'Legislative Elections') {
@@ -239,7 +244,9 @@ export function GraphModule() {
             ? `de la base de datos Subnational ${dataset}`
             : lang === 'de'
                 ? `aus der Subnational ${dataset} Datenbank`
-                : `from the Subnational ${dataset} database`;
+                : lang === 'pt'
+                    ? `do banco de dados Subnational ${dataset}`
+                    : `from the Subnational ${dataset} database`;
         return `${t('map.youAreSeeing')} ${label}${chamberText}; ${suffix}`;
     }, [activeVarMeta, variable, lang, t]);
 

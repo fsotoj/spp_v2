@@ -182,7 +182,7 @@ export function GlobalHeader() {
                         {/* Language & Footer */}
                         <div className="mt-2 pt-4 border-t border-slate-100 flex flex-col gap-4">
                             <div className="flex flex-wrap gap-2 px-2">
-                                {['en', 'es', 'de'].map((l) => (
+                                {(['en', 'es', 'de', 'pt'] as const).map((l) => (
                                     <button
                                         key={l}
                                         onClick={() => {
@@ -195,7 +195,7 @@ export function GlobalHeader() {
                                                 : 'text-slate-600 border-slate-200 hover:bg-slate-50'
                                         }`}
                                     >
-                                        {l === 'en' ? 'English' : l === 'es' ? 'Español' : 'Deutsch'}
+                                        {l === 'en' ? 'English' : l === 'es' ? 'Español' : l === 'de' ? 'Deutsch' : 'Português'}
                                     </button>
                                 ))}
                             </div>
@@ -233,7 +233,8 @@ function LanguageSwitcher({ i18n }: {
     const langNames: Record<string, string> = {
         en: 'English',
         es: 'Español',
-        de: 'Deutsch'
+        de: 'Deutsch',
+        pt: 'Português',
     };
 
     const currentLangName = langNames[lang] || 'English';

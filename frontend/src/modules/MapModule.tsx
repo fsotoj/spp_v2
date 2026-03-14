@@ -102,7 +102,8 @@ export function MapModule() {
             const pickDataset = (v: any) =>
                 lang === 'de' ? (v.dataset_de || db)
                     : lang === 'es' ? (v.dataset_es || db)
-                        : db;
+                        : lang === 'pt' ? (v.dataset_pt || db)
+                            : db;
 
             if (db === 'Legislative Elections') {
                 if (!groups[db]) {
@@ -137,7 +138,8 @@ export function MapModule() {
         if (!activeVarMeta) return null;
         return lang === 'de' ? (activeVarMeta.pretty_name_de || activeVarMeta.pretty_name)
             : lang === 'es' ? (activeVarMeta.pretty_name_es || activeVarMeta.pretty_name)
-                : activeVarMeta.pretty_name || variable;
+                : lang === 'pt' ? (activeVarMeta.pretty_name_pt || activeVarMeta.pretty_name)
+                    : activeVarMeta.pretty_name || variable;
     }, [activeVarMeta, lang, variable]);
 
     const varDescriptionText = useMemo(() => {
@@ -151,13 +153,17 @@ export function MapModule() {
             ? (activeVarMeta.description_for_ui_de || activeVarMeta.pretty_name_de || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
             : lang === 'es'
                 ? (activeVarMeta.description_for_ui_es || activeVarMeta.pretty_name_es || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
-                : (activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable);
+                : lang === 'pt'
+                    ? (activeVarMeta.description_for_ui_pt || activeVarMeta.pretty_name_pt || activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable)
+                    : (activeVarMeta.description_for_ui || activeVarMeta.pretty_name || variable);
         const dataset = activeVarMeta.dataset || '';
         const suffix = lang === 'es'
             ? `de la base de datos Subnational ${dataset}`
             : lang === 'de'
                 ? `aus der Subnational ${dataset} Datenbank`
-                : `from the Subnational ${dataset} database`;
+                : lang === 'pt'
+                    ? `do banco de dados Subnational ${dataset}`
+                    : `from the Subnational ${dataset} database`;
         return `${t('map.youAreSeeing')} ${label}${chamberText}; ${suffix}`;
     }, [activeVarMeta, variable, lang, t]);
 
@@ -380,7 +386,7 @@ export function MapModule() {
                             variable={variable}
                             vType={activeVarMeta.type}
                             palette={activeVarMeta.palette}
-                            prettyName={lang === 'de' ? (activeVarMeta.pretty_name_de || activeVarMeta.pretty_name) : lang === 'es' ? (activeVarMeta.pretty_name_es || activeVarMeta.pretty_name) : activeVarMeta.pretty_name}
+                            prettyName={lang === 'de' ? (activeVarMeta.pretty_name_de || activeVarMeta.pretty_name) : lang === 'es' ? (activeVarMeta.pretty_name_es || activeVarMeta.pretty_name) : lang === 'pt' ? (activeVarMeta.pretty_name_pt || activeVarMeta.pretty_name) : activeVarMeta.pretty_name}
                             partyColors={partyColors}
                             activeDataset={activeDataset}
                             onFilterChange={(indices, na) => {
@@ -414,7 +420,7 @@ export function MapModule() {
                     variable={variable}
                     vType={activeVarMeta.type}
                     defaultPalette={activeVarMeta.palette}
-                    prettyName={lang === 'de' ? (activeVarMeta.pretty_name_de || activeVarMeta.pretty_name) : lang === 'es' ? (activeVarMeta.pretty_name_es || activeVarMeta.pretty_name) : activeVarMeta.pretty_name}
+                    prettyName={lang === 'de' ? (activeVarMeta.pretty_name_de || activeVarMeta.pretty_name) : lang === 'es' ? (activeVarMeta.pretty_name_es || activeVarMeta.pretty_name) : lang === 'pt' ? (activeVarMeta.pretty_name_pt || activeVarMeta.pretty_name) : activeVarMeta.pretty_name}
                     partyColors={partyColors}
                     hiddenIndices={legendHiddenIndices}
                     hiddenNA={legendHiddenNA}

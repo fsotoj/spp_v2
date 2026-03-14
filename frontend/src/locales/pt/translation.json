@@ -1,0 +1,301 @@
+{
+  "nav": {
+    "home": "Início",
+    "explore": "Explorar",
+    "methods": "Métodos",
+    "data": "Dados",
+    "about": "Sobre",
+    "contact": "Contato",
+    "mappingTool": "Ferramenta de Mapas",
+    "graphTool": "Ferramenta de Gráficos",
+    "chamberTool": "Ferramenta de Câmara",
+    "mappingToolDesc": "Visualização subnacional interativa",
+    "graphToolDesc": "Tendências eleitorais e análises",
+    "chamberToolDesc": "Composição legislativa detalhada",
+    "soon": "EM BREVE"
+  },
+  "map": {
+    "visualizationSettings": "Configurações de visualização",
+    "variables": "Variáveis",
+    "year": "Ano",
+    "geography": "Geografia",
+    "resetSelection": "Redefinir seleção",
+    "screenshot": "Captura",
+    "fetchingData": "Carregando dados...",
+    "pauseAnimation": "Pausar animação",
+    "playAnimation": "Reproduzir animação",
+    "lowerChamber": "Câmara Baixa",
+    "upperChamber": "Câmara Alta",
+    "youAreSeeing": "Você está vendo",
+    "fromSubnational": "do banco de dados Subnational",
+    "database": "",
+    "showInfo": "Mostrar info da variável",
+    "hideInfo": "Ocultar info da variável"
+  },
+  "plot": {
+    "title": "Imprimir Mapa",
+    "buttonLabel": "Imprimir Mapa",
+    "preview": "Pré-visualização",
+    "colorPalette": "Paleta de cores",
+    "paletteDefault": "Padrão",
+    "paletteYlGnBu": "Amarelo-Verde-Azul",
+    "paletteReds": "Vermelhos",
+    "paletteBlues": "Azuis",
+    "palettePurples": "Roxos",
+    "paletteViridis": "Viridis",
+    "paletteGrays": "Cinzas (P&B)",
+    "stateVisibility": "Visibilidade dos estados",
+    "showAll": "Mostrar todos os estados selecionados",
+    "applyFilters": "Aplicar filtros do mapa atual",
+    "noFiltersActive": "Nenhum filtro ativo na legenda",
+    "mapTitleLabel": "Título do mapa",
+    "mapTitlePlaceholder": "Título opcional…",
+    "sourceLabel": "Atribuição de fonte",
+    "sourcePlaceholder": "ex. Subnational Politics Project",
+    "source": "Fonte",
+    "labelsSection": "Rótulos",
+    "stateNames": "Nomes dos estados",
+    "variableValues": "Valores da variável",
+    "cancel": "Cancelar",
+    "downloadPng": "Baixar PNG",
+    "downloading": "Exportando…"
+  },
+  "hero": {
+    "tagline": "Dados sistemáticos, transparentes e de acesso público sobre",
+    "taglineStrong": "instituições políticas subnacionais e resultados eleitorais",
+    "taglineSuffix": "em países da América Latina.",
+    "startExploring": "Começar a explorar",
+    "downloadData": "Baixar dados",
+    "hostedOn": "Hospedado no",
+    "harvardDataverse": "Harvard Dataverse",
+    "freeOpen": "Acesso livre e aberto",
+    "subnationalUnits": "Unidades Subnacionais",
+    "federalCountries": "Países Federais",
+    "yearsOfData": "Anos de dados"
+  },
+  "whySPP": {
+    "title": "Por que SPP?",
+    "body": "Pesquisadores que estudam a política subnacional na América Latina têm enfrentado há muito tempo o mesmo obstáculo: dados sobre governadores, legislaturas e eleições estavam",
+    "bodyStrong": "dispersos entre países, codificados de forma diferente em cada um, e quase impossíveis de comparar em escala.",
+    "fragmented": "Fragmentados entre fontes",
+    "noStandardization": "Sem padronização",
+    "difficultAccess": "Difícil acesso",
+    "noVisualization": "Sem ferramentas de visualização"
+  },
+  "solution": {
+    "title": "Um recurso transformador para a pesquisa subnacional.",
+    "body": "O Subnational Politics Project enfrenta o desafio persistente de escassez e comparabilidade de dados no Sul Global. Ao oferecer mais de 40 anos de dados sistemáticos, transparentes e de acesso público, impulsionamos análises mais profundas do federalismo, da democracia e da governança territorial.",
+    "empoweringWorkflows": "Fortalecendo fluxos de trabalho",
+    "scholarlyResearch": "Pesquisa acadêmica",
+    "scholarlyDesc": "Analise a democracia subnacional, o autoritarismo e a competição partidária.",
+    "policyAnalysis": "Análise de políticas públicas",
+    "policyDesc": "Permita que formuladores de políticas identifiquem e enfrentem desigualdades territoriais.",
+    "teachingEducation": "Ensino e educação",
+    "teachingDesc": "Forneça aos estudantes ferramentas visuais únicas para a política comparada.",
+    "democraticAccountability": "Prestação de contas democrática",
+    "democraticDesc": "Dados abertos para que jornalistas responsabilizem governos locais."
+  },
+  "popup": {
+    "state": "Estado",
+    "governor": "Governador",
+    "party": "Partido",
+    "chamber": "Câmara",
+    "unicameral": "Unicameral",
+    "bicameral": "Bicameral",
+    "yes": "Sim",
+    "no": "Não",
+    "governorDetails": "Detalhes do governador",
+    "ideology": "Ideologia",
+    "alignment": "Alinhamento",
+    "reelected": "Reeleito",
+    "legislativeDetails": "Detalhes legislativos",
+    "seats": "cadeiras",
+    "variable": "Variável",
+    "notAvailable": "Não disponível",
+    "noActiveData": "Sem dados ativos",
+    "cameraBtn": "Câmara",
+    "graphBtn": "Gráfico",
+    "left": "Esquerda",
+    "centerLeft": "Centro Esquerda",
+    "centerRight": "Centro Direita",
+    "right": "Direita",
+    "male": "Masculino",
+    "female": "Feminino",
+    "other": "Outro",
+    "proportionalRepresentation": "Representação Proporcional (RP)",
+    "simpleMajority": "Maioria Simples",
+    "mixedPRMajority": "Misto (RP + Maioria)",
+    "mixedPRDistricts": "Misto (RP + distritos predefinidos)",
+    "staggeredEvery2Years": "Escalonado a cada 2 anos",
+    "fullRenewal": "Renovação total"
+  },
+  "selection": {
+    "statesSelected": "estados selecionados",
+    "clearSelection": "Limpar seleção",
+    "average": "Média",
+    "max": "Máx.",
+    "min": "Mín.",
+    "mode": "Moda",
+    "noDataStates": "estados sem dados",
+    "openInGraph": "Abrir no Gráfico",
+    "selectingTool": "Ferramenta de seleção",
+    "filterToSelection": "Filtrar mapa à seleção"
+  },
+  "camera": {
+    "country": "País",
+    "state": "Estado",
+    "year": "Ano",
+    "chamber": "Câmara",
+    "seats": "cadeiras",
+    "noData": "Não há dados legislativos disponíveis para esta seleção.",
+    "noDataHint": "O SLED registra dados por ano eleitoral — tente ajustar o controle deslizante para um ano em que ocorreram eleições.",
+    "chamberSeatsTotal": "Cadeiras da câmara (total)",
+    "seatsInContest": "Cadeiras em disputa",
+    "renewalType": "Tipo de renovação",
+    "electoralSystem": "Sistema eleitoral",
+    "partiesContesting": "Partidos em disputa",
+    "enpl": "ENPL"
+  },
+  "team": {
+    "title": "Equipe",
+    "body": "Uma rede colaborativa de acadêmicos e pesquisadores latino-americanos no exterior, unindo padrões acadêmicos globais com profunda expertise regional.",
+    "principalInvestigator": "Investigadora Principal",
+    "collaborator": "Colaborador/a",
+    "researchAssistant": "Assistente de Pesquisa"
+  },
+  "methodology": {
+    "title": "Metodologia",
+    "heading": "Manual de Codificação e Metodologia",
+    "subheading": "Uma referência abrangente para os bancos de dados do Subnational Politics Project, cobrindo definições de variáveis, fontes de dados e decisões de codificação.",
+    "version": "Versão 1 — Outubro 2025",
+    "date": "Investigadora Principal: Agustina Giraudy",
+    "downloadCodebook": "Baixar Manual Completo",
+    "tableOfContents": "Nesta página",
+    "nav": {
+      "introduction": "Introdução",
+      "databases": "Bancos de Dados",
+      "coverage": "Cobertura por País",
+      "variables": "Variáveis",
+      "idVariables": "Variáveis Identificadoras",
+      "execVariables": "Variáveis Executivas",
+      "electoralExec": "Electoral — Executivo",
+      "electoralLeg": "Electoral — Legislativo",
+      "democracyIndices": "Índices de Democracia",
+      "dataSources": "Fontes de Dados",
+      "appendices": "Apêndices"
+    },
+    "introduction": {
+      "p1": "O Subnational Politics Project (SPP) é um esforço sistemático para compilar, harmonizar e disseminar dados sobre instituições políticas subnacionais e resultados eleitorais na América Latina. O projeto cobre atualmente três países — Argentina, Brasil e México — abrangendo mais de quatro décadas de política democrática.",
+      "p2": "Este manual documenta as variáveis incluídas nos seis bancos de dados do SPP, as regras de codificação aplicadas e as fontes consultadas. Acompanha os conjuntos de dados hospedados no Harvard Dataverse e foi projetado para garantir o uso transparente e reproduzível dos dados.",
+      "citationLabel": "Citação do manual:"
+    },
+    "databases": {
+      "p1": "O SPP publica seis bancos de dados complementares que capturam dimensões distintas da política subnacional. Cada um é citável de forma independente e está hospedado no Harvard Dataverse.",
+      "sed": {
+        "name": "Banco de Dados do Executivo Subnacional",
+        "desc": "Dados em painel anual sobre governadores, filiação partidária, ideologia, gênero, alternância e características do mandato.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández e Francisco Urdinez. 2025. 'Subnational Executive Database (SED) (v. 1).' Subnational Politics Project."
+      },
+      "seed": {
+        "name": "Banco de Dados de Eleições Executivas Subnacionais",
+        "desc": "Dados em nível eleitoral sobre disputas governamentais: porcentagens de votos, margens de vitória, participação e número efetivo de partidos.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández e Francisco Urdinez. 2025. 'Subnational Executive Elections Database (SEED) (v. 1).' Subnational Politics Project."
+      },
+      "sled": {
+        "name": "Banco de Dados de Eleições Legislativas Subnacionais",
+        "desc": "Dados por partido sobre eleições legislativas subnacionais: porcentagens de votos e cadeiras, sistemas eleitorais e composição das câmaras.",
+        "citation": "Giraudy, Agustina e Guadalupe Andrea Gonzalez. 2025. 'Subnational Legislative Elections Database (SLED) (v. 1).' Subnational Politics Project."
+      },
+      "sdi": {
+        "name": "Índices de Democracia Subnacional",
+        "desc": "Índices compostos que medem a qualidade democrática subnacional com base na contestação eleitoral e na alternância executiva.",
+        "citation": "Giraudy, Agustina. 2025. 'Subnational Democracy Indices (SDI) (v. 1).' Subnational Politics Project."
+      },
+      "cftdfld": {
+        "name": "Banco de Dados das Legislaturas da Capital Federal e Tierra del Fuego",
+        "desc": "Dados legislativos da Capital Federal e Tierra del Fuego da Argentina, codificados separadamente devido às suas características institucionais distintas.",
+        "citation": "Giraudy, Agustina e Guadalupe Andrea Gonzalez. 2025. 'Capital Federal & Tierra Del Fuego Legislatures Database (CFTDFLD) (v. 1).' Subnational Politics Project."
+      },
+      "ned": {
+        "name": "Banco de Dados do Executivo Nacional",
+        "desc": "Dados em painel anual sobre presidentes e características do executivo nacional, permitindo análises multinível com dados subnacionais.",
+        "citation": "Giraudy, Agustina, Guadalupe Andrea Gonzalez, Sergio Huertas-Hernández e Francisco Urdinez. 2025. 'National Executive Database (NED) (v. 1).' Subnational Politics Project."
+      },
+      "structure": "Estrutura dos Bancos de Dados",
+      "structureDesc": "Todos os bancos de dados estão organizados como painéis país-estado-ano. Cada linha identifica exclusivamente uma unidade subnacional em determinado ano. As variáveis seguem uma convenção de nomenclatura consistente com sufixos (_sub_exe, _nat_exe, _sub_leg) para facilitar a fusão entre bancos de dados.",
+      "quality": "Garantia de Qualidade",
+      "qualityDesc": "Todos os dados foram submetidos a rigorosos processos de verificação: (1) Verificação de fontes primárias — todos os dados foram conferidos com registros eleitorais oficiais; (2) Validação acadêmica — os dados foram comparados a bancos de dados acadêmicos consolidados, quando disponíveis; (3) Confirmação por múltiplas fontes — variáveis-chave foram verificadas por meio de fontes independentes; (4) Verificação de consistência temporal — dados longitudinais foram revisados quanto à consistência e progressão lógica."
+    },
+    "coverage": {
+      "p1": "O SPP cobre atualmente três países latino-americanos com eleições subnacionais para o executivo e o legislativo. A cobertura temporal começa na primeira eleição competitiva após a democratização de cada país.",
+      "countries": "Países cobertos",
+      "units": "Unidades subnacionais",
+      "years": "Anos de cobertura",
+      "variables": "Variáveis documentadas",
+      "country": "País",
+      "unitsCol": "Unidades",
+      "exeStart": "Início executivo",
+      "legStart": "Início legislativo",
+      "note": "Nota: A cobertura da Argentina começa em 1983 (retorno à democracia), com Tierra del Fuego a partir de 1991 e CABA a partir de 1996. A cobertura sistemática do Brasil começa em 1998, o primeiro ano com dados completamente verificados (fonte: TSE / ElectionsBR). O ano de início no México varia por estado, geralmente entre 1985 e 1999."
+    },
+    "idVariables": {
+      "p1": "Todos os registros dos bancos de dados do SPP incluem variáveis identificadoras que permitem vinculação e fusão consistentes entre os seis bancos de dados."
+    },
+    "execVariables": {
+      "p1": "As variáveis executivas estão distribuídas em dois bancos de dados: o Banco de Dados do Executivo Nacional (NED) para presidentes e o Banco de Dados do Executivo Subnacional (SED) para governadores. Ambos seguem convenções de codificação idênticas.",
+      "nationalTitle": "Variáveis do Executivo Nacional",
+      "subnationalTitle": "Variáveis do Executivo Subnacional"
+    },
+    "electoralExec": {
+      "p1": "O Banco de Dados de Eleições Executivas Subnacionais (SEED) fornece dados em nível eleitoral para cada disputa governamental no universo de cobertura do SPP. Cada linha representa um competidor em uma eleição."
+    },
+    "electoralLeg": {
+      "p1": "O Banco de Dados de Eleições Legislativas Subnacionais (SLED) fornece dados por partido para as eleições legislativas subnacionais. Cada linha representa os resultados de um partido em uma eleição em uma câmara."
+    },
+    "democracyIndices": {
+      "p1": "O banco de dados de Índices de Democracia Subnacional (SDI) fornece medidas compostas da qualidade democrática subnacional com base na alternância de governadores e na contestação eleitoral."
+    },
+    "dataSources": {
+      "p1": "As fontes de dados primárias variam por país e banco de dados. Todos os dados eleitorais foram obtidos de fontes governamentais oficiais e validados com bancos de dados acadêmicos secundários.",
+      "p2": "A documentação de fontes específicas por país e as notas de codificação de variáveis individuais estão disponíveis nos apêndices por banco de dados disponíveis para download no Harvard Dataverse."
+    },
+    "appendices": {
+      "p1": "O manual completo em PDF contém apêndices com notas de codificação por país, o inventário completo de variáveis com estatísticas de cobertura e a lista de referências-chave.",
+      "fullCodebook": "Manual Completo (PDF):",
+      "fullCodebookDesc": "Para o inventário completo de variáveis, notas por país e mapas de cobertura, baixe o manual oficial.",
+      "keyRefsTitle": "Apêndice C: Referências Principais"
+    }
+  },
+  "dataHub": {
+    "title": "Central de Dados",
+    "heading": "Baixar Bancos de Dados SPP",
+    "subheading": "Acesse nossos conjuntos de dados abrangentes hospedados no Harvard Dataverse, ou explore nossa futura API para desenvolvedores.",
+    "downloadAll": "Ver no Dataverse",
+    "downloadDataverse": "Dataset",
+    "viewMethodology": "Metodologia",
+    "fetching": "Conectando ao Harvard Dataverse...",
+    "fallbackMsg": "Os links do Harvard Dataverse estão temporariamente indisponíveis. Exibindo links DOI diretos e citações sugeridas.",
+    "futureApi": "API para Desenvolvedores",
+    "comingSoon": "Em breve",
+    "futureApiDesc": "Estamos construindo uma API REST programática para consultar dados em nível de unidade de forma dinâmica. Entre em contato para acesso antecipado e integre os dados do SPP diretamente em suas aplicações e fluxos de pesquisa.",
+    "requestAccessBtn": "Entre em contato"
+  },
+  "aboutPage": {
+    "title": "Sobre o SPP",
+    "heading": "O Subnational Politics Project",
+    "p1": "O Subnational Politics Project (SPP) é uma iniciativa colaborativa dedicada a compilar, gerar e disseminar dados sistemáticos, transparentes e de acesso público sobre instituições políticas subnacionais, processos e resultados eleitorais na América Latina.",
+    "p2": "O objetivo central do SPP é construir uma infraestrutura de dados abrangente e padronizada que permita tanto análises detalhadas dentro dos países quanto comparações transnacionais robustas das dinâmicas políticas subnacionais.",
+    "p3": "Ao fornecer dados longitudinais consistentes, de alta qualidade e espacialmente desagregados, o SPP busca avançar na pesquisa acadêmica e orientada a políticas sobre os fundamentos políticos e as consequências da desigualdade territorial na América Latina.",
+    "p4": "Esta infraestrutura de dados apoiará trabalhos empíricos em uma ampla gama de temas, incluindo federalismo, descentralização, democracia e autoritarismo subnacional, competição partidária, prestação de contas eleitoral, governança territorial, entre outros.",
+    "cards": {
+      "scopeTitle": "Escopo Transnacional",
+      "scopeDesc": "Estruturado para permitir comparações profundas entre múltiplos sistemas federais latino-americanos.",
+      "timeTitle": "Análise Longitudinal",
+      "timeDesc": "Mais de 40 anos de eleições democráticas, permitindo pesquisa abrangente de séries temporais.",
+      "institutionsTitle": "Monitoramento Institucional",
+      "institutionsDesc": "Registros detalhados da composição legislativa, alternância executiva e regras eleitorais.",
+      "openTitle": "Metodologia Aberta",
+      "openDesc": "Regras de codificação totalmente documentadas e disponibilidade de código aberto mapeadas no Harvard Dataverse."
+    }
+  }
+}

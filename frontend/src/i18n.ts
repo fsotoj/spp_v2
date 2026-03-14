@@ -5,6 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import en from './locales/en/translation.json';
 import es from './locales/es/translation.json';
 import de from './locales/de/translation.json';
+import pt from './locales/pt/translation.json';
 
 i18n
     .use(LanguageDetector)
@@ -14,10 +15,11 @@ i18n
             en: { translation: en },
             es: { translation: es },
             de: { translation: de },
+            pt: { translation: pt },
         },
         fallbackLng: 'en',
         lng: 'en', // Force English as predetermined language
-        supportedLngs: ['en', 'es', 'de'],
+        supportedLngs: ['en', 'es', 'de', 'pt'],
         interpolation: {
             escapeValue: false,
         },

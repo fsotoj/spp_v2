@@ -89,6 +89,10 @@ class VariableDictionary(SQLModel, table=True):
     dataset_de: Optional[str] = None
     description_for_ui_de: Optional[str] = None
     add_indices_de: Optional[str] = None
+    pretty_name_pt: Optional[str] = None
+    dataset_pt: Optional[str] = None
+    description_for_ui_pt: Optional[str] = None
+    add_indices_pt: Optional[str] = None
 
 
 class PartyColorExe(SQLModel, table=True):

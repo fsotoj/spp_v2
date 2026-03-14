@@ -256,6 +256,10 @@ class SPPProcessor:
                 dataset_de=_safe_str(r.get("dataset_de")),
                 description_for_ui_de=_safe_str(r.get("description_for_ui_de")),
                 add_indices_de=_safe_str(r.get("add_indices_de")),
+                pretty_name_pt=_safe_str(r.get("pretty_name_pt")),
+                dataset_pt=_safe_str(r.get("dataset_pt")),
+                description_for_ui_pt=_safe_str(r.get("description_for_ui_pt")),
+                add_indices_pt=_safe_str(r.get("add_indices_pt")),
             ))
         session.flush()
 

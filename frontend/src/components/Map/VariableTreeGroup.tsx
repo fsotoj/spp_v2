@@ -65,6 +65,8 @@ export function VariableTreeGroup({ group, activeVariable, onSelect, depth = 0, 
                             ? (v.pretty_name_de || v.pretty_name || v.variable)
                             : lang === 'es'
                             ? (v.pretty_name_es || v.pretty_name || v.variable)
+                            : lang === 'pt'
+                            ? (v.pretty_name_pt || v.pretty_name || v.variable)
                             : (v.pretty_name || v.variable);
                         return (
                             <button

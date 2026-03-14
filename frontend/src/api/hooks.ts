@@ -20,6 +20,10 @@ export interface VariableDict {
     dataset_de: string | null;
     description_for_ui_de: string | null;
     add_indices_de: string | null;
+    pretty_name_pt: string | null;
+    dataset_pt: string | null;
+    description_for_ui_pt: string | null;
+    add_indices_pt: string | null;
     viewable_graph: number | null;
 }
 
