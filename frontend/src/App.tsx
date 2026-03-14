@@ -4,6 +4,7 @@ import { Layout } from './components/Layout';
 import { MapModule } from './modules/MapModule';
 import { CameraModule } from './modules/CameraModule';
 import { GraphModule } from './modules/GraphModule';
+import { ClusterModule } from './modules/ClusterModule';
 import { LandingPage } from './modules/LandingPage';
 import { MethodologyPage } from './modules/MethodologyPage';
 import { DataPage } from './modules/DataPage';
@@ -36,6 +37,14 @@ function App() {
           element={
             <Layout>
               <GraphModule />
+            </Layout>
+          }
+        />
+        <Route
+          path="/cluster"
+          element={
+            <Layout>
+              <ClusterModule />
             </Layout>
           }
         />

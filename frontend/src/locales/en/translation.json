@@ -12,6 +12,8 @@
     "mappingToolDesc": "Interactive subnational visualization",
     "graphToolDesc": "Electoral trends & analytics",
     "chamberToolDesc": "Legislative composition details",
+    "clusterTool": "Cluster Analysis",
+    "clusterToolDesc": "Group states by political similarity",
     "soon": "SOON"
   },
   "map": {
@@ -297,5 +299,40 @@
       "openTitle": "Open Methodology",
       "openDesc": "Fully documented coding rules and open source availability mapping to Harvard Dataverse."
     }
+  },
+  "cluster": {
+    "variables": "Variables",
+    "limitReached": "Maximum {{max}} variables selected",
+    "selectAtLeast2": "Select at least 2 variables to run the analysis",
+    "noGeography": "Select at least one state to begin",
+    "algorithm": "Algorithm",
+    "kmeans": "K-Means",
+    "kmeansDesc": "Partition states into k spherical clusters. Chart: centroid radar.",
+    "kmedoids": "K-Medoids (PAM)",
+    "kmedoidsDesc": "Like K-Means but uses real states as exemplars. Chart: PCA scatter.",
+    "hierarchical": "Hierarchical (Ward)",
+    "hierarchicalDesc": "Builds a tree of merges; cut at any k. Chart: dendrogram.",
+    "kParam": "Clusters (k)",
+    "runButton": "Run Analysis",
+    "running": "Running…",
+    "noData": "Run the analysis to see results",
+    "radarTitle": "Cluster Profiles (z-scored centroids)",
+    "medoidHint": "★ = representative state",
+    "dendrogramTitle": "Dendrogram",
+    "scatterTitle": "PCA Projection",
+    "scatterHint": "ring = medoid",
+    "results": "Results",
+    "cluster": "Cluster",
+    "exportCsv": "Export CSV",
+    "excludedStates": "Excluded — missing data",
+    "excludedShort": "No data",
+    "findOptimalK": "Find Optimal k",
+    "findingOptimal": "Calculating…",
+    "optimalKTitle": "Optimal k",
+    "suggestedK": "Suggested k = {{k}}",
+    "applyK": "Use k = {{k}}",
+    "kApplied": "Already applied",
+    "silhouette": "Silhouette",
+    "wcss": "WCSS (elbow)"
   }
 }

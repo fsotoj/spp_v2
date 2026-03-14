@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { VariableTreeGroup } from '../Map/VariableTreeGroup';
 import { GeographyTreeGroup } from '../Map/GeographyTreeGroup';
+import { YearRangeSlider } from '../shared/YearRangeSlider';
 import type { CountryGeo, StateGeo } from '../../api/hooks';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -62,59 +63,6 @@ function Toggle({ label: labelText, icon: Icon, active, onToggle }: {
                 <span className={`w-3 h-3 rounded-full bg-white shadow-sm mx-0.5 transition-transform ${active ? 'translate-x-4' : 'translate-x-0'}`} />
             </span>
         </button>
-    );
-}
-
-// ── Dual-handle year range slider ─────────────────────────────────────────────
-
-function YearRangeSlider({ yearMin, yearMax, globalYearMin, globalYearMax, onYearMinChange, onYearMaxChange }: {
-    yearMin: number;
-    yearMax: number;
-    globalYearMin: number;
-    globalYearMax: number;
-    onYearMinChange: (y: number) => void;
-    onYearMaxChange: (y: number) => void;
-}) {
-    const range = globalYearMax - globalYearMin;
-    const leftPct = ((yearMin - globalYearMin) / range) * 100;
-    const rightPct = ((yearMax - globalYearMin) / range) * 100;
-
-    return (
-        <div className="relative h-10 flex items-center">
-            {/* Track background */}
-            <div className="absolute left-0 right-0 h-2 bg-slate-200 rounded-full" />
-            {/* Active range fill */}
-            <div
-                className="absolute h-2 bg-brand-400 rounded-full"
-                style={{ left: `${leftPct}%`, width: `${rightPct - leftPct}%` }}
-            />
-            {/* Min thumb — pointer-events on thumb only so the track doesn't block the other input */}
-            <input
-                type="range"
-                min={globalYearMin}
-                max={globalYearMax}
-                value={yearMin}
-                onChange={e => {
-                    const v = Number(e.target.value);
-                    if (v <= yearMax) onYearMinChange(v);
-                }}
-                className="absolute w-full h-2 appearance-none bg-transparent [pointer-events:none] [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer accent-brand-600 focus:outline-none"
-                style={{ zIndex: 5 }}
-            />
-            {/* Max thumb */}
-            <input
-                type="range"
-                min={globalYearMin}
-                max={globalYearMax}
-                value={yearMax}
-                onChange={e => {
-                    const v = Number(e.target.value);
-                    if (v >= yearMin) onYearMaxChange(v);
-                }}
-                className="absolute w-full h-2 appearance-none bg-transparent [pointer-events:none] [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer accent-brand-600 focus:outline-none"
-                style={{ zIndex: 5 }}
-            />
-        </div>
     );
 }
 

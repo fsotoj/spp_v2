@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Map, BarChart3, Landmark, ChevronRight, Settings } from 'lucide-react';
+import { Map, BarChart3, Landmark, ChevronRight, Settings, Layers } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface ExploreToolsSwitcherProps {
@@ -69,6 +69,7 @@ export function ExploreToolsSwitcher({ activeToolLabel, isHomePage, isScrolled }
                             {activeToolLabel === t('nav.mappingTool') && <Map size={16} className="absolute left-3" />}
                             {activeToolLabel === t('nav.chamberTool') && <Landmark size={16} className="absolute left-3" />}
                             {activeToolLabel === t('nav.graphTool') && <BarChart3 size={16} className="absolute left-3" />}
+                            {activeToolLabel === t('nav.clusterTool') && <Layers size={16} className="absolute left-3" />}
                             <span className="whitespace-nowrap overflow-hidden text-sm">{t('nav.explore')}</span>
                             <ChevronRight size={16} strokeWidth={3} className="absolute right-3" />
                         </>
@@ -115,6 +116,16 @@ export function ExploreToolsSwitcher({ activeToolLabel, isHomePage, isScrolled }
                     onClick={() => setIsExploreOpen(false)}
                     isOpen={isExploreOpen}
                     delay="delay-[150ms]"
+                />
+                <ToolChildLink
+                    to="/cluster"
+                    icon={<Layers size={18} />}
+                    label={t('nav.clusterTool')}
+                    description={t('nav.clusterToolDesc')}
+                    active={location.pathname === '/cluster'}
+                    onClick={() => setIsExploreOpen(false)}
+                    isOpen={isExploreOpen}
+                    delay="delay-[225ms]"
                 />
             </div>
         </div>

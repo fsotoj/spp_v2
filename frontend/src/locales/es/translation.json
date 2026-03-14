@@ -11,6 +11,8 @@
     "mappingToolDesc": "Visualización subnacional interactiva",
     "graphToolDesc": "Tendencias electorales y análisis",
     "chamberToolDesc": "Composición legislativa detallada",
+    "clusterTool": "Análisis de Clústeres",
+    "clusterToolDesc": "Agrupa estados por similitud política",
     "soon": "PRONTO"
   },
   "map": {
@@ -296,5 +298,40 @@
       "openTitle": "Metodología Abierta",
       "openDesc": "Reglas de codificación totalmente documentadas y disponibilidad de código abierto mapeadas en Harvard Dataverse."
     }
+  },
+  "cluster": {
+    "variables": "Variables",
+    "limitReached": "Máximo {{max}} variables seleccionadas",
+    "selectAtLeast2": "Selecciona al menos 2 variables para ejecutar el análisis",
+    "noGeography": "Selecciona al menos un estado para comenzar",
+    "algorithm": "Algoritmo",
+    "kmeans": "K-Medias",
+    "kmeansDesc": "Particiona estados en k clústeres esféricos. Gráfico: radar de centroides.",
+    "kmedoids": "K-Medoides (PAM)",
+    "kmedoidsDesc": "Como K-Medias pero usa estados reales como ejemplares. Gráfico: dispersión PCA.",
+    "hierarchical": "Jerárquico (Ward)",
+    "hierarchicalDesc": "Construye un árbol de fusiones; corta en cualquier k. Gráfico: dendrograma.",
+    "kParam": "Clústeres (k)",
+    "runButton": "Ejecutar Análisis",
+    "running": "Ejecutando…",
+    "noData": "Ejecuta el análisis para ver los resultados",
+    "radarTitle": "Perfiles de Clústeres (centroides estandarizados)",
+    "medoidHint": "★ = estado representativo",
+    "dendrogramTitle": "Dendrograma",
+    "scatterTitle": "Proyección PCA",
+    "scatterHint": "anillo = medoide",
+    "results": "Resultados",
+    "cluster": "Clúster",
+    "exportCsv": "Exportar CSV",
+    "excludedStates": "Excluidos — datos faltantes",
+    "excludedShort": "Sin datos",
+    "findOptimalK": "Encontrar k óptima",
+    "findingOptimal": "Calculando…",
+    "optimalKTitle": "k óptima",
+    "suggestedK": "k sugerida = {{k}}",
+    "applyK": "Usar k = {{k}}",
+    "kApplied": "Ya aplicado",
+    "silhouette": "Silueta",
+    "wcss": "WCSS (codo)"
   }
 }

@@ -11,6 +11,8 @@
     "mappingToolDesc": "Interaktive subnationale Visualisierung",
     "graphToolDesc": "Wahltrends & Analysen",
     "chamberToolDesc": "Details zur legislativen Zusammensetzung",
+    "clusterTool": "Clusteranalyse",
+    "clusterToolDesc": "Staaten nach politischer Ähnlichkeit gruppieren",
     "soon": "BALD"
   },
   "map": {
@@ -296,5 +298,40 @@
       "openTitle": "Offene Methodik",
       "openDesc": "Vollständig dokumentierte Kodierungsregeln und Open-Source-Verfügbarkeit auf Harvard Dataverse."
     }
+  },
+  "cluster": {
+    "variables": "Variablen",
+    "limitReached": "Maximal {{max}} Variablen ausgewählt",
+    "selectAtLeast2": "Mindestens 2 Variablen auswählen, um die Analyse auszuführen",
+    "noGeography": "Mindestens einen Staat auswählen",
+    "algorithm": "Algorithmus",
+    "kmeans": "K-Means",
+    "kmeansDesc": "Unterteilt Staaten in k sphärische Cluster. Diagramm: Zentroid-Radar.",
+    "kmedoids": "K-Medoids (PAM)",
+    "kmedoidsDesc": "Wie K-Means, aber mit echten Staaten als Exemplare. Diagramm: PCA-Streuung.",
+    "hierarchical": "Hierarchisch (Ward)",
+    "hierarchicalDesc": "Baut einen Fusionsbaum; bei beliebigem k schneiden. Diagramm: Dendrogramm.",
+    "kParam": "Cluster (k)",
+    "runButton": "Analyse ausführen",
+    "running": "Läuft…",
+    "noData": "Analyse ausführen, um Ergebnisse anzuzeigen",
+    "radarTitle": "Clusterprofile (z-standardisierte Zentroide)",
+    "medoidHint": "★ = repräsentativer Staat",
+    "dendrogramTitle": "Dendrogramm",
+    "scatterTitle": "PCA-Projektion",
+    "scatterHint": "Ring = Medoid",
+    "results": "Ergebnisse",
+    "cluster": "Cluster",
+    "exportCsv": "CSV exportieren",
+    "excludedStates": "Ausgeschlossen — fehlende Daten",
+    "excludedShort": "Keine Daten",
+    "findOptimalK": "Optimales k finden",
+    "findingOptimal": "Berechnung…",
+    "optimalKTitle": "Optimales k",
+    "suggestedK": "Empfohlenes k = {{k}}",
+    "applyK": "k = {{k}} verwenden",
+    "kApplied": "Bereits angewendet",
+    "silhouette": "Silhouette",
+    "wcss": "WCSS (Ellenbogen)"
   }
 }

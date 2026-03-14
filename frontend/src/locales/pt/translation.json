@@ -12,6 +12,8 @@
     "mappingToolDesc": "Visualização subnacional interativa",
     "graphToolDesc": "Tendências eleitorais e análises",
     "chamberToolDesc": "Composição legislativa detalhada",
+    "clusterTool": "Análise de Clusters",
+    "clusterToolDesc": "Agrupa estados por similaridade política",
     "soon": "EM BREVE"
   },
   "map": {
@@ -297,5 +299,40 @@
       "openTitle": "Metodologia Aberta",
       "openDesc": "Regras de codificação totalmente documentadas e disponibilidade de código aberto mapeadas no Harvard Dataverse."
     }
+  },
+  "cluster": {
+    "variables": "Variáveis",
+    "limitReached": "Máximo de {{max}} variáveis selecionadas",
+    "selectAtLeast2": "Selecione ao menos 2 variáveis para executar a análise",
+    "noGeography": "Selecione ao menos um estado para começar",
+    "algorithm": "Algoritmo",
+    "kmeans": "K-Médias",
+    "kmeansDesc": "Particiona estados em k clusters esféricos. Gráfico: radar de centroides.",
+    "kmedoids": "K-Medoides (PAM)",
+    "kmedoidsDesc": "Como K-Médias, mas usa estados reais como exemplares. Gráfico: dispersão PCA.",
+    "hierarchical": "Hierárquico (Ward)",
+    "hierarchicalDesc": "Constrói uma árvore de fusões; cortar em qualquer k. Gráfico: dendrograma.",
+    "kParam": "Clusters (k)",
+    "runButton": "Executar Análise",
+    "running": "Executando…",
+    "noData": "Execute a análise para ver os resultados",
+    "radarTitle": "Perfis de Clusters (centroides padronizados)",
+    "medoidHint": "★ = estado representativo",
+    "dendrogramTitle": "Dendrograma",
+    "scatterTitle": "Projeção PCA",
+    "scatterHint": "anel = medoide",
+    "results": "Resultados",
+    "cluster": "Cluster",
+    "exportCsv": "Exportar CSV",
+    "excludedStates": "Excluídos — dados faltantes",
+    "excludedShort": "Sem dados",
+    "findOptimalK": "Encontrar k ótimo",
+    "findingOptimal": "Calculando…",
+    "optimalKTitle": "k ótimo",
+    "suggestedK": "k sugerido = {{k}}",
+    "applyK": "Usar k = {{k}}",
+    "kApplied": "Já aplicado",
+    "silhouette": "Silhueta",
+    "wcss": "WCSS (cotovelo)"
   }
 }

@@ -210,6 +210,31 @@ export function useStateObservation(stateId: number | null, year: number | null)
     });
 }
 
+// ── Raw Observations (Cluster tool) ──────────────────────────────────────────
+
+/**
+ * Returns all raw observation rows for a dataset + year range without
+ * state_id indexing or deduplication, so the caller can group and average.
+ */
+export function useObservationsRaw(
+    dataset: string,
+    yearMin: number,
+    yearMax: number,
+    enabled: boolean = true,
+) {
+    return useQuery({
+        queryKey: ['observations-raw', dataset, yearMin, yearMax],
+        queryFn: async () => {
+            const url = `/data/observations?dataset=${dataset}&year_min=${yearMin}&year_max=${yearMax}`;
+            const { data } = await apiClient.get<any[]>(url);
+            return data;
+        },
+        enabled: enabled && !!dataset,
+        placeholderData: (prev) => prev,
+        staleTime: 1000 * 60 * 5,
+    });
+}
+
 // ── Time-series Observations (Graph tool) ────────────────────────────────────
 
 export interface TimeSeriesRow {

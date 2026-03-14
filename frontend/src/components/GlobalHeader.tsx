@@ -24,7 +24,9 @@ export function GlobalHeader() {
             ? t('nav.chamberTool')
             : location.pathname === '/graph'
                 ? t('nav.graphTool')
-                : null;
+                : location.pathname === '/cluster'
+                    ? t('nav.clusterTool')
+                    : null;
 
     // Close all menus on route change
     useEffect(() => {
