@@ -2,7 +2,26 @@
   "permissions": {
     "allow": [
       "Bash(PYTHONIOENCODING=utf-8 PYTHONPATH=\".\" ../.venv/Scripts/python.exe core/processor.py)",
-      "Bash(npm run build)"
+      "Bash(npm run build)",
+      "Bash(mkdir -p docs/tutorials docs/how-to docs/reference docs/explanation docs/specs)",
+      "Bash(cp analysis/drafts/onboarding_and_local_dev.md docs/tutorials/local_setup.md)",
+      "Bash(cp analysis/guides/camera_guide.md docs/how-to/camera.md)",
+      "Bash(cp analysis/guides/graph_guide.md docs/how-to/graph.md)",
+      "Bash(cp analysis/guides/map_guide.md docs/how-to/map.md)",
+      "Bash(cp analysis/guides/methodology_guide.md docs/how-to/methodology.md)",
+      "Bash(cp analysis/guides/data_hub_guide.md docs/how-to/data_hub.md)",
+      "Bash(cp analysis/guides/sled_pipeline_guide.md docs/how-to/sled_pipeline.md)",
+      "Bash(cp analysis/guides/styling_guide.md docs/how-to/styling.md)",
+      "Bash(cp analysis/guides/translation_guide.md docs/how-to/translation.md)",
+      "Bash(cp analysis/guides/domain_migration_guide.md docs/how-to/domain_migration.md)",
+      "Bash(cp analysis/architecture/backend_architecture.md docs/reference/backend.md)",
+      "Bash(cp analysis/architecture/frontend_architecture.md docs/reference/frontend.md)",
+      "Bash(cp analysis/architecture/erd.md docs/reference/database.md)",
+      "Bash(cp analysis/drafts/infrastructure_and_deployment.md docs/reference/deployment.md)",
+      "Bash(cp analysis/drafts/testing_strategy.md docs/reference/testing.md)",
+      "Bash(cp analysis/decisions/adr_001_tech_stack.md docs/explanation/adr_001_tech_stack.md)",
+      "Bash(cp analysis/planning/manifesto.md docs/explanation/manifesto.md)",
+      "Bash(cp analysis/planning/future_risks.md docs/explanation/risks.md)"
     ]
   }
 }
