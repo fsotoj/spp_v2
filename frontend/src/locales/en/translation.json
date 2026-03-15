@@ -333,6 +333,11 @@
     "applyK": "Use k = {{k}}",
     "kApplied": "Already applied",
     "silhouette": "Silhouette",
-    "wcss": "WCSS (elbow)"
+    "wcss": "WCSS (elbow)",
+    "statesCollapsed": "states — click to expand",
+    "expandCluster": "Click to expand",
+    "collapseCluster": "Click to collapse",
+    "showRaw": "Avg. values",
+    "rawNormNote": "Axes normalized per variable; tooltip shows actual values"
   }
 }

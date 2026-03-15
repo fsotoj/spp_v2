@@ -333,6 +333,11 @@
     "applyK": "Usar k = {{k}}",
     "kApplied": "Já aplicado",
     "silhouette": "Silhueta",
-    "wcss": "WCSS (cotovelo)"
+    "wcss": "WCSS (cotovelo)",
+    "statesCollapsed": "estados — clique para expandir",
+    "expandCluster": "Clique para expandir",
+    "collapseCluster": "Clique para recolher",
+    "showRaw": "Valores médios",
+    "rawNormNote": "Eixos normalizados por variável; tooltip mostra valores reais"
   }
 }

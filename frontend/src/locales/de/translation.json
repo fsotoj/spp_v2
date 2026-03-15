@@ -332,6 +332,11 @@
     "applyK": "k = {{k}} verwenden",
     "kApplied": "Bereits angewendet",
     "silhouette": "Silhouette",
-    "wcss": "WCSS (Ellenbogen)"
+    "wcss": "WCSS (Ellenbogen)",
+    "statesCollapsed": "Länder — klicken zum Erweitern",
+    "expandCluster": "Klicken zum Erweitern",
+    "collapseCluster": "Klicken zum Einklappen",
+    "showRaw": "Mittelwerte",
+    "rawNormNote": "Achsen pro Variable normiert; Tooltip zeigt tatsächliche Werte"
   }
 }

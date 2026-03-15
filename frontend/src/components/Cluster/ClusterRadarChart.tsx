@@ -36,10 +36,8 @@ export function ClusterRadarChart({
                     : (meta.pretty_name || variable);
     };
 
-    // Recharts RadarChart needs data where each entry = one axis (variable),
-    // with a key per cluster
     const data = variables.map((variable, vi) => {
-        const entry: Record<string, any> = {
+        const entry: Record<string, number | string> = {
             variable: getLabel(variable),
         };
         centroids.forEach((centroid, ci) => {

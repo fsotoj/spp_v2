@@ -64,6 +64,25 @@ export interface PCAPoint {
 
 export type ClusterResult = KMeansResult | HierarchicalResult;
 
+// ─── PRNG ────────────────────────────────────────────────────────────────────
+
+/**
+ * Mulberry32 — fast, high-quality 32-bit seeded PRNG.
+ * Returns a function that produces values in [0, 1), identical to Math.random().
+ * Using a fixed seed makes K-Means and PCA fully deterministic for the same data.
+ */
+function mulberry32(seed: number): () => number {
+    return function () {
+        seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+}
+
+const DEFAULT_SEED = 42;
+const N_RESTARTS = 5; // restarts per k-value; matches sklearn's approach
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function euclidean(a: number[], b: number[]): number {
@@ -77,6 +96,11 @@ function normalize(v: number[]): number[] {
 
 function matVec(mat: number[][], v: number[]): number[] {
     return mat.map(row => row.reduce((s, x, j) => s + x * v[j], 0));
+}
+
+/** WCSS computed directly from raw point arrays (used during restarts). */
+function computeWCSSRaw(points: number[][], centroids: number[][], assignments: number[]): number {
+    return points.reduce((sum, p, i) => sum + euclidean(p, centroids[assignments[i]]) ** 2, 0);
 }
 
 // ─── Data preparation ─────────────────────────────────────────────────────────
@@ -165,12 +189,12 @@ export function buildAndNormalizeVectors(
 
 // ─── K-Means ─────────────────────────────────────────────────────────────────
 
-function kmeansppInit(points: number[][], k: number): number[][] {
-    const centroids: number[][] = [[...points[Math.floor(Math.random() * points.length)]]];
+function kmeansppInit(points: number[][], k: number, rng: () => number): number[][] {
+    const centroids: number[][] = [[...points[Math.floor(rng() * points.length)]]];
     while (centroids.length < k) {
         const dists = points.map(p => Math.min(...centroids.map(c => euclidean(p, c) ** 2)));
         const total = dists.reduce((a, b) => a + b, 0);
-        let r = Math.random() * total;
+        let r = rng() * total;
         let added = false;
         for (let i = 0; i < points.length; i++) {
             r -= dists[i];
@@ -181,12 +205,12 @@ function kmeansppInit(points: number[][], k: number): number[][] {
     return centroids;
 }
 
-export function runKMeans(states: StateVector[], k: number): KMeansResult {
-    const complete = states.filter(s => !s.hasMissing);
-    k = Math.min(k, complete.length);
-    const points = complete.map(s => s.values);
-
-    let centroids = kmeansppInit(points, k);
+/** Single K-Means run given a seeded RNG. Returns raw indices for efficiency. */
+function kmeansOnce(points: number[][], k: number, rng: () => number): {
+    assignments: number[];
+    centroids: number[][];
+} {
+    let centroids = kmeansppInit(points, k, rng);
     let assignments = new Array<number>(points.length).fill(0);
 
     for (let iter = 0; iter < 300; iter++) {
@@ -205,9 +229,36 @@ export function runKMeans(states: StateVector[], k: number): KMeansResult {
             );
         });
     }
+    return { assignments, centroids };
+}
+
+/**
+ * Run K-Means with N_RESTARTS restarts using a seeded PRNG.
+ * The best run (lowest WCSS) is returned, making the result both deterministic
+ * and more likely to be a global optimum.
+ */
+export function runKMeans(states: StateVector[], k: number, seed = DEFAULT_SEED): KMeansResult {
+    const complete = states.filter(s => !s.hasMissing);
+    k = Math.min(k, complete.length);
+    const points = complete.map(s => s.values);
+
+    let bestWCSS = Infinity;
+    let bestAssignments: number[] = [];
+    let bestCentroids: number[][] = [];
+
+    for (let r = 0; r < N_RESTARTS; r++) {
+        const rng = mulberry32(seed + r * 1000);
+        const { assignments, centroids } = kmeansOnce(points, k, rng);
+        const wcss = computeWCSSRaw(points, centroids, assignments);
+        if (wcss < bestWCSS) {
+            bestWCSS = wcss;
+            bestAssignments = assignments;
+            bestCentroids = centroids;
+        }
+    }
 
     const labelMap = new Map<number, number>();
-    complete.forEach((s, i) => labelMap.set(s.stateId, assignments[i]));
+    complete.forEach((s, i) => labelMap.set(s.stateId, bestAssignments[i]));
 
     return {
         type: 'kmeans',
@@ -215,7 +266,7 @@ export function runKMeans(states: StateVector[], k: number): KMeansResult {
             stateId: s.stateId,
             cluster: s.hasMissing ? null : CLUSTER_LABELS[labelMap.get(s.stateId)!],
         })),
-        centroids,
+        centroids: bestCentroids,
     };
 }
 
@@ -305,14 +356,12 @@ export function runHierarchical(states: StateVector[], k: number): HierarchicalR
         node: { isLeaf: true, stateId: s.stateId, stateName: s.stateName } as DendrogramLeaf,
     }));
 
-    // Ward distance: increase in total within-cluster variance
     const wardDist = (a: Cluster, b: Cluster): number => {
         const na = a.indices.length, nb = b.indices.length;
         return a.centroid.reduce((sum, v, d) =>
             sum + (na * nb / (na + nb)) * (v - b.centroid[d]) ** 2, 0);
     };
 
-    // Merge until k clusters remain
     while (clusters.length > k) {
         let minD = Infinity, mi = 0, mj = 1;
         for (let i = 0; i < clusters.length; i++) {
@@ -340,7 +389,6 @@ export function runHierarchical(states: StateVector[], k: number): HierarchicalR
         clusters.splice(mi, 1, merged);
     }
 
-    // Connect remaining top-level clusters under a virtual root (distance=0)
     let root: DendrogramNode | DendrogramLeaf = clusters[0].node;
     for (let i = 1; i < clusters.length; i++) {
         root = {
@@ -376,7 +424,6 @@ export interface OptimalKPoint {
 /**
  * Average silhouette coefficient for one clustering result.
  * s(i) = (b(i) - a(i)) / max(a(i), b(i))
- * where a = mean intra-cluster distance, b = mean nearest-cluster distance.
  */
 function silhouetteScore(states: StateVector[], assignments: ClusterAssignment[]): number {
     const assignMap = new Map<number, string | null>();
@@ -392,7 +439,7 @@ function silhouetteScore(states: StateVector[], assignments: ClusterAssignment[]
         const myCluster = assignMap.get(s.stateId)!;
         const sameCluster = included.filter(o => o.stateId !== s.stateId && assignMap.get(o.stateId) === myCluster);
 
-        if (sameCluster.length === 0) return 0; // singleton — treat as 0
+        if (sameCluster.length === 0) return 0;
 
         const a = sameCluster.reduce((sum, o) => sum + euclidean(s.values, o.values), 0) / sameCluster.length;
 
@@ -424,16 +471,15 @@ function computeWCSS(states: StateVector[], centroids: number[][], assignments: 
 }
 
 /**
- * Run K-Means for k = 2..kMax and return WCSS + silhouette for each k.
- * Always uses K-Means (regardless of the user's chosen algorithm) because it
- * is the fastest and produces centroids for WCSS calculation. The result is
- * used only to recommend k, not as the final clustering.
+ * Run K-Means for k = 2..kMax, each with N_RESTARTS restarts and a fixed seed,
+ * returning WCSS + silhouette for each k. Fully deterministic.
  */
 export function computeOptimalK(states: StateVector[], kMax = 8): OptimalKPoint[] {
     const n = states.filter(s => !s.hasMissing).length;
     const results: OptimalKPoint[] = [];
     for (let k = 2; k <= Math.min(kMax, n - 1); k++) {
-        const res = runKMeans(states, k);
+        // Different base seed per k so restarts explore different regions at each k
+        const res = runKMeans(states, k, DEFAULT_SEED * k);
         results.push({
             k,
             wcss: computeWCSS(states, res.centroids, res.assignments),
@@ -464,8 +510,9 @@ export function computePCA(states: StateVector[]): PCAPoint[] {
         )
     );
 
-    const powerIter = (deflate?: number[]) => {
-        let vec = normalize(Array.from({ length: dim }, () => Math.random() - 0.5));
+    const powerIter = (seed: number, deflate?: number[]) => {
+        const rng = mulberry32(seed);
+        let vec = normalize(Array.from({ length: dim }, () => rng() - 0.5));
         for (let it = 0; it < 300; it++) {
             let nv = matVec(cov, vec);
             if (deflate) {
@@ -477,8 +524,8 @@ export function computePCA(states: StateVector[]): PCAPoint[] {
         return vec;
     };
 
-    const pc1 = powerIter();
-    const pc2 = powerIter(pc1);
+    const pc1 = powerIter(DEFAULT_SEED);
+    const pc2 = powerIter(DEFAULT_SEED + 1, pc1);
 
     return complete.map(s => ({
         stateId: s.stateId,

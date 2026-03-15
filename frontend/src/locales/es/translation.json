@@ -332,6 +332,11 @@
     "applyK": "Usar k = {{k}}",
     "kApplied": "Ya aplicado",
     "silhouette": "Silueta",
-    "wcss": "WCSS (codo)"
+    "wcss": "WCSS (codo)",
+    "statesCollapsed": "estados — clic para expandir",
+    "expandCluster": "Clic para expandir",
+    "collapseCluster": "Clic para colapsar",
+    "showRaw": "Valores medios",
+    "rawNormNote": "Ejes normalizados por variable; el tooltip muestra valores reales"
   }
 }

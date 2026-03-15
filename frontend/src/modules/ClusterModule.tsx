@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Play } from 'lucide-react';
 import { SidebarPortal } from '../components/Layout';
 import { useCountries, useStatesGeo, useVariables, useObservationsRaw } from '../api/hooks';
-import { YearRangeSlider } from '../components/shared/YearRangeSlider';
 import { ResizeHandle } from '../components/shared/ResizeHandle';
 import { GeographyTreeGroup } from '../components/Map/GeographyTreeGroup';
 import { ClusterVariablePicker } from '../components/Cluster/ClusterVariablePicker';
@@ -19,6 +18,7 @@ import {
     runKMedoids,
     computePCA,
     computeOptimalK,
+    CLUSTER_LABELS,
     type ClusterResult,
     type StateVector,
     type PCAPoint,
@@ -48,9 +48,10 @@ export function ClusterModule() {
     const lang = i18n.language.slice(0, 2);
 
     // ── Selector state ──────────────────────────────────────────────────────
-    const [selectedVariables, setSelectedVariables] = useState<string[]>([]);
-    const [yearMin, setYearMin] = useState(2010);
-    const [yearMax, setYearMax] = useState(GLOBAL_YEAR_MAX);
+    const [selectedVariables, setSelectedVariables] = useState<string[]>([
+        'enp_sub_exe', 'perc_voter_sub_exe', 'perc_votes_winner_candidate_sub_exe',
+    ]);
+    const [year, setYear] = useState(GLOBAL_YEAR_MAX);
     const [selectedStateIds, setSelectedStateIds] = useState<number[]>([]);
     const [expandedCountries, setExpandedCountries] = useState<number[]>([]);
     const [algorithm, setAlgorithm] = useState<Algorithm>('kmeans');
@@ -88,7 +89,6 @@ export function ClusterModule() {
         if (mexico) {
             const ids = allStates.filter(s => s.country_id === mexico.id).map(s => s.id);
             setSelectedStateIds(ids);
-            setExpandedCountries([mexico.id]);
         }
     }, [allStates, countries]);
 
@@ -119,8 +119,8 @@ export function ClusterModule() {
     const canFetch = selectedVariables.length >= 2 && selectedStateIds.length > 0;
     const { data: rawRows = [], isFetching } = useObservationsRaw(
         activeDataset,
-        yearMin,
-        yearMax,
+        year,
+        year,
         canFetch,
     );
 
@@ -142,6 +142,19 @@ export function ClusterModule() {
 
     const variableMeta = useMemo(() =>
         allVariables ?? [], [allVariables]);
+
+    const varTitle = useMemo(() => {
+        if (!allVariables || selectedVariables.length === 0) return '';
+        return selectedVariables.map(varCode => {
+            const cleanCode = varCode.replace(/_[12]$/, '');
+            const meta = allVariables.find(v => v.variable === cleanCode);
+            if (!meta) return varCode;
+            return lang === 'es' ? (meta.pretty_name_es || meta.pretty_name || varCode)
+                : lang === 'de' ? (meta.pretty_name_de || meta.pretty_name || varCode)
+                : lang === 'pt' ? (meta.pretty_name_pt || meta.pretty_name || varCode)
+                : (meta.pretty_name || varCode);
+        }).join(' · ');
+    }, [selectedVariables, allVariables, lang]);
 
     // ── Find optimal k ───────────────────────────────────────────────────
     const runOptimalK = () => {
@@ -198,6 +211,24 @@ export function ClusterModule() {
     const kmeansResult = (result?.type === 'kmeans' || result?.type === 'kmedoids')
         ? result as KMeansResult : null;
 
+    const rawClusterMeans = useMemo(() => {
+        if (!kmeansResult || stateVectors.length === 0) return undefined;
+        const numClusters = kmeansResult.centroids.length;
+        const nVars = selectedVariables.length;
+        const sums = Array.from({ length: numClusters }, () => new Array(nVars).fill(0));
+        const counts = new Array(numClusters).fill(0);
+        kmeansResult.assignments.forEach(a => {
+            if (a.cluster === null) return;
+            const ci = CLUSTER_LABELS.indexOf(a.cluster);
+            if (ci < 0 || ci >= numClusters) return;
+            const sv = stateVectors.find(v => v.stateId === a.stateId);
+            if (!sv) return;
+            sv.rawMeans.forEach((val, vi) => { sums[ci][vi] += isNaN(val) ? 0 : val; });
+            counts[ci]++;
+        });
+        return sums.map((s, ci) => counts[ci] > 0 ? s.map(v => v / counts[ci]) : s);
+    }, [kmeansResult, stateVectors, selectedVariables]);
+
     const clusterK = kmeansResult
         ? Math.max(...(kmeansResult.assignments.map(a => a.cluster ? ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].indexOf(a.cluster) + 1 : 0)), 0)
         : k;
@@ -232,22 +263,27 @@ export function ClusterModule() {
                         lang={lang}
                     />
 
-                    {/* Year range */}
+                    {/* Year */}
                     <div>
                         <div className="flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
                             <span>{t('map.year')}</span>
-                            <span className="text-spp-purple font-black text-sm tabular-nums">
-                                {yearMin} – {yearMax}
-                            </span>
+                            <span className="text-spp-purple font-black text-sm tabular-nums">{year}</span>
                         </div>
-                        <YearRangeSlider
-                            yearMin={yearMin}
-                            yearMax={yearMax}
-                            globalYearMin={GLOBAL_YEAR_MIN}
-                            globalYearMax={GLOBAL_YEAR_MAX}
-                            onYearMinChange={y => { setYearMin(y); setResult(null); }}
-                            onYearMaxChange={y => { setYearMax(y); setResult(null); }}
-                        />
+                        <div className="relative h-10 flex items-center">
+                            <div className="absolute left-0 right-0 h-2 bg-slate-200 rounded-full" />
+                            <div
+                                className="absolute h-2 bg-brand-400 rounded-full"
+                                style={{ width: `${((year - GLOBAL_YEAR_MIN) / (GLOBAL_YEAR_MAX - GLOBAL_YEAR_MIN)) * 100}%` }}
+                            />
+                            <input
+                                type="range"
+                                min={GLOBAL_YEAR_MIN}
+                                max={GLOBAL_YEAR_MAX}
+                                value={year}
+                                onChange={e => { setYear(Number(e.target.value)); setResult(null); }}
+                                className="absolute w-full h-2 appearance-none bg-transparent [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:cursor-pointer accent-brand-600 focus:outline-none"
+                            />
+                        </div>
                         <div className="flex justify-between text-[10px] text-slate-400 mt-1 tabular-nums">
                             <span>{GLOBAL_YEAR_MIN}</span>
                             <span>{GLOBAL_YEAR_MAX}</span>
@@ -338,6 +374,16 @@ export function ClusterModule() {
 
                     {/* Map */}
                     <div className="flex-1 min-h-0 relative overflow-hidden">
+                        {result && varTitle && (
+                            <div className="absolute top-0 left-0 right-0 z-[900] pointer-events-none px-4 pt-2 pb-5 text-center">
+                                <p
+                                    className="text-xs font-bold text-spp-gray uppercase tracking-wider leading-tight"
+                                    style={{ textShadow: '-1px -1px 3px white, 1px -1px 3px white, -1px 1px 3px white, 1px 1px 3px white, 0 0 6px white' }}
+                                >
+                                    {varTitle} — {year}
+                                </p>
+                            </div>
+                        )}
                         {allStates && countries ? (
                             <ClusterMap
                                 geoData={allStates}
@@ -402,6 +448,7 @@ export function ClusterModule() {
                             variableMeta={variableMeta}
                             lang={lang}
                             medoidIds={kmeansResult?.medoidIds}
+                            rawClusterMeans={rawClusterMeans}
                         />
                     </div>
                     </>
