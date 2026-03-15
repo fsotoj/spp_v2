@@ -337,6 +337,8 @@
     "expandCluster": "Klicken zum Erweitern",
     "collapseCluster": "Klicken zum Einklappen",
     "showRaw": "Mittelwerte",
-    "rawNormNote": "Achsen pro Variable normiert; Tooltip zeigt tatsächliche Werte"
+    "rawNormNote": "Achsen pro Variable normiert; Tooltip zeigt tatsächliche Werte",
+    "exportPdf": "Analyse herunterladen",
+    "exporting": "PDF wird erstellt…"
   }
 }

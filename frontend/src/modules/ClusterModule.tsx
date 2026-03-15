@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Play } from 'lucide-react';
 import { SidebarPortal } from '../components/Layout';
@@ -11,6 +11,7 @@ import { ClusterMap } from '../components/Cluster/ClusterMap';
 import { ClusterRadarChart } from '../components/Cluster/ClusterRadarChart';
 import { PCAScatterChart } from '../components/Cluster/PCAScatterChart';
 import { ClusterResultsTable } from '../components/Cluster/ClusterResultsTable';
+import { ClusterExportButton } from '../components/Cluster/ClusterExportButton';
 import {
     averageObsByState,
     buildAndNormalizeVectors,
@@ -76,6 +77,10 @@ export function ClusterModule() {
     const onTableResize = useCallback((delta: number) => {
         setTableHeight(h => Math.max(100, Math.min(520, h - delta)));
     }, []);
+
+    // ── Export refs ──────────────────────────────────────────────────────────
+    const mapRef = useRef<HTMLDivElement>(null);
+    const chartRef = useRef<HTMLDivElement>(null);
 
     // ── Metadata ────────────────────────────────────────────────────────────
     const { data: countries } = useCountries();
@@ -346,17 +351,33 @@ export function ClusterModule() {
                         {validationMsg && (
                             <p className="text-[11px] text-slate-400 mb-2">{validationMsg}</p>
                         )}
-                        <button
-                            onClick={runAnalysis}
-                            disabled={!canRun}
-                            className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-bold text-sm transition-all ${canRun
-                                ? 'bg-brand-400 hover:bg-brand-500 text-spp-textDark shadow-sm'
-                                : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                                }`}
-                        >
-                            <Play size={14} fill="currentColor" />
-                            {isRunning ? t('cluster.running') : t('cluster.runButton')}
-                        </button>
+                        <div className="flex gap-2">
+                            <ClusterExportButton
+                                mapRef={mapRef}
+                                chartRef={chartRef}
+                                assignments={assignments}
+                                stateVectors={stateVectors}
+                                variables={selectedVariables}
+                                variableMeta={variableMeta}
+                                lang={lang}
+                                varTitle={varTitle}
+                                year={year}
+                                algorithm={algorithm}
+                                clusterK={clusterK}
+                                disabled={!result}
+                            />
+                            <button
+                                onClick={runAnalysis}
+                                disabled={!canRun}
+                                className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-bold text-sm transition-all ${canRun
+                                    ? 'bg-brand-400 hover:bg-brand-500 text-spp-textDark shadow-sm'
+                                    : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                                    }`}
+                            >
+                                <Play size={14} fill="currentColor" />
+                                {isRunning ? t('cluster.running') : t('cluster.runButton')}
+                            </button>
+                        </div>
                         {isFetching && (
                             <p className="text-xs text-brand-600 font-medium animate-pulse mt-2">
                                 {t('map.fetchingData')}
@@ -373,7 +394,7 @@ export function ClusterModule() {
                 <div className="flex flex-row flex-1 min-h-0 overflow-hidden">
 
                     {/* Map */}
-                    <div className="flex-1 min-h-0 relative overflow-hidden">
+                    <div ref={mapRef} className="flex-1 min-h-0 relative overflow-hidden">
                         {result && varTitle && (
                             <div className="absolute top-0 left-0 right-0 z-[900] pointer-events-none px-4 pt-2 pb-5 text-center">
                                 <p
@@ -404,6 +425,7 @@ export function ClusterModule() {
 
                     {/* Chart panel */}
                     <div
+                        ref={chartRef}
                         className="shrink-0 border-l border-slate-200 bg-spp-bgLight flex flex-col overflow-hidden"
                         style={{ width: chartWidth }}
                     >

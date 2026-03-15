@@ -338,6 +338,8 @@
     "expandCluster": "Clique para expandir",
     "collapseCluster": "Clique para recolher",
     "showRaw": "Valores médios",
-    "rawNormNote": "Eixos normalizados por variável; tooltip mostra valores reais"
+    "rawNormNote": "Eixos normalizados por variável; tooltip mostra valores reais",
+    "exportPdf": "Baixar análise",
+    "exporting": "Gerando PDF…"
   }
 }

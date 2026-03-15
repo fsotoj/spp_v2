@@ -338,6 +338,8 @@
     "expandCluster": "Click to expand",
     "collapseCluster": "Click to collapse",
     "showRaw": "Avg. values",
-    "rawNormNote": "Axes normalized per variable; tooltip shows actual values"
+    "rawNormNote": "Axes normalized per variable; tooltip shows actual values",
+    "exportPdf": "Download Analysis",
+    "exporting": "Generating PDF…"
   }
 }

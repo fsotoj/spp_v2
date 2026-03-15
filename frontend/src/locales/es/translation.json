@@ -337,6 +337,8 @@
     "expandCluster": "Clic para expandir",
     "collapseCluster": "Clic para colapsar",
     "showRaw": "Valores medios",
-    "rawNormNote": "Ejes normalizados por variable; el tooltip muestra valores reales"
+    "rawNormNote": "Ejes normalizados por variable; el tooltip muestra valores reales",
+    "exportPdf": "Descargar análisis",
+    "exporting": "Generando PDF…"
   }
 }
