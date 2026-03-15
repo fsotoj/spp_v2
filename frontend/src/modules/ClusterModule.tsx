@@ -223,7 +223,7 @@ export function ClusterModule() {
             if (ci < 0 || ci >= numClusters) return;
             const sv = stateVectors.find(v => v.stateId === a.stateId);
             if (!sv) return;
-            sv.rawMeans.forEach((val, vi) => { sums[ci][vi] += isNaN(val) ? 0 : val; });
+            sv.rawMeans.forEach((val, vi) => { if (val != null && !isNaN(val)) sums[ci][vi] += val; });
             counts[ci]++;
         });
         return sums.map((s, ci) => counts[ci] > 0 ? s.map(v => v / counts[ci]) : s);
