@@ -6,8 +6,8 @@ import { CLUSTER_COLORS, CLUSTER_LABELS, type ClusterAssignment, type StateVecto
 import type { VariableDict } from '../../api/hooks';
 
 interface ClusterExportButtonProps {
-    mapRef: React.RefObject<HTMLDivElement>;
-    chartRef: React.RefObject<HTMLDivElement>;
+    mapRef: React.RefObject<HTMLDivElement | null>;
+    chartRef: React.RefObject<HTMLDivElement | null>;
     assignments: ClusterAssignment[];
     stateVectors: StateVector[];
     variables: string[];
